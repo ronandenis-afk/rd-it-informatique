@@ -9,8 +9,8 @@
     :root {
       color-scheme: light;
       --ink: #101a2b; --ink-soft: #516071; --navy: #101a2b; --navy-2: #19273b;
-      --paper: #f7f8f5; --white: #fff; --mint: #a8f0d0; --lime: #d5fa83;
-      --green: #397655; --green-bg: #e9f6ef; --line: #e3e8e5; --red: #b42318; --red-bg: #fdecea;
+      --paper: #f6f8fc; --white: #fff; --mint: #3d8bff; --lime: #00e5ff;
+      --green: #1f6feb; --green-bg: #e8f1ff; --line: #e2e7ef; --red: #b42318; --red-bg: #fdecea;
       --amber: #8a5a00; --amber-bg: #fff4d6; --blue: #1d4f91; --blue-bg: #e7f0fb;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     }
@@ -42,15 +42,15 @@
     .spacer { flex: 1; }
 
     label { display: grid; gap: .3rem; font-size: .8rem; font-weight: 700; color: #334155; }
-    input, select, textarea { width: 100%; padding: .6rem .7rem; border: 1px solid #d5ddd9; border-radius: 10px; background: #fbfcfb; font-size: .9rem; font-weight: 400; }
+    input, select, textarea { width: 100%; padding: .6rem .7rem; border: 1px solid #d5dce8; border-radius: 10px; background: #fbfcfe; font-size: .9rem; font-weight: 400; }
     textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
-    input:focus, select:focus, textarea:focus { outline: 3px solid #74c99655; border-color: #559673; }
+    input:focus, select:focus, textarea:focus { outline: 3px solid #3d8bff55; border-color: #2f7bff; }
     .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; }
     .fields .full { grid-column: 1 / -1; }
 
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 40px; padding: .55rem 1rem; border: 1px solid transparent; border-radius: 999px; background: var(--lime); color: var(--ink); font-weight: 750; font-size: .88rem; cursor: pointer; }
     .btn.dark { background: var(--navy); color: white; }
-    .btn.ghost { background: white; border-color: #cfdcd5; }
+    .btn.ghost { background: white; border-color: #c9d8f0; }
     .btn.danger { background: white; border-color: #f1c4bf; color: var(--red); }
     .btn.small { min-height: 32px; padding: .3rem .7rem; font-size: .8rem; }
     .btn:disabled { opacity: .5; cursor: default; }
@@ -58,7 +58,7 @@
     .icon-btn:disabled { opacity: .35; cursor: default; }
 
     .msg { margin: 0 0 1rem; padding: .75rem 1rem; border-radius: 12px; font-size: .88rem; line-height: 1.5; }
-    .msg.ok { background: var(--green-bg); color: #1f4f37; }
+    .msg.ok { background: var(--green-bg); color: #123f8f; }
     .msg.err { background: var(--red-bg); color: var(--red); }
     .msg.info { background: var(--blue-bg); color: var(--blue); }
 
@@ -99,9 +99,9 @@
     .toolbar select { width: auto; }
     table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; font-size: .87rem; }
     th, td { padding: .7rem .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { background: #f1f4f2; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #5b6b62; }
+    th { background: #f0f3f9; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #55627a; }
     tbody tr { cursor: pointer; }
-    tbody tr:hover { background: #f8fbf9; }
+    tbody tr:hover { background: #f7f9fe; }
     td small { display: block; color: var(--ink-soft); }
     .num { text-align: right; white-space: nowrap; }
     .badge { display: inline-block; padding: .2rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 750; white-space: nowrap; }
@@ -118,7 +118,7 @@
     .dlg-head { display: flex; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--line); }
     .dlg-head h2 { margin: 0; }
     .dlg-body { max-height: calc(100vh - 200px); overflow: auto; padding: 1.25rem; }
-    .dlg-foot { display: flex; gap: .5rem; padding: .9rem 1.25rem; border-top: 1px solid var(--line); background: #fafbfa; }
+    .dlg-foot { display: flex; gap: .5rem; padding: .9rem 1.25rem; border-top: 1px solid var(--line); background: #fafbfe; }
     fieldset { margin: 0 0 1rem; padding: 0; border: 0; }
     legend { margin-bottom: .5rem; font-weight: 800; font-size: .85rem; color: var(--green); text-transform: uppercase; letter-spacing: .06em; }
 
