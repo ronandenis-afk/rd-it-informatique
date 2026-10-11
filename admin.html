@@ -438,8 +438,10 @@
       const full = new URL(u); full.searchParams.delete("hideui"); $("#stats-open").href = full.href;
     }
     $("#stats-save").addEventListener("click", () => {
-      const v = $("#stats-url").value.trim();
-      if (!/^https:\/\/[a-z0-9-]+\.goatcounter\.com/i.test(v)) { flash("Colle le lien GoatCounter (il commence par https:// et contient goatcounter.com).", "err"); return; }
+      const m = $("#stats-url").value.match(/(?:https?:\/\/)?[a-z0-9-]+\.goatcounter\.com[^\s"'<>]*/i);
+      if (!m) { flash("Colle le lien GoatCounter (il commence par https:// et contient goatcounter.com).", "err"); return; }
+      const v = "https://" + m[0].replace(/^https?:\/\//i, "");
+      flash("");
       try { localStorage.setItem("rdit-stats-url", v); } catch (e) {}
       showStats();
     });
