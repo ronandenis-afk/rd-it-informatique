@@ -147,3 +147,14 @@ footer { padding: 2.2rem 0; background: white; border-top: 1px solid var(--line)
   .has-sub.is-open .chev { transform: rotate(180deg); }
   .sub a, .nav-links .sub a { white-space: normal; padding: .6rem .7rem; }
 }
+
+/* ---- Photos des pages ---- */
+.page-hero.has-photo .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; align-items: center; }
+.hero-photo { position: relative; margin: 0; }
+.hero-photo::before { content: ""; position: absolute; inset: -12px 12px 12px -12px; border: 1px solid #3d8bff55; border-radius: 26px; }
+.hero-photo img { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 5 / 4; object-fit: cover; border-radius: 22px; box-shadow: 0 30px 70px #050c1780; background: #19273b; }
+@media (max-width: 900px) {
+  .page-hero.has-photo .wrap { grid-template-columns: 1fr; gap: 2.4rem; }
+  .hero-photo { max-width: 560px; }
+  .hero-photo img { aspect-ratio: 16 / 10; }
+}
