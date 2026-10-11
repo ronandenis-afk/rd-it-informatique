@@ -1,0 +1,36 @@
+/* RD IT Informatique — finitions pro : typographie, en-tête fixe, bouton d'appel mobile */
+:root { --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; --font-title: "Poppins", var(--font-body); }
+html { scroll-padding-top: 96px; }
+body { font-family: var(--font-body); }
+:root { font-family: var(--font-body); }
+h1, h2, h3, .section-title, .brand, .button, .eyebrow, .footer-brand, .nav-parent, .reviews-score strong, .step-number, .web-core strong { font-family: var(--font-title); }
+h1, h2, .section-title { letter-spacing: -.025em; }
+h3 { letter-spacing: -.01em; }
+.hero h1 { font-size: clamp(2.9rem, 5.4vw, 4.7rem); line-height: 1.04; letter-spacing: -.035em; }
+.page-hero h1 { font-size: clamp(2.1rem, 4.4vw, 3.4rem); line-height: 1.08; letter-spacing: -.03em; }
+.section-title { line-height: 1.12; }
+.button { font-weight: 600; letter-spacing: .005em; }
+.eyebrow { font-weight: 600; }
+.nav-links { font-weight: 500; }
+
+/* En-tête fixe, effet verre dépoli au défilement */
+.topbar { position: fixed; transition: background-color .3s ease, box-shadow .3s ease, backdrop-filter .3s ease; }
+.nav { transition: height .3s ease, border-color .3s ease; }
+.topbar.is-scrolled { background: rgba(16, 26, 43, .8); -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); box-shadow: 0 10px 30px rgba(5, 12, 23, .28); }
+.topbar.is-scrolled .nav { height: 70px; border-bottom-color: transparent; }
+.brand-mark { transition: transform .3s ease; }
+.topbar.is-scrolled .brand-mark { transform: scale(.92); }
+@media (max-width: 980px) {
+  .topbar.is-scrolled .nav { height: 64px; }
+  .topbar.is-scrolled .nav-links { top: 64px; }
+}
+
+/* Bouton « Appeler » toujours visible sur mobile */
+.call-fab { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: none; align-items: center; gap: .55rem; padding: .85rem 1.15rem; border-radius: 999px; background: var(--lime, #00e5ff); color: var(--ink, #101a2b); font: 600 .95rem/1 var(--font-title); box-shadow: 0 12px 30px rgba(0, 120, 160, .35), 0 0 0 4px rgba(255, 255, 255, .55); }
+.call-fab svg { width: 20px; height: 20px; }
+.call-fab:active { transform: scale(.97); }
+@media (max-width: 980px) {
+  .call-fab { display: inline-flex; }
+  footer { padding-bottom: 5.5rem !important; }
+}
+@media (prefers-reduced-motion: reduce) { .topbar, .nav, .brand-mark { transition: none; } }
