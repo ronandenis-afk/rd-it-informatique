@@ -1,0 +1,40 @@
+# RD IT Informatique
+
+> Service informatique de proximité à Goven (Ille-et-Vilaine, 35580), tenu par Ronan Denis : dépannage à domicile et à distance, réparation d'ordinateurs et de smartphones, récupération de données, passage à Windows 11, sauvegardes, vidéosurveillance et vente de matériel neuf et d'occasion, pour particuliers et professionnels.
+
+- Téléphone : 06 95 95 40 56
+- E-mail : ronan.denis@rd-it-informatique.com
+- Adresse : 1 La Conuais, 35580 Goven, France
+- Zone d'intervention : Goven et communes voisines (Guichen, Baulon, Lassy, Mordelles…), assistance à distance partout
+- Note Google : 5,0/5
+
+## Pages principales
+
+- [Accueil](https://rd-it-informatique.com/): présentation, avis clients, réalisations et formulaire de contact
+- [Présentation](https://rd-it-informatique.com/societe.html): qui est RD IT Informatique
+
+## Particuliers
+
+- [Dépannage à domicile et à distance](https://rd-it-informatique.com/depannage.html): Ordinateur lent, qui ne démarre plus, virus, problème internet ou imprimante : dépannage informatique à domicile autour de Goven ou à distance.
+- [Réparation PC et smartphone](https://rd-it-informatique.com/reparation.html): Réparation d'ordinateurs portables, PC fixes et smartphones à Goven : écran, batterie, disque, clavier, connecteur de charge. Diagnostic et devis avant réparation.
+- [Récupération de données](https://rd-it-informatique.com/recuperation-donnees.html): Fichiers supprimés, disque dur qui ne répond plus, clé USB ou carte SD illisible : évaluation et récupération de données sur tous supports à Goven.
+- [Windows 11](https://rd-it-informatique.com/windows-11.html): Passage à Windows 11 : vérification de compatibilité, sauvegarde, mise à niveau ou installation propre, transfert de vos fichiers et réglages.
+- [Aide et prise en main](https://rd-it-informatique.com/aide-utilisation.html): Aide à la prise en main d'un ordinateur, d'un smartphone ou d'une tablette : messagerie, photos, démarches en ligne, sécurité. À domicile autour de Goven.
+
+## Professionnels
+
+- [Maintenance et assistance](https://rd-it-informatique.com/maintenance-pro.html): Maintenance informatique pour TPE, artisans, commerçants et professions libérales autour de Goven : dépannage, assistance à distance, mises à jour et conseil.
+- [Sauvegardes](https://rd-it-informatique.com/sauvegardes.html): Mise en place de sauvegardes automatiques pour professionnels et particuliers : disque externe, NAS, cloud. Protégez vos fichiers contre les pannes et les virus.
+- [Vidéosurveillance](https://rd-it-informatique.com/videosurveillance.html): Installation et configuration de caméras de vidéosurveillance pour particuliers et professionnels autour de Goven : visualisation sur smartphone, enregistrement, conseils.
+- [Installation de logiciels](https://rd-it-informatique.com/logiciels.html): Installation et configuration de logiciels : bureautique, messagerie, antivirus, logiciels métier. Pour particuliers et professionnels autour de Goven.
+
+## Vente
+
+- [Ordinateurs neufs et d'occasion](https://rd-it-informatique.com/vente-ordinateurs.html): Vente d'ordinateurs portables et fixes, neufs et d'occasion, préparés et prêts à l'emploi. Conseils pour choisir un matériel adapté à vos besoins et votre budget.
+- [Périphériques](https://rd-it-informatique.com/peripheriques.html): Écrans, imprimantes, claviers, souris, disques externes, clés USB, matériel réseau : vente et installation de périphériques à Goven.
+- [Conseil avant achat](https://rd-it-informatique.com/conseil-achat.html): Besoin d'aide pour choisir un ordinateur, un smartphone ou une imprimante ? Conseil personnalisé selon votre usage et votre budget.
+
+## Informations
+
+- [Conditions générales de vente](https://rd-it-informatique.com/cgv.html)
+- [Mentions légales](https://rd-it-informatique.com/mentions-legales.html)
