@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2b">
+  <meta name="description" content="RD IT Informatique accompagne les particuliers et les professionnels pour leur informatique, leur réseau et leurs solutions de stockage.">
+  <title>RD IT Informatique — Votre informatique, en confiance</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101a2b;
+      --ink-soft: #516071;
+      --navy: #101a2b;
+      --navy-light: #19273b;
+      --paper: #f7f8f5;
+      --white: #fff;
+      --mint: #a8f0d0;
+      --lime: #d5fa83;
+      --line: #e3e8e5;
+      --radius: 1.25rem;
+      --shadow: 0 20px 60px rgba(16, 26, 43, .09);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .wrap { width: min(1140px, calc(100% - 48px)); margin-inline: auto; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: .55rem; color: #4f7f68;
+      font-size: .76rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 21px; height: 2px; background: currentColor; }
+    .section-title { max-width: 680px; margin: .85rem 0 1rem; font-size: clamp(2rem, 4vw, 3.35rem); line-height: 1.08; letter-spacing: -.045em; }
+    .section-intro { max-width: 590px; margin: 0; color: var(--ink-soft); font-size: 1.05rem; line-height: 1.75; }
+    .button {
+      min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: .65rem;
+      padding: .85rem 1.15rem; border: 1px solid transparent; border-radius: 999px;
+      background: var(--lime); color: var(--ink); font-size: .92rem; font-weight: 750;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .button:hover { transform: translateY(-2px); background: #e0ff9d; box-shadow: 0 10px 25px #d5fa8340; }
+    .button svg { width: 17px; height: 17px; }
+
+    .topbar { position: absolute; z-index: 5; inset: 0 0 auto; color: white; }
+    .nav { height: 88px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ffffff20; }
+    .brand { display: inline-flex; align-items: center; gap: .7rem; font-size: 1.03rem; font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 12px; background: var(--lime); color: var(--ink); }
+    .brand-mark svg { width: 25px; height: 25px; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; font-size: .89rem; color: #ffffffbd; }
+    .nav-links a:not(.button):hover { color: white; }
+    .nav-links .button { color: var(--ink); }
+    .menu-toggle { display: none; width: 44px; height: 44px; border: 1px solid #ffffff45; border-radius: 50%; background: transparent; color: white; }
+
+    .hero { position: relative; overflow: hidden; min-height: 680px; display: flex; align-items: center; padding: 140px 0 88px; color: white; background: var(--navy); }
+    .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 74% 52%, #284c4a 0, #1a3039 23%, transparent 52%), linear-gradient(115deg, #101a2b 25%, #142337 100%); }
+    .hero::after { content: ""; position: absolute; width: 600px; height: 600px; right: -170px; top: 105px; border: 1px solid #ffffff12; border-radius: 50%; box-shadow: 0 0 0 55px #ffffff08, 0 0 0 110px #ffffff05; }
+    .hero-content { position: relative; z-index: 1; width: min(660px, 60%); }
+    .hero .eyebrow { color: var(--mint); }
+    .hero h1 { margin: 1.1rem 0 1.25rem; font-size: clamp(3.25rem, 6.3vw, 5.5rem); line-height: .99; letter-spacing: -.065em; }
+    .hero h1 span { color: var(--mint); }
+    .hero-copy { max-width: 540px; margin: 0; color: #d1d9e2; font-size: 1.1rem; line-height: 1.75; }
+    .hero-actions { display: flex; align-items: center; gap: 1.1rem; margin-top: 2rem; }
+    .text-link { display: inline-flex; align-items: center; gap: .5rem; color: #f2f6f8; font-size: .92rem; font-weight: 650; }
+    .text-link svg { width: 17px; }
+    .hero-note { display: flex; align-items: center; gap: .65rem; margin-top: 3.4rem; color: #c6d1da; font-size: .84rem; }
+    .note-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 5px #a8f0d01c; }
+    .hero-art { position: absolute; z-index: 1; right: max(calc((100% - 1140px) / 2), 24px); top: 50%; width: min(37vw, 410px); aspect-ratio: 1; transform: translateY(-43%); }
+    .orbit { position: absolute; inset: 0; border: 1px solid #ffffff25; border-radius: 50%; }
+    .orbit:nth-child(2) { inset: 11%; border-color: #ffffff30; }
+    .orbit:nth-child(3) { inset: 22%; border-color: #ffffff24; }
+    .server-card { position: absolute; inset: 25%; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 25px; border: 1px solid #ffffff25; border-radius: 28px; background: linear-gradient(145deg, #ffffff1c, #ffffff09); box-shadow: 0 25px 80px #050c1770; backdrop-filter: blur(12px); transform: rotate(-8deg); }
+    .server-top { display: flex; justify-content: space-between; align-items: center; color: #d3e0e7; font-size: .67rem; letter-spacing: .13em; }
+    .server-light { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); }
+    .server-slot { height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 11px; border: 1px solid #ffffff16; border-radius: 10px; background: #07111c45; }
+    .server-slot::before { content: ""; width: 18px; height: 3px; border-radius: 4px; background: var(--mint); }
+    .server-slot span { width: 5px; height: 5px; margin-left: auto; border-radius: 50%; background: #ffffff50; }
+    .floating-chip { position: absolute; display: inline-flex; align-items: center; gap: .55rem; padding: .7rem .85rem; border: 1px solid #ffffff30; border-radius: 12px; background: #172839df; color: white; font-size: .75rem; font-weight: 650; box-shadow: 0 14px 34px #050c1740; }
+    .floating-chip svg { width: 16px; height: 16px; color: var(--mint); }
+    .chip-one { top: 18%; right: -5%; }
+    .chip-two { left: -3%; bottom: 19%; }
+
+    .trust-strip { position: relative; z-index: 2; margin-top: -1px; padding: 1.5rem 0; background: white; }
+    .trust-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .trust-label { color: #657284; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .trust-item { display: flex; align-items: center; gap: .65rem; color: #263447; font-size: .88rem; font-weight: 700; }
+    .trust-item svg { width: 20px; height: 20px; color: #588d73; }
+
+    .services { padding: 108px 0 112px; }
+    .services-head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-bottom: 2.6rem; }
+    .services-head .section-intro { max-width: 390px; padding-bottom: .35rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .service-card { min-height: 250px; padding: 1.55rem; border: 1px solid var(--line); border-radius: var(--radius); background: white; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .service-card:hover { transform: translateY(-5px); border-color: #c7ded2; box-shadow: var(--shadow); }
+    .service-icon { width: 47px; height: 47px; display: grid; place-items: center; margin-bottom: 2.1rem; border-radius: 14px; background: #e9f6ef; color: #397655; }
+    .service-icon svg { width: 23px; height: 23px; }
+    .service-card h3 { margin: 0 0 .6rem; font-size: 1.08rem; letter-spacing: -.025em; }
+    .service-card p { margin: 0; color: var(--ink-soft); font-size: .91rem; line-height: 1.65; }
+
+    .approach { padding: 95px 0; color: white; background: var(--navy); }
+    .approach-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 5rem; }
+    .approach .eyebrow { color: var(--mint); }
+    .approach .section-intro { color: #becad5; }
+    .approach-steps { display: grid; gap: .75rem; }
+    .step { display: grid; grid-template-columns: 48px 1fr; gap: 1rem; align-items: start; padding: 1.2rem 1.25rem; border: 1px solid #ffffff18; border-radius: 15px; background: #ffffff08; }
+    .step-number { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: #a8f0d018; color: var(--mint); font-size: .87rem; font-weight: 800; }
+    .step h3 { margin: .15rem 0 .35rem; font-size: 1rem; }
+    .step p { margin: 0; color: #b9c6d2; font-size: .89rem; line-height: 1.6; }
+
+    .nas-section { padding: 105px 0; }
+    .nas-panel { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr .8fr; gap: 3rem; align-items: center; padding: clamp(2rem, 5vw, 4rem); border-radius: 28px; background: #e9f2eb; }
+    .nas-panel::after { content: ""; position: absolute; width: 380px; height: 380px; right: -80px; bottom: -180px; border: 1px solid #9db5a633; border-radius: 50%; box-shadow: 0 0 0 38px #9db5a61a, 0 0 0 76px #9db5a612; }
+    .nas-copy { position: relative; z-index: 1; }
+    .nas-copy .section-title { font-size: clamp(2rem, 3.7vw, 3rem); }
+    .nas-copy p { max-width: 520px; color: var(--ink-soft); line-height: 1.75; }
+    .nas-list { display: grid; gap: .85rem; margin: 1.55rem 0 0; padding: 0; list-style: none; }
+    .nas-list li { display: flex; align-items: center; gap: .7rem; font-size: .92rem; font-weight: 650; }
+    .nas-list svg { width: 18px; color: #43835f; flex: none; }
+    .nas-visual { position: relative; z-index: 1; width: min(100%, 330px); justify-self: center; padding: 1.1rem; border: 1px solid #ffffffc9; border-radius: 22px; background: #ffffffb8; box-shadow: 0 24px 50px #18362614; transform: rotate(3deg); }
+    .nas-visual-head { display: flex; justify-content: space-between; align-items: center; padding: .4rem .25rem 1rem; color: #5b6c62; font-size: .72rem; font-weight: 700; }
+    .nas-visual-head span:last-child { color: #42835f; }
+    .folder-row { display: flex; align-items: center; gap: .75rem; margin-top: .55rem; padding: .8rem; border: 1px solid #e5ece7; border-radius: 12px; background: white; }
+    .folder { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: #edf5ef; color: #548268; }
+    .folder svg { width: 19px; }
+    .folder-label { flex: 1; }
+    .folder-label strong { display: block; font-size: .8rem; }
+    .folder-label small { color: #77867c; font-size: .69rem; }
+    .folder-check { width: 17px; color: #4a9368; }
+
+    .contact { padding: 88px 0; background: white; }
+    .contact-panel { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: clamp(2rem, 4vw, 3.5rem); border-radius: 24px; background: var(--navy); color: white; }
+    .contact-panel .eyebrow { color: var(--mint); }
+    .contact-panel h2 { max-width: 570px; margin: .8rem 0 .65rem; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.045em; }
+    .contact-panel p { margin: 0; color: #c0cbd5; line-height: 1.7; }
+    .contact-details { display: grid; gap: .75rem; min-width: 255px; }
+    .contact-detail { display: flex; align-items: center; gap: .8rem; padding: .9rem 1rem; border: 1px solid #ffffff20; border-radius: 13px; color: #e4ebf0; font-size: .87rem; }
+    .contact-detail svg { width: 19px; color: var(--mint); }
+    .contact-detail span { color: #c0cbd5; }
+    a.contact-detail:hover { border-color: #a8f0d080; background: #ffffff0b; }
+    footer { padding: 1.6rem 0; background: white; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; color: #667383; font-size: .79rem; }
+    .footer-brand { color: var(--ink); font-weight: 800; }
+    .footer-note { display: flex; gap: 1.3rem; }
+    .footer-note a:hover { color: #397655; }
+    :focus-visible { outline: 3px solid #74c996; outline-offset: 3px; }
+
+    @media (max-width: 900px) {
+      .hero { min-height: 650px; }
+      .hero-content { width: min(620px, 73%); }
+      .hero-art { right: 20px; width: 35vw; opacity: .78; }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .approach-grid { gap: 2.5rem; }
+      .trust-inner { flex-wrap: wrap; justify-content: center; }
+      .trust-label { flex-basis: 100%; text-align: center; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 36px, 480px); }
+      .nav { height: 72px; }
+      .menu-toggle { display: grid; place-items: center; cursor: pointer; }
+      .menu-toggle svg { width: 20px; }
+      .nav-links { position: absolute; top: 72px; left: 18px; right: 18px; display: none; flex-direction: column; align-items: stretch; gap: .3rem; padding: 1rem; border: 1px solid #ffffff20; border-radius: 16px; background: #142337; box-shadow: 0 20px 40px #0003; }
+      .nav-links.is-open { display: flex; }
+      .nav-links a:not(.button) { padding: .8rem .5rem; }
+      .nav-links .button { margin-top: .3rem; }
+      .hero { min-height: 710px; align-items: flex-start; padding: 125px 0 60px; }
+      .hero-content { width: 100%; }
+      .hero h1 { max-width: 470px; font-size: clamp(3.2rem, 14vw, 4.4rem); }
+      .hero-copy { max-width: 440px; font-size: 1rem; }
+      .hero-art { top: auto; right: 22px; bottom: -120px; width: 235px; opacity: .42; transform: none; }
+      .hero-art::before { content: ""; position: absolute; inset: -25px; background: linear-gradient(90deg, var(--navy), transparent 70%); z-index: 2; }
+      .hero-note { margin-top: 2rem; }
+      .trust-strip { padding: 1.3rem 0; }
+      .trust-inner { gap: .9rem 1.4rem; }
+      .trust-item { font-size: .78rem; }
+      .services { padding: 75px 0; }
+      .services-head { display: block; margin-bottom: 1.8rem; }
+      .services-head .section-intro { margin-top: .8rem; }
+      .service-grid { grid-template-columns: 1fr; gap: .75rem; }
+      .service-card { min-height: auto; padding: 1.25rem; }
+      .service-icon { margin-bottom: 1.1rem; }
+      .approach { padding: 75px 0; }
+      .approach-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .nas-section { padding: 70px 0; }
+      .nas-panel { grid-template-columns: 1fr; gap: 2rem; padding: 1.6rem; }
+      .nas-visual { width: min(100%, 300px); }
+      .contact { padding: 55px 0; }
+      .contact-panel { align-items: stretch; flex-direction: column; gap: 1.7rem; padding: 1.6rem; }
+      .contact-details { min-width: 0; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .footer-note { flex-wrap: wrap; gap: .7rem 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav wrap" aria-label="Navigation principale">
+      <a class="brand" href="#accueil" aria-label="RD IT Informatique, accueil">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 22V10h8a5 5 0 0 1 0 10h-3l7 5M19 10h7M22.5 10v15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>RD IT <span style="font-weight:500;color:#c7d2dd">Informatique</span></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="#services">Nos services</a>
+        <a href="#methode">Notre approche</a>
+        <a href="#stockage">NAS &amp; stockage</a>
+        <a class="button" href="#contact">Parlons de votre projet
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="wrap">
+        <div class="hero-content">
+          <span class="eyebrow">RD IT Informatique</span>
+          <h1>La technologie,<br><span>en toute confiance.</span></h1>
+          <p class="hero-copy">Un accompagnement informatique clair et humain pour travailler, partager et sauvegarder vos données en toute sérénité.</p>
+          <div class="hero-actions">
+            <a class="button" href="#contact">Parlons de vos besoins
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+            <a class="text-link" href="#services">Découvrir les services <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a>
+          </div>
+          <div class="hero-note"><span class="note-dot"></span> Des solutions adaptées à votre quotidien</div>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit"></div><div class="orbit"></div><div class="orbit"></div>
+        <div class="server-card">
+          <div class="server-top"><span>RD IT / STORAGE</span><span class="server-light"></span></div>
+          <div class="server-slot"><span></span></div>
+          <div class="server-slot"><span></span></div>
+          <div class="server-slot"><span></span></div>
+        </div>
+        <div class="floating-chip chip-one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Données protégées</div>
+        <div class="floating-chip chip-two"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h8M8 16h3"/></svg>Partage simplifié</div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Domaines d'accompagnement">
+      <div class="trust-inner wrap">
+        <span class="trust-label">À vos côtés pour</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>Votre informatique</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9a12 12 0 0 1 16 0M7 12a7.5 7.5 0 0 1 10 0m-7 3a3 3 0 0 1 4 0m-2 4h.01"/></svg>Votre réseau</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6m-16 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Vos données</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="5"/></svg>Votre tranquillité</span>
+      </div>
+    </section>
+
+    <section class="services" id="services">
+      <div class="wrap">
+        <div class="services-head">
+          <div>
+            <span class="eyebrow">Nos services</span>
+            <h2 class="section-title">L'informatique qui vous simplifie la vie.</h2>
+          </div>
+          <p class="section-intro">Des réponses concrètes, expliquées simplement, pour que vos outils restent au service de vos projets.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
+            <h3>Assistance informatique</h3>
+            <p>Un souci avec votre ordinateur ou vos logiciels ? Nous vous aidons à retrouver un environnement de travail fiable.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9a12 12 0 0 1 16 0M7 12a7.5 7.5 0 0 1 10 0m-7 3a3 3 0 0 1 4 0m-2 4h.01"/></svg></div>
+            <h3>Réseau &amp; connectivité</h3>
+            <p>Un réseau bien configuré pour connecter vos appareils et accéder à vos ressources plus facilement.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6m-16 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
+            <h3>NAS &amp; stockage</h3>
+            <p>Centralisez vos fichiers, organisez les dossiers partagés et gérez les accès de chaque utilisateur.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h3>Sauvegarde &amp; sécurité</h3>
+            <p>Adoptez les bons réflexes pour mieux protéger vos fichiers et préparer la récupération de vos données.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="approach" id="methode">
+      <div class="wrap approach-grid">
+        <div>
+          <span class="eyebrow">Notre approche</span>
+          <h2 class="section-title">Du concret, sans jargon.</h2>
+          <p class="section-intro">Chaque situation est différente. Nous prenons le temps de comprendre votre usage avant de vous proposer une solution adaptée.</p>
+        </div>
+        <div class="approach-steps">
+          <article class="step"><span class="step-number">01</span><div><h3>On fait le point</h3><p>Vos besoins, vos équipements et vos priorités : nous commençons par vous écouter.</p></div></article>
+          <article class="step"><span class="step-number">02</span><div><h3>On vous explique</h3><p>Des recommandations compréhensibles et des choix présentés en toute transparence.</p></div></article>
+          <article class="step"><span class="step-number">03</span><div><h3>On met en place</h3><p>Une configuration pensée pour durer, avec des conseils pour bien prendre en main vos outils.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="nas-section" id="stockage">
+      <div class="wrap">
+        <div class="nas-panel">
+          <div class="nas-copy">
+            <span class="eyebrow">Partage &amp; stockage</span>
+            <h2 class="section-title">Vos fichiers au bon endroit. Et accessibles aux bonnes personnes.</h2>
+            <p>Un NAS bien organisé facilite le travail au quotidien. Comptes individuels, dossiers partagés, droits d'accès et bonnes pratiques de sauvegarde : chaque élément compte.</p>
+            <ul class="nas-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des dossiers simples à retrouver</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des accès adaptés à chaque utilisateur</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des sauvegardes à prévoir et à vérifier</li>
+            </ul>
+          </div>
+          <div class="nas-visual" aria-label="Illustration de dossiers partagés">
+            <div class="nas-visual-head"><span>ESPACE PARTAGÉ</span><span>● Connecté</span></div>
+            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Documents</strong><small>Équipe · Lecture / écriture</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
+            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Projets</strong><small>Collaborateurs · Accès limité</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
+            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Archives</strong><small>Accès administrateur</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="contact-panel">
+          <div>
+            <span class="eyebrow">Un projet ? Une question ?</span>
+            <h2>Parlons de votre informatique.</h2>
+            <p>Présentez-nous votre besoin. Nous vous répondrons avec une approche simple et adaptée.</p>
+          </div>
+          <div class="contact-details" aria-label="Coordonnées de RD IT Informatique">
+            <a class="contact-detail" href="tel:+33695954056"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg><span>06 95 95 40 56</span></a>
+            <a class="contact-detail" href="mailto:ronan.denis@rd-it-informatique.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>ronan.denis@rd-it-informatique.com</span></a>
+            <div class="contact-detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>1 La Conuais, 35580 Goven</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="#accueil">RD IT Informatique</a>
+      <span>© <span id="year">2026</span> RD IT Informatique. Tous droits réservés.</span>
+      <div class="footer-note"><a href="#contact">Contact</a><a href="#accueil">Retour en haut ↑</a></div>
+    </div>
+  </footer>
+  <script>
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+      menuToggle.setAttribute("aria-expanded", String(!isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Ouvrir le menu" : "Fermer le menu");
+      navLinks.classList.toggle("is-open", !isOpen);
+    });
+
+    navLinks.addEventListener("click", (event) => {
+      if (event.target.closest("a")) {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Ouvrir le menu");
+        navLinks.classList.remove("is-open");
+      }
+    });
+
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
