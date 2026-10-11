@@ -284,6 +284,36 @@
       html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
     }
+    /* ---- Menus déroulants ---- */
+    .nav-links { gap: 1.45rem; }
+    .nav-item { position: relative; }
+    .nav-parent { display: inline-flex; align-items: center; gap: .3rem; padding: .6rem 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+    .nav-parent:hover, .has-sub.is-open .nav-parent { color: white; }
+    .nav-parent .chev { width: 14px; height: 14px; transition: transform .2s ease; }
+    .sub { position: absolute; z-index: 20; top: 100%; left: -1rem; min-width: 260px; display: none; gap: .1rem; padding: .5rem; border: 1px solid #ffffff20; border-radius: 14px; background: #142337; box-shadow: 0 20px 40px #0005; }
+    .sub a { padding: .65rem .8rem; border-radius: 9px; color: #d6dee8; font-size: .86rem; white-space: nowrap; }
+    .sub a:hover, .sub a[aria-current="page"] { background: #ffffff12; color: white; }
+    .sub a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--lime); }
+    @media (min-width: 981px) {
+      .has-sub:hover .sub, .has-sub:focus-within .sub, .has-sub.is-open .sub { display: grid; }
+      .has-sub:hover .chev, .has-sub.is-open .chev { transform: rotate(180deg); }
+    }
+    @media (max-width: 980px) {
+      .nav { height: 72px; }
+      .menu-toggle { display: grid; place-items: center; cursor: pointer; }
+      .menu-toggle svg { width: 20px; }
+      .nav-links { position: absolute; top: 72px; left: 18px; right: 18px; max-height: calc(100vh - 90px); overflow-y: auto; display: none; flex-direction: column; align-items: stretch; gap: .2rem; padding: 1rem; border: 1px solid #ffffff20; border-radius: 16px; background: #142337; box-shadow: 0 20px 40px #0003; }
+      .nav-links.is-open { display: flex; }
+      .nav-links > a:not(.button) { padding: .8rem .5rem; }
+      .nav-links .button { margin-top: .4rem; }
+      .nav-parent { width: 100%; justify-content: space-between; padding: .8rem .5rem; }
+      .sub { position: static; min-width: 0; padding: 0 0 .4rem .6rem; border: 0; background: none; box-shadow: none; }
+      .has-sub.is-open .sub { display: grid; }
+      .has-sub.is-open .chev { transform: rotate(180deg); }
+      .sub a, .nav-links .sub a { white-space: normal; padding: .6rem .7rem; }
+    }
+    .card-more { display: inline-flex; align-items: center; gap: .35rem; margin-top: 1rem; color: #1f6feb; font-size: .86rem; font-weight: 750; }
+    .card-more:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -299,13 +329,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
       <div class="nav-links" id="nav-links">
-        <a href="#services">Nos services</a>
-        <a href="#prestations">Prestations</a>
-        <a href="#methode">Notre approche</a>
-        <a href="#depannage">Dépannage</a>
+        <a href="#accueil">Accueil</a>
+        <div class="nav-item has-sub"><button class="nav-parent" type="button" aria-expanded="false">Société<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="sub"><a href="societe.html">Présentation</a><a href="cgv.html">Conditions générales de vente</a><a href="mentions-legales.html">Mentions légales</a></div></div>
+        <div class="nav-item has-sub"><button class="nav-parent" type="button" aria-expanded="false">Particuliers<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="sub"><a href="depannage.html">Dépannage à domicile et à distance</a><a href="reparation.html">Réparation PC et smartphone</a><a href="recuperation-donnees.html">Récupération de données</a><a href="windows-11.html">Windows 11</a><a href="aide-utilisation.html">Aide et prise en main</a></div></div>
+        <div class="nav-item has-sub"><button class="nav-parent" type="button" aria-expanded="false">Professionnels<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="sub"><a href="maintenance-pro.html">Maintenance et assistance</a><a href="sauvegardes.html">Sauvegardes</a><a href="videosurveillance.html">Vidéosurveillance</a><a href="logiciels.html">Installation de logiciels</a></div></div>
+        <div class="nav-item has-sub"><button class="nav-parent" type="button" aria-expanded="false">Vente<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="sub"><a href="vente-ordinateurs.html">Ordinateurs neufs et d'occasion</a><a href="peripheriques.html">Périphériques</a><a href="conseil-achat.html">Conseil avant achat</a></div></div>
         <a href="#realisations">Réalisations</a>
         <a href="#avis">Avis</a>
-        <a class="button" href="#contact">Parlons de votre projet
+        <a class="button" href="#contact">Contact
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
       </div>
@@ -366,41 +397,49 @@
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/><path d="M5 4 3 6m16-2 2 2"/></svg></div>
             <h3>Dépannage informatique</h3>
             <p>Diagnostic et aide pour les problèmes courants de votre ordinateur et de vos équipements informatiques.</p>
+            <a class="card-more" href="depannage.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4M8 8h8m-8 4h4"/></svg></div>
             <h3>Ordinateur lent</h3>
             <p>Recherche des causes de ralentissement et conseils pour retrouver un ordinateur plus agréable à utiliser.</p>
+            <a class="card-more" href="depannage.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 8 2-2 2 2m2-2h2m-8 7 2-2 2 2m2-2h2"/></svg></div>
             <h3>Mise à niveau Windows</h3>
             <p>Aide pour les mises à jour et la mise à niveau de Windows, après vérification de la compatibilité de votre PC.</p>
+            <a class="card-more" href="windows-11.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2m-5-12h8"/></svg></div>
             <h3>Téléphonie &amp; tablette</h3>
             <p>Conseils et assistance pour vos téléphones et tablettes : prise en main, réglages et problèmes d’usage courants.</p>
+            <a class="card-more" href="reparation.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v4m0 10v4M3 12h4m10 0h4"/><circle cx="12" cy="12" r="5"/><path d="m8.5 8.5 7 7m0-7-7 7"/></svg></div>
             <h3>Récupération de données</h3>
             <p>Évaluation de la situation et conseils pour tenter de retrouver vos fichiers. Les possibilités dépendent de l’état du support.</p>
+            <a class="card-more" href="recuperation-donnees.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11 12 4l9 7M5 10v10h14V10M9 20v-6h6v6"/></svg></div>
             <h3>Intervention à domicile</h3>
             <p>Une aide directement chez vous à Goven et dans les environs. Intervention rapide selon les disponibilités.</p>
+            <a class="card-more" href="depannage.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16l-1.5 13h-13L4 7Z"/><path d="M9 7a3 3 0 0 1 6 0M8 12h8m-8 4h5"/></svg></div>
             <h3>Vente de matériel</h3>
             <p>Du matériel informatique neuf ou d’occasion, avec des conseils pour choisir un équipement adapté à vos besoins.</p>
+            <a class="card-more" href="vente-ordinateurs.html">En savoir plus →</a>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
             <h3>Service de proximité</h3>
             <p>Un interlocuteur local, à l’écoute, pour vous conseiller et vous accompagner dans l’utilisation de vos appareils.</p>
+            <a class="card-more" href="societe.html">En savoir plus →</a>
           </article>
         </div>
       </div>
@@ -610,7 +649,7 @@
     <div class="wrap footer-inner">
       <a class="footer-brand" href="#accueil">RD IT Informatique</a>
       <span>© <span id="year">2026</span> RD IT Informatique. Tous droits réservés.</span>
-      <div class="footer-note"><a href="#contact">Contact</a><a href="#accueil">Retour en haut ↑</a></div>
+      <div class="footer-note"><a href="societe.html">Présentation</a><a href="cgv.html">CGV</a><a href="mentions-legales.html">Mentions légales</a><a href="#contact">Contact</a><a href="#accueil">Retour en haut ↑</a></div>
     </div>
   </footer>
   <script>
@@ -672,6 +711,20 @@
     });
 
     document.querySelector("#year").textContent = new Date().getFullYear();
+
+    // Menus déroulants
+    document.querySelectorAll(".nav-parent").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const item = btn.parentElement;
+        const open = !item.classList.contains("is-open");
+        document.querySelectorAll(".has-sub.is-open").forEach((o) => { if (o !== item) { o.classList.remove("is-open"); o.firstElementChild.setAttribute("aria-expanded", "false"); } });
+        item.classList.toggle("is-open", open);
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".has-sub")) document.querySelectorAll(".has-sub.is-open").forEach((o) => { o.classList.remove("is-open"); o.firstElementChild.setAttribute("aria-expanded", "false"); });
+    });
 
     // Araignée des prestations
     (() => {
