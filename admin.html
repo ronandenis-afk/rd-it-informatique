@@ -138,6 +138,7 @@
       <nav class="tabs" id="tabs" role="tablist" hidden>
         <button class="tab" role="tab" data-tab="activite" aria-selected="true">Activité</button>
         <button class="tab" role="tab" data-tab="site" aria-selected="false">Site web</button>
+        <button class="tab" role="tab" data-tab="stats" aria-selected="false">Statistiques</button>
       </nav>
       <button class="logout" id="logout" hidden>Se déconnecter</button>
     </div>
@@ -194,6 +195,32 @@
           <thead><tr><th>Date</th><th>Client</th><th class="hide-sm">Appareil / demande</th><th>Statut</th><th class="num">Prix</th></tr></thead>
           <tbody id="jobs"></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- STATISTIQUES -->
+    <section id="tab-stats" hidden>
+      <h1>Statistiques des visites</h1>
+      <p class="lead">Nombre de visiteurs, pages vues, appareils (ordinateur, téléphone, tablette) et provenance (Google, Facebook, lien direct…). Mesure sans cookies avec GoatCounter.</p>
+      <div class="card" id="stats-setup">
+        <h2>Brancher les statistiques (une seule fois)</h2>
+        <ol class="lead" style="margin-bottom:1rem">
+          <li>Crée un compte gratuit sur <a href="https://www.goatcounter.com/signup" target="_blank" rel="noopener">goatcounter.com/signup</a> avec le code <strong>rditinformatique</strong> (le site compte déjà les visites sous ce code).</li>
+          <li>Dans GoatCounter : <em>Settings</em> → <em>Sites that can embed GoatCounter</em> : ajoute <strong>rd-it-informatique.com</strong>, puis <em>Save</em>.</li>
+          <li>Toujours dans <em>Settings</em> → <em>Dashboard viewable by</em> : choisis <strong>logged in users or with secret token</strong>, enregistre, puis copie le lien affiché (il contient <code>access-token=</code>).</li>
+          <li>Colle ce lien ci-dessous et clique sur « Afficher ».</li>
+        </ol>
+        <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <input id="stats-url" type="url" placeholder="https://rditinformatique.goatcounter.com?access-token=…" style="flex:1;min-width:240px;padding:.6rem .8rem;border:1px solid var(--line);border-radius:10px;font:inherit">
+          <button class="btn dark" id="stats-save" type="button">Afficher</button>
+        </div>
+      </div>
+      <div id="stats-view" hidden>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem">
+          <a class="btn" id="stats-open" href="#" target="_blank" rel="noopener">Ouvrir en grand</a>
+          <button class="btn ghost small" id="stats-reset" type="button">Changer le lien</button>
+        </div>
+        <iframe id="stats-frame" title="Statistiques des visites" style="width:100%;height:1700px;border:1px solid var(--line);border-radius:16px;background:white"></iframe>
       </div>
     </section>
 
@@ -388,7 +415,7 @@
         return showLogin();
       }
       $("#login").hidden = true; $("#tabs").hidden = false; $("#logout").hidden = false;
-      selectTab(location.hash === "#site" ? "site" : "activite");
+      selectTab(location.hash === "#site" ? "site" : location.hash === "#stats" ? "stats" : "activite");
       loadGestion();
       loadSite();
     }
@@ -396,8 +423,27 @@
       $$("#tabs .tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
       $("#tab-activite").hidden = name !== "activite";
       $("#tab-site").hidden = name !== "site";
-      history.replaceState(null, "", name === "site" ? "#site" : "#");
+      $("#tab-stats").hidden = name !== "stats";
+      if (name === "stats") showStats();
+      history.replaceState(null, "", name === "activite" ? "#" : "#" + name);
     }
+    // ---- Statistiques (GoatCounter) ----
+    function statsUrl() { try { return localStorage.getItem("rdit-stats-url") || ""; } catch (e) { return ""; } }
+    function showStats() {
+      const u = statsUrl();
+      $("#stats-setup").hidden = !!u; $("#stats-view").hidden = !u;
+      if (!u) return;
+      const url = new URL(u); url.searchParams.set("hideui", "1");
+      if ($("#stats-frame").src !== url.href) $("#stats-frame").src = url.href;
+      const full = new URL(u); full.searchParams.delete("hideui"); $("#stats-open").href = full.href;
+    }
+    $("#stats-save").addEventListener("click", () => {
+      const v = $("#stats-url").value.trim();
+      if (!/^https:\/\/[a-z0-9-]+\.goatcounter\.com/i.test(v)) { flash("Colle le lien GoatCounter (il commence par https:// et contient goatcounter.com).", "err"); return; }
+      try { localStorage.setItem("rdit-stats-url", v); } catch (e) {}
+      showStats();
+    });
+    $("#stats-reset").addEventListener("click", () => { try { localStorage.removeItem("rdit-stats-url"); } catch (e) {} $("#stats-frame").src = "about:blank"; showStats(); });
     $("#tabs").addEventListener("click", (e) => { const b = e.target.closest(".tab"); if (b) selectTab(b.dataset.tab); });
     $("#login-form").addEventListener("submit", (e) => {
       e.preventDefault();
