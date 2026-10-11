@@ -130,6 +130,38 @@
     .recovery-visual strong { font-size: .95rem; }
     .recovery-visual p { max-width: 230px; margin: .5rem 0 0; color: var(--ink-soft); font-size: .82rem; line-height: 1.55; }
 
+    .works { padding: 0 0 105px; }
+    .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .work-card { margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: white; cursor: zoom-in; transition: transform .2s ease, box-shadow .2s ease; }
+    .work-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .work-card img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e9f2eb; }
+    .work-card figcaption { padding: .9rem 1.1rem; font-size: .9rem; font-weight: 650; }
+    .works-empty { grid-column: 1 / -1; margin: 0; padding: 2.5rem; border: 1px dashed #c7ded2; border-radius: var(--radius); color: var(--ink-soft); text-align: center; }
+    .works-more { margin-top: 2rem; cursor: pointer; border: 0; }
+    .works-more[hidden] { display: none; }
+    .lightbox { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 1.5rem; background: #101a2bf0; cursor: zoom-out; }
+    .lightbox.is-open { display: grid; }
+    .lightbox figure { margin: 0; max-width: min(1000px, 100%); text-align: center; color: white; }
+    .lightbox img { max-width: 100%; max-height: 80vh; border-radius: 14px; }
+    .lightbox figcaption { margin-top: .8rem; font-weight: 650; }
+    @media (max-width: 900px) { .works-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .works-grid { grid-template-columns: 1fr; } .works .services-head { flex-direction: column; align-items: start; } }
+    .reviews { padding: 0 0 105px; }
+    .reviews-score { display: flex; align-items: center; gap: .9rem; padding-bottom: .35rem; }
+    .reviews-score strong { font-size: 3rem; line-height: 1; letter-spacing: -.045em; }
+    .reviews-score div { display: grid; gap: .3rem; }
+    .reviews-score span:not(.stars) { color: var(--ink-soft); font-size: .88rem; }
+    .stars { display: inline-flex; gap: 2px; color: #f4b400; }
+    .stars svg { width: 17px; height: 17px; fill: currentColor; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .review-card { display: flex; flex-direction: column; gap: 1rem; margin: 0; padding: 1.6rem; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
+    .review-card blockquote { flex: 1; margin: 0; color: var(--ink); font-size: .93rem; line-height: 1.65; }
+    .review-card figcaption { display: flex; align-items: center; gap: .7rem; color: var(--ink-soft); font-size: .8rem; }
+    .review-card figcaption strong { display: block; color: var(--ink); font-size: .9rem; }
+    .review-avatar { width: 38px; height: 38px; display: grid; place-items: center; flex: none; border-radius: 50%; background: #e9f6ef; color: #397655; font-weight: 800; }
+    .reviews-link { margin-top: 2rem; }
+    @media (max-width: 900px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .reviews-grid { grid-template-columns: 1fr; } .reviews .services-head { flex-direction: column; align-items: start; } }
     .contact { padding: 88px 0; background: white; }
     .contact-panel { display: grid; grid-template-columns: .85fr 1.15fr; align-items: center; gap: 2rem; padding: clamp(1.5rem, 4vw, 3.5rem); border-radius: 24px; background: var(--navy); color: white; }
     .contact-panel .eyebrow { color: var(--mint); }
@@ -137,6 +169,10 @@
     .contact-panel p { margin: 0; color: #c0cbd5; line-height: 1.7; }
     .contact-info { display: grid; gap: 1.5rem; }
     .contact-details { display: grid; gap: .75rem; }
+    .contact-person { display: flex; align-items: center; gap: .75rem; }
+    .contact-person img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #a8f0d060; }
+    .contact-person strong { display: block; color: white; font-size: .95rem; }
+    .contact-person span { color: #c0cbd5; font-size: .82rem; }
     .contact-detail { display: flex; align-items: center; gap: .8rem; padding: .9rem 1rem; border: 1px solid #ffffff20; border-radius: 13px; color: #e4ebf0; font-size: .87rem; }
     .contact-detail svg { width: 19px; color: var(--mint); }
     .contact-detail span { color: #c0cbd5; }
@@ -228,6 +264,8 @@
         <a href="#services">Nos services</a>
         <a href="#methode">Notre approche</a>
         <a href="#depannage">Dépannage</a>
+        <a href="#realisations">Réalisations</a>
+        <a href="#avis">Avis</a>
         <a class="button" href="#contact">Parlons de votre projet
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
@@ -370,6 +408,75 @@
       </div>
     </section>
 
+    <section class="works" id="realisations">
+      <div class="wrap">
+        <div class="services-head">
+          <div>
+            <span class="eyebrow">Réalisations</span>
+            <h2 class="section-title">Quelques réparations récentes.</h2>
+          </div>
+          <p class="section-intro">Ordinateurs, téléphones, imprimantes : un aperçu des interventions réalisées pour nos clients.</p>
+        </div>
+        <div class="works-grid" id="works-grid" aria-live="polite"></div>
+        <button class="button works-more" id="works-more" type="button" hidden>Voir plus de réalisations</button>
+      </div>
+    </section>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+      <figure><img id="lightbox-img" alt=""><figcaption id="lightbox-cap"></figcaption></figure>
+    </div>
+
+
+    <section class="reviews" id="avis">
+      <div class="wrap">
+        <div class="services-head">
+          <div>
+            <span class="eyebrow">Avis clients</span>
+            <h2 class="section-title">Ils nous ont fait confiance.</h2>
+          </div>
+          <div class="reviews-score">
+            <strong>5,0</strong>
+            <div><span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span><span>12 avis sur Google</span></div>
+          </div>
+        </div>
+        <div class="reviews-grid">
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Très satisfaite de ses services. J'avais un souci d'imprimante. Il a réussi à me la remettre en marche. Professionnel, patient et bienveillant. Je recommande fortement.&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">F</span><span><strong>Fanny P.</strong>Avis Google · août 2026</span></figcaption>
+          </figure>
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Bon rafraîchissement et nettoyage de mon ordinateur portable à un prix très correcte. Excellent travail de Mr Denis le tout en 24H. Je le recommande vivement.&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">J</span><span><strong>Jerome T.</strong>Avis Google · août 2026</span></figcaption>
+          </figure>
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Mr Denis a été très réactif pour dépanner mon PC avec en plus un prêt de matériel, je le recommande vivement.&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">M</span><span><strong>Michel L.</strong>Avis Google · décembre 2025</span></figcaption>
+          </figure>
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Super compétent, très pro et tarifs super compétitifs, je recommande pour les dépannages informatiques&nbsp;!&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">L</span><span><strong>Lolo</strong>Avis Google · novembre 2025</span></figcaption>
+          </figure>
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Sommes très satisfaits de ses prestations très professionnel et très compétitif et personne très agréable et très arrangeant&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">B</span><span><strong>Béatrice M.</strong>Avis Google · septembre 2025</span></figcaption>
+          </figure>
+          <figure class="review-card">
+            <span class="stars" role="img" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"/></svg></span>
+            <blockquote>«&nbsp;Rien à redire, service rapide et efficace&nbsp;! Professionnel et très attractif niveau tarif&nbsp;! Je recommande vivement&nbsp;!&nbsp;»</blockquote>
+            <figcaption><span class="review-avatar" aria-hidden="true">Q</span><span><strong>Quentin B.</strong>Avis Google · septembre 2025</span></figcaption>
+          </figure>
+        </div>
+        <a class="button reviews-link" href="https://www.google.com/maps/search/?api=1&amp;query=rd+it+informatique+Goven" target="_blank" rel="noopener">Voir tous nos avis sur Google
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+
     <section class="contact" id="contact">
       <div class="wrap">
         <div class="contact-panel">
@@ -378,6 +485,10 @@
               <span class="eyebrow">Un projet ? Une question ?</span>
               <h2>Parlons de votre informatique.</h2>
               <p>Présentez-nous votre besoin. Nous vous répondrons avec une approche simple et adaptée.</p>
+            </div>
+            <div class="contact-person">
+              <img src="assets/ronan-denis.jpg" alt="Ronan Denis" width="48" height="48" loading="lazy">
+              <div><strong>Ronan Denis</strong><span>RD IT Informatique</span></div>
             </div>
             <div class="contact-details" aria-label="Coordonnées de RD IT Informatique">
               <a class="contact-detail" href="tel:+33695954056"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg><span>06 95 95 40 56</span></a>
@@ -439,3 +550,45 @@
       );
       window.location.href = `mailto:ronan.denis@rd-it-informatique.com?subject=${subject}&body=${body}`;
     });
+  </script>
+  <script>
+    // Galerie « Réalisations » : affiche automatiquement les photos déposées dans assets/realisations/ sur GitHub.
+    // Le nom du fichier sert de légende : 2026-10-ecran-pc-portable-hp.jpg -> « Ecran pc portable hp ».
+    (function () {
+      var REPO = "ronandenis-afk/rd-it-informatique", DOSSIER = "assets/realisations", PAR_PAGE = 6;
+      var grid = document.getElementById("works-grid"), more = document.getElementById("works-more");
+      var box = document.getElementById("lightbox"), boxImg = document.getElementById("lightbox-img"), boxCap = document.getElementById("lightbox-cap");
+      function legende(nom) {
+        var t = nom.replace(/\.[^.]+$/, "").replace(/^\d{4}[-_]\d{1,2}([-_]\d{1,2})?[-_]?/, "").replace(/[-_]+/g, " ").trim();
+        return t ? t.charAt(0).toUpperCase() + t.slice(1) : "Réparation";
+      }
+      function vide() { grid.innerHTML = '<p class="works-empty">Les photos de nos réparations arrivent bientôt.</p>'; }
+      fetch("https://api.github.com/repos/" + REPO + "/contents/" + DOSSIER)
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (fichiers) {
+          var photos = fichiers.filter(function (f) { return f.type === "file" && /\.(jpe?g|png|webp|gif)$/i.test(f.name); })
+            .sort(function (a, b) { return b.name.localeCompare(a.name); });
+          if (!photos.length) { vide(); return; }
+          var shown = 0;
+          function afficher() {
+            photos.slice(shown, shown + PAR_PAGE).forEach(function (f) {
+              var fig = document.createElement("figure"), img = document.createElement("img"), cap = document.createElement("figcaption");
+              fig.className = "work-card"; fig.tabIndex = 0;
+              img.src = DOSSIER + "/" + encodeURIComponent(f.name); img.alt = legende(f.name); img.loading = "lazy";
+              cap.textContent = legende(f.name);
+              fig.appendChild(img); fig.appendChild(cap); grid.appendChild(fig);
+              function ouvrir() { boxImg.src = img.src; boxImg.alt = img.alt; boxCap.textContent = cap.textContent; box.classList.add("is-open"); }
+              fig.addEventListener("click", ouvrir);
+              fig.addEventListener("keydown", function (e) { if (e.key === "Enter") ouvrir(); });
+            });
+            shown += PAR_PAGE; more.hidden = shown >= photos.length;
+          }
+          afficher(); more.addEventListener("click", afficher);
+        })
+        .catch(vide);
+      box.addEventListener("click", function () { box.classList.remove("is-open"); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") box.classList.remove("is-open"); });
+    })();
+  </script>
+</body>
+</html>
