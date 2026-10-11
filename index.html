@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101a2b">
-  <meta name="description" content="RD IT Informatique accompagne les particuliers et les professionnels pour leur informatique, leur réseau et leurs solutions de stockage.">
+  <meta name="description" content="RD IT Informatique à Goven : dépannage informatique, ordinateur lent, mise à niveau Windows, téléphonie, tablette et récupération de données.">
   <title>RD IT Informatique — Votre informatique, en confiance</title>
   <style>
     :root {
@@ -95,7 +95,7 @@
     .services { padding: 108px 0 112px; }
     .services-head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-bottom: 2.6rem; }
     .services-head .section-intro { max-width: 390px; padding-bottom: .35rem; }
-    .service-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
     .service-card { min-height: 250px; padding: 1.55rem; border: 1px solid var(--line); border-radius: var(--radius); background: white; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
     .service-card:hover { transform: translateY(-5px); border-color: #c7ded2; box-shadow: var(--shadow); }
     .service-icon { width: 47px; height: 47px; display: grid; place-items: center; margin-bottom: 2.1rem; border-radius: 14px; background: #e9f6ef; color: #397655; }
@@ -113,25 +113,22 @@
     .step h3 { margin: .15rem 0 .35rem; font-size: 1rem; }
     .step p { margin: 0; color: #b9c6d2; font-size: .89rem; line-height: 1.6; }
 
-    .nas-section { padding: 105px 0; }
-    .nas-panel { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr .8fr; gap: 3rem; align-items: center; padding: clamp(2rem, 5vw, 4rem); border-radius: 28px; background: #e9f2eb; }
-    .nas-panel::after { content: ""; position: absolute; width: 380px; height: 380px; right: -80px; bottom: -180px; border: 1px solid #9db5a633; border-radius: 50%; box-shadow: 0 0 0 38px #9db5a61a, 0 0 0 76px #9db5a612; }
-    .nas-copy { position: relative; z-index: 1; }
-    .nas-copy .section-title { font-size: clamp(2rem, 3.7vw, 3rem); }
-    .nas-copy p { max-width: 520px; color: var(--ink-soft); line-height: 1.75; }
-    .nas-list { display: grid; gap: .85rem; margin: 1.55rem 0 0; padding: 0; list-style: none; }
-    .nas-list li { display: flex; align-items: center; gap: .7rem; font-size: .92rem; font-weight: 650; }
-    .nas-list svg { width: 18px; color: #43835f; flex: none; }
-    .nas-visual { position: relative; z-index: 1; width: min(100%, 330px); justify-self: center; padding: 1.1rem; border: 1px solid #ffffffc9; border-radius: 22px; background: #ffffffb8; box-shadow: 0 24px 50px #18362614; transform: rotate(3deg); }
-    .nas-visual-head { display: flex; justify-content: space-between; align-items: center; padding: .4rem .25rem 1rem; color: #5b6c62; font-size: .72rem; font-weight: 700; }
-    .nas-visual-head span:last-child { color: #42835f; }
-    .folder-row { display: flex; align-items: center; gap: .75rem; margin-top: .55rem; padding: .8rem; border: 1px solid #e5ece7; border-radius: 12px; background: white; }
-    .folder { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: #edf5ef; color: #548268; }
-    .folder svg { width: 19px; }
-    .folder-label { flex: 1; }
-    .folder-label strong { display: block; font-size: .8rem; }
-    .folder-label small { color: #77867c; font-size: .69rem; }
-    .folder-check { width: 17px; color: #4a9368; }
+    .recovery-section { padding: 105px 0; }
+    .recovery-panel { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr .8fr; gap: 3rem; align-items: center; padding: clamp(2rem, 5vw, 4rem); border-radius: 28px; background: #e9f2eb; }
+    .recovery-panel::after { content: ""; position: absolute; width: 380px; height: 380px; right: -80px; bottom: -180px; border: 1px solid #9db5a633; border-radius: 50%; box-shadow: 0 0 0 38px #9db5a61a, 0 0 0 76px #9db5a612; }
+    .recovery-copy { position: relative; z-index: 1; }
+    .recovery-copy .section-title { font-size: clamp(2rem, 3.7vw, 3rem); }
+    .recovery-copy p { max-width: 520px; color: var(--ink-soft); line-height: 1.75; }
+    .recovery-list { display: grid; gap: .85rem; margin: 1.55rem 0; padding: 0; list-style: none; }
+    .recovery-list li { display: flex; align-items: center; gap: .7rem; font-size: .92rem; font-weight: 650; }
+    .recovery-list svg { width: 18px; color: #43835f; flex: none; }
+    .recovery-visual { position: relative; z-index: 1; width: min(100%, 330px); min-height: 245px; display: flex; flex-direction: column; align-items: center; justify-content: center; justify-self: center; padding: 1.5rem; border: 1px solid #ffffffc9; border-radius: 22px; background: #ffffffb8; box-shadow: 0 24px 50px #18362614; text-align: center; transform: rotate(3deg); }
+    .recovery-visual-head { position: absolute; inset: 1.2rem 1.25rem auto; display: flex; justify-content: space-between; color: #5b6c62; font-size: .7rem; font-weight: 700; }
+    .recovery-visual-head span:last-child { color: #42835f; }
+    .diagnostic-icon { width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 1rem; border-radius: 22px; background: #edf5ef; color: #548268; }
+    .diagnostic-icon svg { width: 42px; height: 42px; }
+    .recovery-visual strong { font-size: .95rem; }
+    .recovery-visual p { max-width: 230px; margin: .5rem 0 0; color: var(--ink-soft); font-size: .82rem; line-height: 1.55; }
 
     .contact { padding: 88px 0; background: white; }
     .contact-panel { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: clamp(2rem, 4vw, 3.5rem); border-radius: 24px; background: var(--navy); color: white; }
@@ -186,9 +183,9 @@
       .service-icon { margin-bottom: 1.1rem; }
       .approach { padding: 75px 0; }
       .approach-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .nas-section { padding: 70px 0; }
-      .nas-panel { grid-template-columns: 1fr; gap: 2rem; padding: 1.6rem; }
-      .nas-visual { width: min(100%, 300px); }
+      .recovery-section { padding: 70px 0; }
+      .recovery-panel { grid-template-columns: 1fr; gap: 2rem; padding: 1.6rem; }
+      .recovery-visual { width: min(100%, 300px); }
       .contact { padding: 55px 0; }
       .contact-panel { align-items: stretch; flex-direction: column; gap: 1.7rem; padding: 1.6rem; }
       .contact-details { min-width: 0; }
@@ -216,7 +213,7 @@
       <div class="nav-links" id="nav-links">
         <a href="#services">Nos services</a>
         <a href="#methode">Notre approche</a>
-        <a href="#stockage">NAS &amp; stockage</a>
+        <a href="#depannage">Dépannage</a>
         <a class="button" href="#contact">Parlons de votre projet
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
@@ -230,7 +227,7 @@
         <div class="hero-content">
           <span class="eyebrow">RD IT Informatique</span>
           <h1>La technologie,<br><span>en toute confiance.</span></h1>
-          <p class="hero-copy">Un accompagnement informatique clair et humain pour travailler, partager et sauvegarder vos données en toute sérénité.</p>
+          <p class="hero-copy">Un accompagnement informatique clair et humain pour dépanner vos appareils, vous aider avec Windows et retrouver vos données.</p>
           <div class="hero-actions">
             <a class="button" href="#contact">Parlons de vos besoins
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
@@ -243,13 +240,13 @@
       <div class="hero-art" aria-hidden="true">
         <div class="orbit"></div><div class="orbit"></div><div class="orbit"></div>
         <div class="server-card">
-          <div class="server-top"><span>RD IT / STORAGE</span><span class="server-light"></span></div>
+          <div class="server-top"><span>RD IT / SUPPORT</span><span class="server-light"></span></div>
           <div class="server-slot"><span></span></div>
           <div class="server-slot"><span></span></div>
           <div class="server-slot"><span></span></div>
         </div>
         <div class="floating-chip chip-one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>Données protégées</div>
-        <div class="floating-chip chip-two"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h8M8 16h3"/></svg>Partage simplifié</div>
+        <div class="floating-chip chip-two"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h8M8 16h3"/></svg>Assistance de proximité</div>
       </div>
     </section>
 
@@ -257,8 +254,8 @@
       <div class="trust-inner wrap">
         <span class="trust-label">À vos côtés pour</span>
         <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>Votre informatique</span>
-        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9a12 12 0 0 1 16 0M7 12a7.5 7.5 0 0 1 10 0m-7 3a3 3 0 0 1 4 0m-2 4h.01"/></svg>Votre réseau</span>
-        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6m-16 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Vos données</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6m-6 4h6m-6 4h3"/></svg>Windows &amp; logiciels</span>
+        <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4M7 7h10"/></svg>Ordinateur, téléphone, tablette</span>
         <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="5"/></svg>Votre tranquillité</span>
       </div>
     </section>
@@ -270,28 +267,38 @@
             <span class="eyebrow">Nos services</span>
             <h2 class="section-title">L'informatique qui vous simplifie la vie.</h2>
           </div>
-          <p class="section-intro">Des réponses concrètes, expliquées simplement, pour que vos outils restent au service de vos projets.</p>
+          <p class="section-intro">Ordinateur, Windows, téléphone ou tablette : un dépannage et des conseils adaptés à vos besoins.</p>
         </div>
         <div class="service-grid">
           <article class="service-card">
-            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
-            <h3>Assistance informatique</h3>
-            <p>Un souci avec votre ordinateur ou vos logiciels ? Nous vous aidons à retrouver un environnement de travail fiable.</p>
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/><path d="M5 4 3 6m16-2 2 2"/></svg></div>
+            <h3>Dépannage informatique</h3>
+            <p>Diagnostic et aide pour les problèmes courants de votre ordinateur et de vos équipements informatiques.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9a12 12 0 0 1 16 0M7 12a7.5 7.5 0 0 1 10 0m-7 3a3 3 0 0 1 4 0m-2 4h.01"/></svg></div>
-            <h3>Réseau &amp; connectivité</h3>
-            <p>Un réseau bien configuré pour connecter vos appareils et accéder à vos ressources plus facilement.</p>
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4M8 8h8m-8 4h4"/></svg></div>
+            <h3>Ordinateur lent</h3>
+            <p>Recherche des causes de ralentissement et conseils pour retrouver un ordinateur plus agréable à utiliser.</p>
           </article>
           <article class="service-card">
-            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6m-16 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
-            <h3>NAS &amp; stockage</h3>
-            <p>Centralisez vos fichiers, organisez les dossiers partagés et gérez les accès de chaque utilisateur.</p>
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 8 2-2 2 2m2-2h2m-8 7 2-2 2 2m2-2h2"/></svg></div>
+            <h3>Mise à niveau Windows</h3>
+            <p>Aide pour les mises à jour et la mise à niveau de Windows, après vérification de la compatibilité de votre PC.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2m-5-12h8"/></svg></div>
+            <h3>Téléphonie &amp; tablette</h3>
+            <p>Conseils et assistance pour vos téléphones et tablettes : prise en main, réglages et problèmes d’usage courants.</p>
+          </article>
+          <article class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v4m0 10v4M3 12h4m10 0h4"/><circle cx="12" cy="12" r="5"/><path d="m8.5 8.5 7 7m0-7-7 7"/></svg></div>
+            <h3>Récupération de données</h3>
+            <p>Évaluation de la situation et conseils pour tenter de retrouver vos fichiers. Les possibilités dépendent de l’état du support.</p>
           </article>
           <article class="service-card">
             <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
-            <h3>Sauvegarde &amp; sécurité</h3>
-            <p>Adoptez les bons réflexes pour mieux protéger vos fichiers et préparer la récupération de vos données.</p>
+            <h3>Conseils &amp; entretien</h3>
+            <p>Des explications claires et des recommandations pour utiliser et entretenir vos appareils au quotidien.</p>
           </article>
         </div>
       </div>
@@ -307,29 +314,32 @@
         <div class="approach-steps">
           <article class="step"><span class="step-number">01</span><div><h3>On fait le point</h3><p>Vos besoins, vos équipements et vos priorités : nous commençons par vous écouter.</p></div></article>
           <article class="step"><span class="step-number">02</span><div><h3>On vous explique</h3><p>Des recommandations compréhensibles et des choix présentés en toute transparence.</p></div></article>
-          <article class="step"><span class="step-number">03</span><div><h3>On met en place</h3><p>Une configuration pensée pour durer, avec des conseils pour bien prendre en main vos outils.</p></div></article>
+          <article class="step"><span class="step-number">03</span><div><h3>On vous accompagne</h3><p>Une intervention adaptée, puis des conseils simples pour mieux utiliser vos appareils.</p></div></article>
         </div>
       </div>
     </section>
 
-    <section class="nas-section" id="stockage">
+    <section class="recovery-section" id="depannage">
       <div class="wrap">
-        <div class="nas-panel">
-          <div class="nas-copy">
-            <span class="eyebrow">Partage &amp; stockage</span>
-            <h2 class="section-title">Vos fichiers au bon endroit. Et accessibles aux bonnes personnes.</h2>
-            <p>Un NAS bien organisé facilite le travail au quotidien. Comptes individuels, dossiers partagés, droits d'accès et bonnes pratiques de sauvegarde : chaque élément compte.</p>
-            <ul class="nas-list">
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des dossiers simples à retrouver</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des accès adaptés à chaque utilisateur</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Des sauvegardes à prévoir et à vérifier</li>
+        <div class="recovery-panel">
+          <div class="recovery-copy">
+            <span class="eyebrow">Récupération de données</span>
+            <h2 class="section-title">Des fichiers perdus ? Commençons par évaluer la situation.</h2>
+            <p>Une suppression accidentelle ou un support qui ne répond plus peut avoir plusieurs causes. Un premier diagnostic permet de déterminer les prochaines étapes possibles.</p>
+            <ul class="recovery-list">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Décrivez ce qui s’est passé et le type d’appareil</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Évitez d’écrire de nouveaux fichiers sur le support</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>Les résultats dépendent de l’état du support</li>
             </ul>
+            <a class="button" href="#contact">Demander conseil
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
           </div>
-          <div class="nas-visual" aria-label="Illustration de dossiers partagés">
-            <div class="nas-visual-head"><span>ESPACE PARTAGÉ</span><span>● Connecté</span></div>
-            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Documents</strong><small>Équipe · Lecture / écriture</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
-            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Projets</strong><small>Collaborateurs · Accès limité</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
-            <div class="folder-row"><span class="folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/></svg></span><span class="folder-label"><strong>Archives</strong><small>Accès administrateur</small></span><svg class="folder-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></div>
+          <div class="recovery-visual" aria-label="Illustration d'un diagnostic informatique">
+            <div class="recovery-visual-head"><span>DIAGNOSTIC</span><span>Analyse du support</span></div>
+            <div class="diagnostic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 15h2l2-5 3 7 2-4h2"/></svg></div>
+            <strong>Chaque situation est unique</strong>
+            <p>Un premier échange aide à choisir la bonne démarche.</p>
           </div>
         </div>
       </div>
@@ -370,16 +380,3 @@
       menuToggle.setAttribute("aria-label", isOpen ? "Ouvrir le menu" : "Fermer le menu");
       navLinks.classList.toggle("is-open", !isOpen);
     });
-
-    navLinks.addEventListener("click", (event) => {
-      if (event.target.closest("a")) {
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.setAttribute("aria-label", "Ouvrir le menu");
-        navLinks.classList.remove("is-open");
-      }
-    });
-
-    document.querySelector("#year").textContent = new Date().getFullYear();
-  </script>
-</body>
-</html>
