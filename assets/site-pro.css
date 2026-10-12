@@ -34,3 +34,30 @@ h3 { letter-spacing: -.01em; }
   footer { padding-bottom: 5.5rem !important; }
 }
 @media (prefers-reduced-motion: reduce) { .topbar, .nav, .brand-mark { transition: none; } }
+
+/* Cartes de services qui se retournent (survol sur ordinateur, appui sur mobile) */
+.service-card.flip { position: relative; min-height: 270px; padding: 0; border: 0; background: none; perspective: 1100px; cursor: pointer; }
+.service-card.flip:hover { transform: none; box-shadow: none; }
+.flip-inner { position: relative; width: 100%; height: 100%; min-height: 270px; transition: transform .75s cubic-bezier(.2, .75, .2, 1); transform-style: preserve-3d; }
+.flip-face { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1.6rem; border-radius: var(--radius, 1.25rem); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.flip-front { align-items: center; justify-content: center; text-align: center; border: 1px solid var(--line, #e2e7ef); background: white; box-shadow: 0 10px 30px rgba(16, 26, 43, .05); transition: border-color .3s ease, box-shadow .3s ease; }
+.flip-front .service-icon { width: 76px; height: 76px; margin: 0 0 1.25rem; border-radius: 22px; transition: transform .5s ease, background .3s ease, color .3s ease; }
+.flip-front .service-icon svg { width: 36px; height: 36px; }
+.flip-front h3 { margin: 0; font-size: 1.12rem; }
+.flip-hint { display: inline-flex; align-items: center; gap: .35rem; margin-top: .9rem; color: #7a8899; font-size: .76rem; font-weight: 500; }
+.flip-hint svg { width: 14px; height: 14px; }
+.flip-back { justify-content: center; gap: .7rem; color: white; background: radial-gradient(circle at 85% 15%, #2a5bd7 0, transparent 55%), linear-gradient(145deg, #101a2b 0%, #16305e 100%); box-shadow: 0 22px 50px rgba(16, 40, 90, .28); transform: rotateY(180deg); }
+.flip-back h3 { margin: 0; color: white; font-size: 1.08rem; }
+.flip-back p { margin: 0; color: #cdd8e6 !important; font-size: .9rem; line-height: 1.6; }
+.flip-back .card-more { align-self: flex-start; margin-top: .4rem; padding: .55rem .95rem; border-radius: 999px; background: var(--lime, #00e5ff); color: var(--ink, #101a2b); text-decoration: none; }
+.flip-back .card-more:hover { text-decoration: none; background: #66efff; }
+.service-card.flip.is-flipped .flip-inner { transform: rotateY(180deg); }
+@media (hover: hover) {
+  .service-card.flip:hover .flip-inner, .service-card.flip:focus-within .flip-inner { transform: rotateY(180deg); }
+  .service-card.flip:hover .flip-front .service-icon { transform: scale(1.08) rotate(-6deg); }
+}
+.service-card.flip:focus-visible { outline: 3px solid #3d8bff; outline-offset: 4px; border-radius: var(--radius, 1.25rem); }
+@media (max-width: 640px) {
+  .service-card.flip, .flip-inner { min-height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) { .flip-inner { transition: none; } }
