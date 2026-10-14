@@ -61,3 +61,49 @@ h3 { letter-spacing: -.01em; }
   .service-card.flip, .flip-inner { min-height: 240px; }
 }
 @media (prefers-reduced-motion: reduce) { .flip-inner { transition: none; } }
+
+/* Bouton « Assistance à distance » très visible dans l'en-tête */
+.assist-btn { order: 3; position: relative; display: inline-flex; align-items: center; gap: .5rem; margin-left: 1.2rem; padding: .7rem 1.15rem; border-radius: 999px; background: #ffb020; color: #101a2b !important; font: 700 .9rem/1 var(--font-title); text-decoration: none; white-space: nowrap; box-shadow: 0 8px 22px rgba(255, 176, 32, .38), 0 0 0 3px rgba(255, 176, 32, .22); transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+.assist-btn:hover { transform: translateY(-2px); background: #ffc24d; box-shadow: 0 12px 28px rgba(255, 176, 32, .5), 0 0 0 4px rgba(255, 176, 32, .3); text-decoration: none; }
+.assist-btn svg { width: 18px; height: 18px; flex: none; }
+.assist-pulse { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2px solid #101a2b; }
+.assist-pulse::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; background: #22c55e; animation: assist-ping 1.8s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes assist-ping { 75%, 100% { transform: scale(2.4); opacity: 0; } }
+
+.assist-long { display: none; } .assist-short { display: inline; }
+@media (max-width: 980px) {
+  .assist-btn { order: 0; margin-left: auto; margin-right: .6rem; padding: .6rem .9rem; font-size: .86rem; }
+}
+@media (max-width: 380px) { .assist-btn { padding: .6rem .7rem; } .assist-short { font-size: .8rem; } }
+@media (prefers-reduced-motion: reduce) { .assist-pulse::after { animation: none; } }
+
+/* Page assistance : bloc de téléchargement AnyDesk */
+.assist-dl { background: #ffb020 !important; }
+.assist-dl:hover { background: #ffc24d !important; box-shadow: 0 10px 25px rgba(255, 176, 32, .4) !important; }
+.dl-panel { position: relative; padding: 1.6rem; border: 1px solid #ffffff22; border-radius: 22px; background: rgba(255, 255, 255, .06); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 30px 70px #050c1780; }
+.dl-panel h2 { margin: 0 0 .35rem; color: white; font-size: 1.35rem; }
+.dl-panel > p { margin: 0 0 1.1rem !important; font-size: .9rem !important; color: #b9c6d6 !important; }
+.dl-item { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 1rem; align-items: center; margin-top: .6rem; padding: .85rem 1.1rem; border: 1px solid #ffffff24; border-radius: 14px; background: #ffffff0d; color: white; text-decoration: none; transition: background .2s ease, transform .2s ease, border-color .2s ease; }
+.dl-item:hover { background: #ffffff1c; border-color: #ffffff55; transform: translateX(3px); text-decoration: none; }
+.dl-item svg { grid-row: 1 / 3; grid-column: 2; width: 22px; height: 22px; color: var(--lime, #00e5ff); }
+.dl-os { font: 600 1rem/1.2 var(--font-title); }
+.dl-sub { color: #b9c6d6; font-size: .8rem; }
+.dl-item.main { padding: 1.05rem 1.2rem; border: 0; background: #ffb020; color: #101a2b; box-shadow: 0 12px 28px rgba(255, 176, 32, .35); }
+.dl-item.main:hover { background: #ffc24d; }
+.dl-item.main .dl-sub, .dl-item.main svg { color: #3b2a05; }
+.dl-item.main .dl-os { font-size: 1.12rem; }
+.dl-all { display: inline-flex; align-items: center; gap: .35rem; margin-top: 1rem; color: #b9c6d6; font-size: .85rem; text-decoration: none; }
+.dl-all:hover { color: white; }
+.dl-all svg { width: 15px; height: 15px; }
+.assist-warn { padding: 1.6rem; border: 1px solid #f5c26b; border-left: 5px solid #ffb020; border-radius: 16px; background: #fff8ea; }
+@media (min-width: 981px) { .nav .nav-links { margin-left: auto; } }
+@media (min-width: 981px) and (max-width: 1240px) {
+  .nav .nav-links { gap: .95rem !important; font-size: .84rem; }
+  .nav .nav-links .button { padding-left: 1rem; padding-right: 1rem; }
+  .assist-btn { margin-left: .7rem; padding: .6rem .85rem; font-size: .84rem; }
+}
+@media (min-width: 981px) and (max-width: 1100px) {
+  .assist-btn .assist-short { display: none; }
+  .assist-btn { padding: .65rem; }
+  .assist-btn svg { width: 20px; height: 20px; }
+}
