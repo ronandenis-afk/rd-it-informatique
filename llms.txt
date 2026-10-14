@@ -16,6 +16,7 @@
 ## Particuliers
 
 - [Dépannage à domicile et à distance](https://rd-it-informatique.com/depannage.html): Ordinateur lent, qui ne démarre plus, virus, problème internet ou imprimante : dépannage informatique à domicile autour de Goven ou à distance.
+- [Assistance à distance (AnyDesk)](https://rd-it-informatique.com/assistance-a-distance.html): Prise en main à distance avec AnyDesk : lien de téléchargement officiel (Windows, Mac, Android, iPhone) et mode d'emploi en 3 étapes.
 - [Réparation PC et smartphone](https://rd-it-informatique.com/reparation.html): Réparation d'ordinateurs portables, PC fixes et smartphones à Goven : écran, batterie, disque, clavier, connecteur de charge. Diagnostic et devis avant réparation.
 - [Récupération de données](https://rd-it-informatique.com/recuperation-donnees.html): Fichiers supprimés, disque dur qui ne répond plus, clé USB ou carte SD illisible : évaluation et récupération de données sur tous supports à Goven.
 - [Windows 11](https://rd-it-informatique.com/windows-11.html): Passage à Windows 11 : vérification de compatibilité, sauvegarde, mise à niveau ou installation propre, transfert de vos fichiers et réglages.
