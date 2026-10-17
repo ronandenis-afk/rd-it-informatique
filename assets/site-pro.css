@@ -107,3 +107,14 @@ h3 { letter-spacing: -.01em; }
   .assist-btn { padding: .65rem; }
   .assist-btn svg { width: 20px; height: 20px; }
 }
+
+/* Pages communes : FAQ et liens de cartes */
+.faq-list { display: grid; gap: .6rem; }
+.faq-item { border: 1px solid var(--line, #e2e7ef); border-radius: 14px; background: white; }
+.faq-item summary { position: relative; padding: 1rem 2.8rem 1rem 1.1rem; color: var(--ink, #101a2b); font-weight: 650; cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; position: absolute; right: 1.1rem; top: 50%; translate: 0 -50%; color: #1f6feb; font-size: 1.35rem; font-weight: 500; }
+.faq-item[open] summary::after { content: "−"; }
+.faq-item p { margin: 0; padding: 0 1.1rem 1rem; color: var(--ink-soft, #516071); line-height: 1.7; }
+.card h3 a { color: inherit; text-decoration: none; }
+.card h3 a:hover { color: #1f6feb; }
