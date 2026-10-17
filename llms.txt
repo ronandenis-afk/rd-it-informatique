@@ -5,8 +5,14 @@
 - Téléphone : 06 95 95 40 56
 - E-mail : ronan.denis@rd-it-informatique.com
 - Adresse : 1 La Conuais, 35580 Goven, France
-- Zone d'intervention : Goven et communes voisines (Guichen, Baulon, Lassy, Mordelles…), assistance à distance partout
+- Site : https://rd-it-informatique.com/
+- Dirigeant : Ronan Denis — entreprise individuelle, SIRET 988 150 652 00010
+- Horaires : lundi–vendredi 9h–19h, samedi 9h–18h30, fermé le dimanche
+- Zone d'intervention à domicile : Goven, Guichen, Baulon, Lassy, Mordelles, Bréal-sous-Montfort, Saint-Thurial, Chavagne, Laillé et Bruz (Ille-et-Vilaine, sud-ouest de Rennes) ; assistance à distance partout en France (AnyDesk)
+- Clients : particuliers et professionnels (TPE, artisans, commerçants, professions libérales)
+- Devis gratuit et sans engagement avant toute intervention payante
 - Note Google : 5,0/5
+- Facebook : https://www.facebook.com/61582977753235
 
 ## Pages principales
 
@@ -40,3 +46,37 @@
 
 - [Conditions générales de vente](https://rd-it-informatique.com/cgv.html)
 - [Mentions légales](https://rd-it-informatique.com/mentions-legales.html)
+
+## Questions fréquentes
+
+### Qui est RD IT Informatique ?
+
+RD IT Informatique est une entreprise individuelle d'informatique basée à Goven (Ille-et-Vilaine, 35580), dirigée par Ronan Denis. Elle accompagne les particuliers et les professionnels : dépannage, réparation, récupération de données, Windows 11, sauvegardes, vidéosurveillance, création de sites internet et vente de matériel.
+
+### Dans quelles communes intervenez-vous à domicile ?
+
+J'interviens à domicile et en entreprise à Goven, Guichen, Baulon, Lassy, Mordelles, Bréal-sous-Montfort, Saint-Thurial, Chavagne, Laillé et Bruz, au sud-ouest de Rennes. Pour les problèmes logiciels, l'assistance à distance est possible partout en France.
+
+### Quels sont vos horaires ?
+
+Du lundi au vendredi de 9h à 19h, et le samedi de 9h à 18h30. Fermé le dimanche.
+
+### Faites-vous du dépannage informatique à distance ?
+
+Oui. Il suffit de télécharger AnyDesk depuis la page Assistance à distance, de m'appeler au 06 95 95 40 56 et de me donner le numéro affiché : je prends la main sur votre ordinateur pendant que vous regardez, et vous pouvez couper la connexion à tout moment.
+
+### Le devis est-il gratuit ?
+
+Oui. Je vous explique la situation et je vous remets un devis gratuit et sans engagement avant toute intervention payante.
+
+### Réparez-vous aussi les smartphones et les tablettes ?
+
+Oui : ordinateurs portables, PC fixes, smartphones et tablettes (écran, batterie, connecteur de charge, lenteurs, virus, récupération de données).
+
+### Travaillez-vous avec les professionnels ?
+
+Oui : maintenance et assistance informatique pour TPE, artisans, commerçants et professions libérales, mise en place de sauvegardes, vidéosurveillance, installation de logiciels et création de sites internet vitrines sur devis.
+
+### Comment contacter RD IT Informatique ?
+
+Par téléphone au 06 95 95 40 56, par e-mail à ronan.denis@rd-it-informatique.com, ou via le formulaire de contact du site rd-it-informatique.com.
