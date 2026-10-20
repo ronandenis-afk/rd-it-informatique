@@ -462,7 +462,51 @@
       </div>
     </section>
 
-    <section class="services" id="services">
+    <section class="promo-vhs" id="offre-vhs" aria-labelledby="promo-vhs-titre">
+<style>
+.promo-vhs { padding: 80px 0 0; }
+.promo-vhs-panel { display: grid; grid-template-columns: 1.15fr .85fr; gap: 2.5rem; align-items: center; padding: clamp(1.6rem, 4vw, 3.2rem); border-radius: 24px; background: var(--navy); color: white; }
+.promo-vhs .eyebrow { color: var(--lime); }
+.promo-vhs h2 { margin: .8rem 0 .9rem; font-size: clamp(1.9rem, 3.6vw, 2.8rem); line-height: 1.1; letter-spacing: -.04em; }
+.promo-vhs-copy p { max-width: 540px; margin: 0 0 .8rem; color: #c0cbd5; line-height: 1.7; }
+.promo-vhs-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.6rem; }
+.promo-vhs-alt { background: transparent !important; border: 1px solid #ffffff40 !important; color: white !important; box-shadow: none !important; }
+.promo-vhs-alt:hover { background: #ffffff14 !important; }
+.promo-vhs-prix { padding: 1.4rem; border: 1px solid #ffffff20; border-radius: 18px; background: #ffffff08; }
+.promo-vhs-prix h3 { margin: 0 0 .9rem; font-size: 1rem; color: #e4ebf0; }
+.promo-vhs-prix ul { display: grid; gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.promo-vhs-prix li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .85rem 1rem; border-radius: 12px; background: #ffffff0d; color: #d1d9e2; font-size: .92rem; }
+.promo-vhs-prix li strong { color: var(--lime); font-size: 1.15rem; white-space: nowrap; }
+.promo-vhs-prix small { display: block; margin-top: .9rem; color: #9fb0c0; font-size: .8rem; }
+@media (max-width: 900px) { .promo-vhs-panel { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .promo-vhs { padding-top: 55px; } .promo-vhs-actions .button { width: 100%; } }
+</style>
+<div class="wrap">
+<div class="promo-vhs-panel">
+<div class="promo-vhs-copy">
+<span class="eyebrow">Offre spéciale Noël · jusqu’au 15 décembre</span>
+<h2 id="promo-vhs-titre">Offrez vos souvenirs de famille pour Noël</h2>
+<p>Mariages, anniversaires, premiers pas des enfants… vos cassettes VHS dorment au grenier et s’abîment avec le temps.</p>
+<p>Je les transfère sur clé USB pour que vous puissiez les regarder sur la télé, l’ordinateur ou le téléphone, et les partager avec toute la famille.</p>
+<div class="promo-vhs-actions">
+<a class="button" href="tel:+33695954056">Appeler le 06 95 95 40 56</a>
+<a class="button promo-vhs-alt" href="#contact">Demander un devis</a>
+</div>
+</div>
+<div class="promo-vhs-prix">
+<h3>Plus vous en avez, moins c’est cher</h3>
+<ul>
+<li><span>1 à 4 cassettes</span><strong>14 €</strong></li>
+<li><span>5 à 9 cassettes</span><strong>12 €</strong></li>
+<li><span>10 cassettes et plus</span><strong>10 €</strong></li>
+</ul>
+<small>Prix par cassette. Pensez à vous y prendre tôt pour être livrés avant les fêtes.</small>
+</div>
+</div>
+</div>
+</section>
+
+<section class="services" id="services">
       <div class="wrap">
         <div class="services-head">
           <div>
