@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RDV Cabinet – démo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+  /* Layout : une colonne de présentation, deux portes d'entrée (patient / praticien), puis le parcours de démo */
+  :root {
+    --bg: #f5f8f7; --surface: #ffffff; --ink: #0e1f1b; --muted: #5a6f69; --line: #dce6e3;
+    --accent: #0f766e; --accent-ink: #ffffff; --accent-soft: #e0f0ec; --sport: #b45309;
+    --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0d1614; --surface: #142220; --ink: #e6f0ed; --muted: #9db3ad; --line: #24403b;
+    --accent: #3fb8a6; --accent-ink: #062320; --accent-soft: #17332f; --sport: #e0954a; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #0d1614; --surface: #142220; --ink: #e6f0ed; --muted: #9db3ad; --line: #24403b;
+    --accent: #3fb8a6; --accent-ink: #062320; --accent-soft: #17332f; --sport: #e0954a; color-scheme: dark }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-body); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 40px; }
+  .eyebrow { font: 600 12px/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2rem, 1.3rem + 3vw, 3.2rem); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; max-width: 18ch; }
+  h2 { font-size: 1.5rem; font-weight: 700; }
+  h3 { font-size: 1.2rem; font-weight: 700; }
+  p { margin: 0; }
+  .lead { color: var(--muted); font-size: 1.1rem; max-width: 60ch; }
+  .hero { display: grid; gap: 14px; }
+
+  .portes { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+  .porte { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .porte ul { margin: 0; padding-left: 1.1em; color: var(--muted); display: grid; gap: 4px; }
+  .btn { justify-self: start; display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-ink); text-decoration: none; font-weight: 600; padding: 11px 18px; border-radius: 10px; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .btn.sec { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+
+  /* aperçu : un vrai morceau d'interface */
+  .apercu { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--bg); display: grid; gap: 8px; }
+  .apercu small { color: var(--muted); font-weight: 600; font-size: .78rem; }
+  .slots { display: flex; flex-wrap: wrap; gap: 6px; }
+  .slots span { border: 1.5px solid var(--accent); color: var(--accent); border-radius: 7px; padding: 3px 9px; font-weight: 600; font-size: .85rem; font-variant-numeric: tabular-nums; }
+  .agenda { display: grid; grid-template-columns: 38px 1fr 1fr; gap: 4px; font-size: .78rem; font-variant-numeric: tabular-nums; }
+  .agenda .h { color: var(--muted); }
+  .agenda .ev { border-radius: 6px; padding: 3px 6px; color: #fff; background: #0f766e; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .agenda .ev.s { background: #b45309; }
+  .agenda .ev.web::after { content: " · en ligne"; opacity: .85; }
+  .agenda .vide { border: 1px dashed var(--line); border-radius: 6px; }
+
+  .parcours { display: grid; gap: 18px; }
+  .etapes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; counter-reset: e; }
+  .etapes li { counter-increment: e; border-top: 2px solid var(--accent); padding-top: 12px; display: grid; gap: 6px; min-width: 0; }
+  .etapes li::before { content: "Étape " counter(e); font: 600 12px/1 var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .etapes p { color: var(--muted); font-size: .95rem; }
+
+  .inclus { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 28px; }
+  .inclus div { border-bottom: 1px solid var(--line); padding-block: 10px; min-width: 0; }
+  .inclus strong { display: block; }
+  .inclus span { color: var(--muted); font-size: .93rem; }
+
+  .comptes { background: var(--accent-soft); border-radius: 14px; padding: 16px 18px; display: grid; gap: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; user-select: all; }
+  footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  footer strong { color: var(--ink); }
+  @media (prefers-reduced-motion: no-preference) { .btn { transition: filter .15s; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Démonstration · Cabinet de kinésithérapie des Lilas (fictif)</span>
+    <h1>La prise de rendez-vous en ligne de votre cabinet</h1>
+    <p class="lead">Vos patients réservent 24h/24 sur votre site ou votre fiche Google. Vous gardez la main sur votre agenda, vos horaires et vos congés, seul ou à plusieurs praticiens.</p>
+  </header>
+
+  <section class="portes" aria-label="Accès à la démonstration">
+    <article class="porte">
+      <span class="eyebrow">Côté patient</span>
+      <h2>Réserver une séance</h2>
+      <div class="apercu" aria-hidden="true">
+        <small>Jeudi · Séance de rééducation</small>
+        <div class="slots"><span>08:30</span><span>09:15</span><span>10:00</span><span>11:30</span><span>14:00</span><span>16:45</span></div>
+      </div>
+      <ul>
+        <li>Choix du motif, du praticien et du créneau</li>
+        <li>Seuls les créneaux réellement libres sont proposés</li>
+        <li>Annulation en ligne par le patient, jusqu'à 24 h avant</li>
+      </ul>
+      <a class="btn" href="patient.html">Ouvrir la vue patient</a>
+    </article>
+    <article class="porte">
+      <span class="eyebrow">Côté cabinet</span>
+      <h2>Gérer l'agenda</h2>
+      <div class="apercu" aria-hidden="true">
+        <small>Agenda du jour · Claire / Thomas</small>
+        <div class="agenda">
+          <span class="h">9h</span><span class="ev">DUPONT Jean</span><span class="ev s web">LE GOFF Léa</span>
+          <span class="h">10h</span><span class="ev web">BERNARD Lucie</span><span class="vide"></span>
+          <span class="h">11h</span><span class="vide"></span><span class="ev s">TANGUY Pierre</span>
+        </div>
+      </div>
+      <ul>
+        <li>Agenda jour / semaine, une couleur par praticien</li>
+        <li>Ajout d'un rendez-vous en un clic sur l'agenda</li>
+        <li>Horaires, congés, prestations et équipe</li>
+      </ul>
+      <a class="btn sec" href="praticien.html">Ouvrir l'espace praticien</a>
+    </article>
+  </section>
+
+  <section class="parcours" aria-labelledby="t-parcours">
+    <h2 id="t-parcours">Parcours conseillé pour la présentation</h2>
+    <ol class="etapes">
+      <li><h3>Réserver comme un patient</h3><p>Dans la vue patient, choisissez « Kiné du sport » : seul Thomas la propose. Prenez un créneau et remplissez vos coordonnées.</p></li>
+      <li><h3>Retrouver le RDV dans l'agenda</h3><p>Ouvrez l'espace praticien. Le rendez-vous apparaît dans l'agenda avec la mention « pris en ligne ».</p></li>
+      <li><h3>Bloquer une absence</h3><p>Onglet Absences : ajoutez un congé. Les créneaux disparaissent aussitôt de la vue patient.</p></li>
+      <li><h3>Annuler côté patient</h3><p>Réservez un créneau à plus de 24 h, puis ouvrez-le depuis l'écran de confirmation et annulez-le : il disparaît de l'agenda et le créneau se libère.</p></li>
+    </ol>
+  </section>
+
+  <section class="comptes" aria-label="Comptes de démonstration">
+    <strong>Connexion à l'espace praticien</strong>
+    <span>Administratrice : <code>claire@kine-lilas.fr</code> · praticien : <code>thomas@kine-lilas.fr</code> · mot de passe : <code>demo</code></span>
+    <span style="color:var(--muted);font-size:.92rem">Les données sont fictives et restent dans ce navigateur. Le lien « Réinitialiser » du bandeau remet la démo à zéro.</span>
+  </section>
+
+  <section aria-labelledby="t-inclus" style="display:grid;gap:12px">
+    <h2 id="t-inclus">Ce qui est inclus dans la version installée</h2>
+    <div class="inclus">
+      <div><strong>Emails automatiques</strong><span>Confirmation avec ajout à l'agenda, rappel la veille, avis d'annulation, alerte au praticien.</span></div>
+      <div><strong>Aucun double rendez-vous</strong><span>Deux patients ne peuvent pas prendre le même créneau, même au même instant.</span></div>
+      <div><strong>Aux couleurs du cabinet</strong><span>Nom, couleur, message d'accueil, durée et prix de chaque prestation.</span></div>
+      <div><strong>Délais réglables</strong><span>Délai minimum avant un RDV, limite d'annulation, réservation jusqu'à 60 jours.</span></div>
+      <div><strong>Données hébergées en Europe</strong><span>Chaque cabinet ne voit que ses propres données. Aucune donnée de santé demandée.</span></div>
+      <div><strong>Sur ordinateur et téléphone</strong><span>Lien à mettre sur le site du cabinet, la fiche Google et les réseaux sociaux.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span><strong>RD IT INFORMATIQUE</strong> · Goven (35)</span>
+    <span>ronan.denis@rd-it-informatique.com</span>
+    <span>06 95 95 40 56</span>
+  </footer>
+</div>
+</body>
+</html>

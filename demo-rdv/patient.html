@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prendre rendez-vous – démo</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --c: #0f766e; --c-soft: #ecfdf5; --txt: #0f172a; --mut: #64748b; --bd: #e2e8f0; --bg: #f8fafc; --err: #b91c1c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--txt); background: var(--bg); }
+  header { background: var(--c); color: #fff; padding: 22px 16px; }
+  header .in, main { max-width: 820px; margin: 0 auto; }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header p { margin: 6px 0 0; opacity: .9; font-size: .95rem; }
+  main { padding: 16px 16px 60px; }
+  .card { background: #fff; border: 1px solid var(--bd); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+  .card h2 { margin: 0 0 12px; font-size: 1.05rem; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .card.done h2 { margin: 0; }
+  .num { width: 26px; height: 26px; border-radius: 50%; background: var(--c); color: #fff; display: inline-grid; place-items: center; font-size: .85rem; flex: none; }
+  .done .num { background: var(--c-soft); color: var(--c); }
+  .resume { color: var(--mut); font-weight: 400; font-size: .92rem; margin-left: auto; text-align: right; }
+  .modif { background: none; border: 0; color: var(--c); cursor: pointer; font: inherit; text-decoration: underline; padding: 0 0 0 8px; }
+  .choix { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .opt { text-align: left; border: 1.5px solid var(--bd); background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+  .opt:hover, .opt:focus-visible { border-color: var(--c); outline: none; }
+  .opt strong { display: block; }
+  .opt small { color: var(--mut); display: block; margin-top: 3px; }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+  .nav button { border: 1px solid var(--bd); background: #fff; border-radius: 8px; padding: 8px 12px; cursor: pointer; font: inherit; }
+  .nav button:disabled { opacity: .4; cursor: default; }
+  .jours { display: grid; gap: 10px; }
+  .jour h3 { margin: 0 0 6px; font-size: .92rem; text-transform: capitalize; }
+  .slots { display: flex; flex-wrap: wrap; gap: 6px; }
+  .slot { border: 1.5px solid var(--c); color: var(--c); background: #fff; border-radius: 8px; padding: 7px 11px; cursor: pointer; font: inherit; font-weight: 600; font-size: .92rem; }
+  .slot:hover, .slot:focus-visible { background: var(--c); color: #fff; outline: none; }
+  .vide { color: var(--mut); font-size: .9rem; }
+  form .grid { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px) { form .grid { grid-template-columns: 1fr; } .resume { width: 100%; text-align: left; margin-left: 36px; } }
+  label { font-size: .88rem; font-weight: 600; display: block; }
+  input, textarea { width: 100%; margin-top: 4px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; }
+  input:focus, textarea:focus { outline: 2px solid var(--c); border-color: transparent; }
+  .full { grid-column: 1 / -1; }
+  .rgpd { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; font-size: .85rem; color: var(--mut); }
+  .rgpd input { width: auto; margin-top: 3px; }
+  .btn { background: var(--c); color: #fff; border: 0; border-radius: 10px; padding: 13px 20px; font: inherit; font-weight: 600; cursor: pointer; }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .btn.sec { background: #fff; color: var(--c); border: 1.5px solid var(--c); }
+  .btn.danger { background: var(--err); }
+  .err { color: var(--err); background: #fef2f2; border: 1px solid #fecaca; padding: 10px 12px; border-radius: 8px; margin-top: 12px; }
+  .ok { text-align: center; }
+  .ok .big { font-size: 2.6rem; }
+  .recap { display: inline-block; text-align: left; background: var(--bg); border-radius: 10px; padding: 12px 16px; margin: 10px 0 16px; }
+  .recap div { margin: 3px 0; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .chargement { color: var(--mut); padding: 10px 0; }
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--mut); font-size: .8rem; padding: 10px; }
+</style>
+</head>
+<body>
+<header><div class="in"><h1 id="nomCabinet">Prise de rendez-vous</h1><p id="infosCabinet"></p></div></header>
+<main id="app"><div class="chargement">Chargement…</div></main>
+<footer id="pied"></footer>
+
+<script src="demo-backend.js"></script>
+<script>
+const cfg = window.RDV_CONFIG;
+const params = new URLSearchParams(location.search);
+const slug = params.get("c") || cfg.cabinet;
+const sb = supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: false } });
+const app = document.getElementById("app");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const msgErr = e => (e && (e.message || e.error_description)) || "Une erreur est survenue, merci de réessayer.";
+
+let cab = null;
+const etat = { prestation: null, praticien: undefined, debut: null, praticienSlot: null, semaine: 0 };
+
+// ---------- Dates (affichées dans le fuseau du cabinet) ----------
+const tz = () => (cab && cab.fuseau) || "Europe/Paris";
+const fmt = (d, o) => new Intl.DateTimeFormat("fr-FR", { timeZone: tz(), ...o }).format(new Date(d));
+const jourLong = d => fmt(d, { weekday: "long", day: "numeric", month: "long" });
+const heure = d => fmt(d, { hour: "2-digit", minute: "2-digit" });
+const cleJour = d => fmt(d, { year: "numeric", month: "2-digit", day: "2-digit" }); // jj/mm/aaaa
+const isoDate = d => d.toISOString().slice(0, 10);
+const ajouterJours = (d, n) => { const x = new Date(d); x.setUTCDate(x.getUTCDate() + n); return x; };
+const aujourdhui = () => { const [j, m, a] = cleJour(new Date()).split("/"); return new Date(Date.UTC(+a, m - 1, +j)); };
+const duree = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? String(m % 60).padStart(2, "0") : ""}` : `${m} min`;
+const prix = p => p == null ? "" : ` · ${Number(p).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`;
+
+function appliquerTheme(c) {
+  document.documentElement.style.setProperty("--c", c.couleur || "#0f766e");
+  document.documentElement.style.setProperty("--c-soft", (c.couleur || "#0f766e") + "1a");
+  document.getElementById("nomCabinet").textContent = c.nom;
+  document.getElementById("infosCabinet").textContent = [c.adresse, c.telephone].filter(Boolean).join(" · ");
+  document.title = `Prendre rendez-vous – ${c.nom}`;
+  document.getElementById("pied").innerHTML = `${esc(c.nom)}${c.email ? " · " + esc(c.email) : ""}`;
+}
+
+// ---------- Démarrage ----------
+(async function init() {
+  const token = params.get("rdv");
+  if (token) return afficherRdvExistant(token);
+  const { data, error } = await sb.rpc("get_cabinet_public", { p_slug: slug });
+  if (error || !data) { app.innerHTML = `<div class="card err">Cabinet introuvable. Vérifiez le lien utilisé.</div>`; return; }
+  cab = data; appliquerTheme(cab);
+  if (cab.prestations.length === 1) etat.prestation = cab.prestations[0];
+  rendre();
+})();
+
+function praticiensPour(p) {
+  return cab.praticiens.filter(x => !p.praticiens || p.praticiens.includes(x.id));
+}
+
+function rendre() {
+  const p = etat.prestation;
+  const prats = p ? praticiensPour(p) : [];
+  if (p && prats.length === 1 && etat.praticien === undefined) etat.praticien = prats[0];
+  let h = "";
+  if (cab.message_accueil) h += `<div class="card" style="background:var(--c-soft);border-color:transparent">${esc(cab.message_accueil)}</div>`;
+
+  // Étape 1 — motif
+  h += `<section class="card ${p ? "done" : ""}"><h2><span class="num">1</span>Motif du rendez-vous`;
+  if (p) h += `<span class="resume">${esc(p.nom)}<button class="modif" data-act="reset-presta">Modifier</button></span></h2>`;
+  else h += `</h2><div class="choix">${cab.prestations.map(x => `<button class="opt" data-presta="${x.id}"><strong>${esc(x.nom)}</strong><small>${duree(x.duree_minutes)}${prix(x.prix)}</small>${x.description ? `<small>${esc(x.description)}</small>` : ""}</button>`).join("")}</div>`;
+  h += `</section>`;
+
+  // Étape 2 — praticien
+  if (p) {
+    const choisi = etat.praticien !== undefined;
+    h += `<section class="card ${choisi ? "done" : ""}"><h2><span class="num">2</span>Praticien`;
+    if (choisi) h += `<span class="resume">${etat.praticien ? esc(etat.praticien.nom) : "Peu importe"}${prats.length > 1 ? `<button class="modif" data-act="reset-prat">Modifier</button>` : ""}</span></h2>`;
+    else h += `</h2><div class="choix"><button class="opt" data-prat=""><strong>Peu importe</strong><small>Premier praticien disponible</small></button>${prats.map(x => `<button class="opt" data-prat="${x.id}"><strong>${esc(x.nom)}</strong>${x.specialite ? `<small>${esc(x.specialite)}</small>` : ""}</button>`).join("")}</div>`;
+    h += `</section>`;
+  }
+
+  // Étape 3 — créneau
+  if (p && etat.praticien !== undefined) {
+    h += `<section class="card ${etat.debut ? "done" : ""}"><h2><span class="num">3</span>Date et heure`;
+    if (etat.debut) h += `<span class="resume">${jourLong(etat.debut)} à ${heure(etat.debut)}<button class="modif" data-act="reset-slot">Modifier</button></span></h2>`;
+    else h += `</h2><div id="creneaux"><div class="chargement">Recherche des disponibilités…</div></div>`;
+    h += `</section>`;
+  }
+
+  // Étape 4 — coordonnées
+  if (etat.debut) {
+    h += `<section class="card"><h2><span class="num">4</span>Vos coordonnées</h2>
+    <form id="form" novalidate><div class="grid">
+      <label>Nom<input name="nom" autocomplete="family-name" required maxlength="80"></label>
+      <label>Prénom<input name="prenom" autocomplete="given-name" required maxlength="80"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Téléphone mobile<input name="tel" type="tel" autocomplete="tel" required></label>
+      <label class="full">Message pour le praticien (facultatif)<textarea name="note" rows="2" maxlength="1000" placeholder="Motif, ordonnance, informations utiles…"></textarea></label>
+      <label class="rgpd full"><input type="checkbox" name="rgpd" required> J'accepte que mes coordonnées soient utilisées par le cabinet pour la gestion de mon rendez-vous (confirmation et rappel par email).</label>
+    </div>
+    <div id="formErr"></div>
+    <p><button class="btn" type="submit">Confirmer le rendez-vous</button></p></form></section>`;
+  }
+  app.innerHTML = h;
+  if (p && etat.praticien !== undefined && !etat.debut) chargerCreneaux();
+  if (etat.debut) document.querySelector("#form input[name=nom]").focus();
+}
+
+app.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.presta) { etat.prestation = cab.prestations.find(x => x.id === b.dataset.presta); etat.praticien = undefined; etat.debut = null; etat.semaine = 0; return rendre(); }
+  if (b.dataset.prat !== undefined && b.classList.contains("opt")) { etat.praticien = b.dataset.prat ? cab.praticiens.find(x => x.id === b.dataset.prat) : null; etat.debut = null; return rendre(); }
+  if (b.dataset.slot) { etat.debut = b.dataset.slot; etat.praticienSlot = b.dataset.pratslot || null; return rendre(); }
+  const act = b.dataset.act;
+  if (act === "reset-presta") { etat.prestation = null; etat.praticien = undefined; etat.debut = null; return rendre(); }
+  if (act === "reset-prat") { etat.praticien = undefined; etat.debut = null; return rendre(); }
+  if (act === "reset-slot") { etat.debut = null; return rendre(); }
+  if (act === "prev") { etat.semaine--; return chargerCreneaux(); }
+  if (act === "next") { etat.semaine++; return chargerCreneaux(); }
+});
+
+async function chargerCreneaux() {
+  const zone = document.getElementById("creneaux"); if (!zone) return;
+  const du = ajouterJours(aujourdhui(), etat.semaine * 7), au = ajouterJours(du, 6);
+  const maxSem = Math.floor((cab.horizon_jours || 60) / 7);
+  zone.innerHTML = `<div class="chargement">Recherche des disponibilités…</div>`;
+  const { data, error } = await sb.rpc("get_creneaux", {
+    p_slug: slug, p_prestation: etat.prestation.id, p_du: isoDate(du), p_au: isoDate(au),
+    p_praticien: etat.praticien ? etat.praticien.id : null });
+  if (error) { zone.innerHTML = `<div class="err">${esc(msgErr(error))}</div>`; return; }
+  // Regroupe par jour ; si « peu importe », un seul bouton par horaire
+  const parJour = new Map();
+  for (let i = 0; i < 7; i++) parJour.set(cleJour(ajouterJours(du, i).toISOString().slice(0, 10) + "T12:00:00Z"), []);
+  const vus = new Set();
+  for (const s of data) {
+    if (vus.has(s.debut)) continue; vus.add(s.debut);
+    const k = cleJour(s.debut); if (parJour.has(k)) parJour.get(k).push(s);
+  }
+  let h = `<div class="nav"><button data-act="prev" ${etat.semaine <= 0 ? "disabled" : ""}>‹ Préc.</button>
+    <strong>Du ${fmt(du.toISOString().slice(0,10) + "T12:00:00Z", { day: "numeric", month: "short" })} au ${fmt(au.toISOString().slice(0,10) + "T12:00:00Z", { day: "numeric", month: "short" })}</strong>
+    <button data-act="next" ${etat.semaine >= maxSem ? "disabled" : ""}>Suiv. ›</button></div><div class="jours">`;
+  let total = 0;
+  for (const [k, slots] of parJour) {
+    if (!slots.length) continue; total += slots.length;
+    h += `<div class="jour"><h3>${jourLong(slots[0].debut)}</h3><div class="slots">${slots.map(s =>
+      `<button class="slot" data-slot="${s.debut}" data-pratslot="${s.praticien_id}">${heure(s.debut)}</button>`).join("")}</div></div>`;
+  }
+  if (!total) h += `<p class="vide">Aucune disponibilité cette semaine. Essayez la semaine suivante${cab.telephone ? ` ou appelez le ${esc(cab.telephone)}` : ""}.</p>`;
+  zone.innerHTML = h + "</div>";
+}
+
+app.addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target, err = document.getElementById("formErr"), btn = f.querySelector("button[type=submit]");
+  const v = Object.fromEntries(new FormData(f));
+  err.innerHTML = "";
+  if (!v.nom || !v.prenom || !v.email || !v.tel) return err.innerHTML = `<div class="err">Merci de remplir tous les champs obligatoires.</div>`;
+  if (!f.rgpd.checked) return err.innerHTML = `<div class="err">Merci d'accepter l'utilisation de vos coordonnées pour la gestion du rendez-vous.</div>`;
+  btn.disabled = true; btn.textContent = "Réservation en cours…";
+  const { data, error } = await sb.rpc("reserver", {
+    p_slug: slug, p_prestation: etat.prestation.id, p_debut: etat.debut,
+    p_praticien: etat.praticien ? etat.praticien.id : null,
+    p_nom: v.nom, p_prenom: v.prenom, p_email: v.email, p_tel: v.tel, p_note: v.note || null });
+  if (error) {
+    btn.disabled = false; btn.textContent = "Confirmer le rendez-vous";
+    err.innerHTML = `<div class="err">${esc(msgErr(error))}</div>`;
+    if (/disponible|réservé/.test(error.message || "")) { etat.debut = null; setTimeout(rendre, 2500); }
+    return;
+  }
+  confirmation(data, v);
+});
+
+function confirmation(r, v) {
+  const lien = `${location.origin}${location.pathname}?rdv=${r.token}`;
+  app.innerHTML = `<section class="card ok"><div class="big">✅</div><h2 style="justify-content:center">Rendez-vous confirmé</h2>
+    <div class="recap"><div><strong>${jourLong(r.debut)} à ${heure(r.debut)}</strong></div>
+    <div>${esc(r.prestation)} avec ${esc(r.praticien)}</div>${cab.adresse ? `<div>${esc(cab.adresse)}</div>` : ""}</div>
+    <p>Un email de confirmation (avec le fichier agenda) est envoyé à <strong>${esc(v.email)}</strong>.<br><small style="color:var(--mut)">En démonstration, aucun email ne part réellement.</small></p>
+    <div class="actions"><button class="btn sec" id="gerer">Voir / annuler (lien reçu par email)</button>
+    <a class="btn" href="patient.html" style="text-decoration:none">Nouveau rendez-vous</a></div></section>`;
+  document.getElementById("gerer").onclick = () => afficherRdvExistant(r.token);
+}
+
+function telechargerIcs(r, nomCab, adresse) {
+  const f = s => new Date(s).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const t = s => String(s ?? "").replace(/([,;\\])/g, "\\$1");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//RDV Cabinet//FR", "BEGIN:VEVENT", `UID:${r.token}@rdv`,
+    `DTSTAMP:${f(new Date())}`, `DTSTART:${f(r.debut)}`, `DTEND:${f(r.fin)}`, `SUMMARY:${t(r.prestation + " – " + nomCab)}`,
+    `LOCATION:${t(adresse)}`, `DESCRIPTION:${t("Avec " + r.praticien)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "rendez-vous.ics"; a.click();
+}
+
+// ---------- Lien « gérer mon rendez-vous » ----------
+async function afficherRdvExistant(token) {
+  const { data: r, error } = await sb.rpc("consulter_rdv", { p_token: token });
+  if (error || !r) { app.innerHTML = `<div class="card err">Rendez-vous introuvable.</div>`; return; }
+  cab = { nom: r.cabinet, adresse: r.adresse, telephone: r.telephone, couleur: r.couleur, fuseau: r.fuseau };
+  appliquerTheme(cab);
+  const statuts = { confirme: "Confirmé", annule: "Annulé", honore: "Effectué", absent: "Non honoré" };
+  let h = `<section class="card ok"><h2 style="justify-content:center">Votre rendez-vous</h2>
+    <div class="recap"><div><strong>${jourLong(r.debut)} à ${heure(r.debut)}</strong></div>
+    <div>${esc(r.prestation || "Rendez-vous")} avec ${esc(r.praticien)}</div><div>Patient : ${esc(r.patient)}</div>
+    <div>Statut : <strong>${statuts[r.statut] || r.statut}</strong></div></div><div id="annErr"></div><div class="actions">`;
+  if (r.peut_annuler) h += `<button class="btn danger" id="annuler">Annuler ce rendez-vous</button>`;
+  else if (r.statut === "confirme") h += `<p class="vide">L'annulation en ligne n'est plus possible à moins de ${r.delai_annulation_heures} h du rendez-vous${r.telephone ? `. Appelez le ${esc(r.telephone)}` : ""}.</p>`;
+  h += `<a class="btn sec" style="text-decoration:none" href="patient.html">Prendre un autre rendez-vous</a></div></section>`;
+  app.innerHTML = h;
+  const b = document.getElementById("annuler");
+  if (b) b.onclick = async () => {
+    if (!b.dataset.ok) { b.dataset.ok = 1; b.textContent = "Confirmer l'annulation"; return; }
+    b.disabled = true;
+    const { error } = await sb.rpc("annuler_rdv", { p_token: token });
+    if (error) { b.disabled = false; document.getElementById("annErr").innerHTML = `<div class="err">${esc(msgErr(error))}</div>`; return; }
+    afficherRdvExistant(token);
+  };
+}
+</script>
+</body>
+</html>
