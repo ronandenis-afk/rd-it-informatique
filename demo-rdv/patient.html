@@ -63,7 +63,7 @@
 <main id="app"><div class="chargement">Chargement…</div></main>
 <footer id="pied"></footer>
 
-<script src="demo-backend.js?v=2"></script>
+<script src="demo-backend.js?v=3"></script>
 <script>
 const cfg = window.RDV_CONFIG;
 const params = new URLSearchParams(location.search);
@@ -230,7 +230,7 @@ function confirmation(r, v) {
   app.innerHTML = `<section class="card ok"><div class="big">✅</div><h2 style="justify-content:center">Rendez-vous confirmé</h2>
     <div class="recap"><div><strong>${jourLong(r.debut)} à ${heure(r.debut)}</strong></div>
     <div>${esc(r.prestation)} avec ${esc(r.praticien)}</div>${cab.adresse ? `<div>${esc(cab.adresse)}</div>` : ""}</div>
-    <p>Un email de confirmation (avec le fichier agenda) est envoyé à <strong>${esc(v.email)}</strong>.<br><small style="color:var(--mut)">En démonstration, aucun email ne part réellement.</small></p>
+    <p>Un email de confirmation (avec le fichier agenda) est envoyé à <strong>${esc(v.email)}</strong>.<br><small style="color:var(--mut)">Démonstration : l'email est visible dans la « Boîte mail » du bandeau en haut.</small></p>
     <div class="actions"><button class="btn sec" id="gerer">Voir / annuler (lien reçu par email)</button>
     <a class="btn" href="patient.html" style="text-decoration:none">Nouveau rendez-vous</a></div></section>`;
   document.getElementById("gerer").onclick = () => afficherRdvExistant(r.token);

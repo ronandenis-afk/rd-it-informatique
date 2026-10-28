@@ -141,6 +141,66 @@
     return db.rdv.some(x => x.id !== exclureId && x.praticien_id === r.praticien_id && actifs(x) && chevauche(x.debut, x.fin, r.debut, r.fin));
   }
 
+  // ---------- Emails simulés (même contenu que les emails réels) ----------
+  const escH = x => String(x ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function quandTZ(d) {
+    const x = new Date(d);
+    const jour = new Intl.DateTimeFormat("fr-FR", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(x);
+    const heure = new Intl.DateTimeFormat("fr-FR", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(x);
+    return { jour, heure, texte: `${jour} à ${heure}` };
+  }
+  function gabarit(r, titre, intro, avecLien, piece) {
+    const c = db.cabinets.find(x => x.id === r.cabinet_id), p = db.praticiens.find(x => x.id === r.praticien_id) || {}, s = db.prestations.find(x => x.id === r.prestation_id);
+    const q = quandTZ(r.debut);
+    const ligne = (k, v) => v ? `<tr><td style="padding:4px 12px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${escH(v)}</td></tr>` : "";
+    return `<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;color:#0f172a">
+  <div style="max-width:560px;margin:0 auto;padding:24px">
+   <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0">
+    <div style="background:${escH(c.couleur)};color:#fff;padding:18px 24px;font-size:18px;font-weight:700">${escH(c.nom)}</div>
+    <div style="padding:24px">
+     <h1 style="font-size:20px;margin:0 0 12px">${escH(titre)}</h1>
+     <p style="margin:0 0 16px;line-height:1.5">${intro}</p>
+     <table style="border-collapse:collapse;font-size:15px;margin-bottom:16px">${ligne("Date", q.jour)}${ligne("Heure", q.heure)}${ligne("Séance", s && s.nom)}${ligne("Avec", p.nom)}${ligne("Adresse", c.adresse)}</table>
+     ${avecLien ? `<p style="margin:20px 0"><a href="patient.html?rdv=${r.token}" style="background:${escH(c.couleur)};color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;display:inline-block">Voir ou annuler mon rendez-vous</a></p>
+     <p style="font-size:13px;color:#64748b">Annulation en ligne possible jusqu'à ${c.delai_annulation_heures} h avant le rendez-vous.</p>` : ""}
+     ${piece ? `<p style="font-size:13px;color:#64748b">📎 Pièce jointe : rendez-vous.ics (ajout à l'agenda du téléphone)</p>` : ""}
+     ${c.telephone ? `<p style="font-size:13px;color:#64748b">Une question ? Appelez le cabinet au ${escH(c.telephone)}.</p>` : ""}
+    </div>
+   </div>
+   <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:12px">Email automatique, merci de ne pas y répondre.</p>
+  </div></body></html>`;
+  }
+  function ajouterEmail(e) {
+    db.emails = db.emails || [];
+    db.emails.unshift({ id: uid(), date: new Date().toISOString(), lu: false, ...e });
+    db.emails = db.emails.slice(0, 60);
+  }
+  function notifier(type, r) {
+    const c = db.cabinets.find(x => x.id === r.cabinet_id), p = db.praticiens.find(x => x.id === r.praticien_id) || {};
+    const q = quandTZ(r.debut), patient = `${r.patient_prenom || ""} ${r.patient_nom}`.trim();
+    const envoyes = [];
+    db.emails = (db.emails || []).map(e => e.rdv_id === r.id && e.type === "rappel" && e.etat === "programmé" ? { ...e, etat: "annulé" } : e);
+    const dest = p.email || c.email;
+    if (dest && ((type === "confirmation" && r.source === "en_ligne") || (type === "annulation" && r.annule_par === "patient"))) {
+      const titre = type === "confirmation" ? "Nouveau rendez-vous en ligne" : "Rendez-vous annulé par le patient";
+      const intro = `<strong>${escH(patient)}</strong>${r.patient_tel ? ` – ${escH(r.patient_tel)}` : ""}${r.patient_email ? ` – ${escH(r.patient_email)}` : ""}${r.note ? `<br>Note : ${escH(r.note)}` : ""}`;
+      ajouterEmail({ rdv_id: r.id, type: "praticien", a: dest, sujet: `${titre} : ${patient}, ${q.texte}`, html: gabarit(r, titre, intro, false, false), etat: "envoyé" });
+      envoyes.push(dest);
+    }
+    if (r.patient_email) {
+      const env = (titre, sujet, intro, lien, piece) => { ajouterEmail({ rdv_id: r.id, type, a: r.patient_email, sujet, html: gabarit(r, titre, intro, lien, piece), etat: "envoyé" }); envoyes.push(r.patient_email); };
+      if ((type === "confirmation" || type === "modification") && Date.parse(r.debut) > Date.now()) {
+        const veille = wall(addDays(dayOf(r.debut), -1), "18:00");
+        ajouterEmail({ rdv_id: r.id, type: "rappel", a: r.patient_email, sujet: `Rappel : rendez-vous ${q.texte}`, etat: "programmé", programme: veille.toISOString(),
+          html: gabarit(r, "Rappel de votre rendez-vous", `Bonjour ${escH(patient)}, nous vous rappelons votre rendez-vous.`, true, false) });
+      }
+      if (type === "confirmation") env("Votre rendez-vous est confirmé", `Rendez-vous confirmé le ${q.texte}`, `Bonjour ${escH(patient)}, nous avons bien enregistré votre rendez-vous.`, true, true);
+      if (type === "modification") env("Votre rendez-vous a été modifié", `Rendez-vous modifié : ${q.texte}`, `Bonjour ${escH(patient)}, voici le nouvel horaire de votre rendez-vous.`, true, true);
+      if (type === "annulation") env("Votre rendez-vous est annulé", `Rendez-vous annulé (${q.texte})`, `Bonjour ${escH(patient)}, ${r.annule_par === "patient" ? "votre annulation a bien été prise en compte" : "le cabinet a dû annuler votre rendez-vous. Nous vous invitons à en reprendre un"}.`, false, false);
+    }
+    if (envoyes.length) setTimeout(() => window.RDV_DEMO && window.RDV_DEMO.annoncer(envoyes), 300);
+  }
+
   // ---------- Fonctions publiques (équivalent des RPC Supabase) ----------
   const rpc = {
     get_cabinet_public({ p_slug }) {
@@ -194,7 +254,7 @@
       const r = { id: uid(), cabinet_id: c.id, praticien_id: pid, prestation_id: pr.id, debut: iso(cible), fin: iso(cible + pr.duree_minutes * 60000),
         patient_nom: nom.toUpperCase(), patient_prenom: prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase(), patient_email: email, patient_tel: tel,
         note: (a.p_note || "").trim() || null, statut: "confirme", source: "en_ligne", annule_par: null, token: uid(), rappel_envoye: false, created_at: now, updated_at: now };
-      lierPatient(r); db.rdv.push(r); save();
+      lierPatient(r); db.rdv.push(r); notifier("confirmation", r); save();
       return { token: r.token, debut: r.debut, fin: r.fin, praticien: db.praticiens.find(p => p.id === pid).nom, prestation: pr.nom };
     },
     consulter_rdv({ p_token }) {
@@ -210,7 +270,7 @@
       if (r.statut !== "confirme") throw E("Ce rendez-vous est déjà annulé ou passé.");
       if (Date.parse(r.debut) <= Date.now() + c.delai_annulation_heures * 3600e3)
         throw E(`Annulation en ligne impossible moins de ${c.delai_annulation_heures} h avant le rendez-vous. Merci d'appeler le cabinet au ${c.telephone}.`);
-      r.statut = "annule"; r.annule_par = "patient"; r.updated_at = new Date().toISOString(); save();
+      r.statut = "annule"; r.annule_par = "patient"; r.updated_at = new Date().toISOString(); notifier("annulation", r); save();
       return rpc.consulter_rdv({ p_token });
     },
     lier_mon_compte() {
@@ -282,13 +342,22 @@
           const now = new Date().toISOString();
           const lignes = (Array.isArray(this.p) ? this.p : [this.p]).map(x => ({ id: uid(), created_at: now, updated_at: now, ...DEFAUTS[this.t](), ...clone(x) }));
           if (this.t === "rdv") { for (const r of lignes) if (conflitRdv(r)) return { data: null, error: E("Chevauchement de rendez-vous", "23P01") }; lignes.forEach(lierPatient); }
-          table.push(...lignes); save();
+          table.push(...lignes);
+          if (this.t === "rdv") lignes.filter(r => r.statut === "confirme").forEach(r => notifier("confirmation", r));
+          save();
           return { data: this.ret ? clone(this.one ? lignes[0] : lignes) : null, error: null };
         }
         if (this.op === "update") {
           const cibles = table.filter(match);
           for (const r of cibles) { const n = { ...r, ...clone(this.p), updated_at: new Date().toISOString() }; if (this.t === "rdv" && conflitRdv(n, r.id)) return { data: null, error: E("Chevauchement", "23P01") }; }
-          cibles.forEach(r => Object.assign(r, clone(this.p), { updated_at: new Date().toISOString() })); save();
+          const avant = this.t === "rdv" ? cibles.map(clone) : [];
+          cibles.forEach(r => Object.assign(r, clone(this.p), { updated_at: new Date().toISOString() }));
+          if (this.t === "rdv") cibles.forEach((r, i) => {
+            const o = avant[i];
+            if (r.statut === "annule" && o.statut !== "annule") notifier("annulation", r);
+            else if (r.statut === "confirme" && (Date.parse(r.debut) !== Date.parse(o.debut) || r.praticien_id !== o.praticien_id)) notifier("modification", r);
+          });
+          save();
           if (!this.ret) return { data: null, error: null };
           return this.one ? (cibles.length === 1 ? { data: clone(cibles[0]), error: null } : { data: null, error: E("Aucune ligne trouvée") }) : { data: clone(cibles), error: null };
         }
@@ -335,9 +404,66 @@
     }),
   };
 
-  // ---------- Bandeau « démonstration » ----------
+  // ---------- Bandeau « démonstration » et boîte mail simulée ----------
+  const LIBELLES = { confirmation: "Confirmation", modification: "Modification", annulation: "Annulation", rappel: "Rappel J-1", praticien: "Alerte praticien" };
+  const fmtCourt = d => new Intl.DateTimeFormat("fr-FR", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(d));
+  function majCompteur() {
+    const n = (db.emails || []).filter(e => !e.lu && e.etat === "envoyé").length;
+    const z = document.getElementById("demoMailN");
+    if (z) { z.textContent = n; z.style.display = n ? "inline-block" : "none"; }
+  }
+  function ouvrirBoite(idChoisi) {
+    sync();
+    document.getElementById("demoMail")?.remove();
+    const emails = db.emails || [];
+    const v = document.createElement("div");
+    v.id = "demoMail";
+    v.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;padding:12px;font:14px/1.4 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0f172a";
+    v.innerHTML = `<div style="background:#fff;border-radius:14px;width:min(1000px,100%);height:min(720px,100%);display:flex;flex-direction:column;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid #e2e8f0"><strong style="font-size:16px">📧 Boîte mail de démonstration</strong>
+        <span id="dmSous" style="color:#64748b;font-size:12px">Ce que reçoivent patients et praticiens · rien n'est réellement envoyé</span>
+        <button type="button" id="dmFermer" style="margin-left:auto;border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer">Fermer</button></div>
+      <div id="dmCorps" style="flex:1;display:flex;min-height:0">
+        <div id="dmListe" style="width:330px;max-width:45%;border-right:1px solid #e2e8f0;overflow:auto"></div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column"><div id="dmEntete" style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#475569"></div><iframe id="dmVue" title="Aperçu de l'email" style="flex:1;border:0;width:100%;background:#f1f5f9"></iframe></div>
+      </div></div>`;
+    document.body.append(v);
+    const fermer = () => { v.remove(); majCompteur(); };
+    v.querySelector("#dmFermer").onclick = fermer;
+    v.addEventListener("click", e => { if (e.target === v) fermer(); });
+    const liste = v.querySelector("#dmListe"), vue = v.querySelector("#dmVue"), entete = v.querySelector("#dmEntete");
+    if (window.innerWidth < 640) { v.querySelector("#dmSous").style.display = "none"; v.querySelector("#dmCorps").style.flexDirection = "column"; liste.style.cssText = "max-height:38%;overflow:auto;border-bottom:1px solid #e2e8f0"; }
+    if (!emails.length) {
+      liste.innerHTML = `<p style="padding:16px;color:#64748b">Aucun email pour l'instant. Réservez un rendez-vous côté patient, ou créez-en un dans l'agenda avec une adresse email : l'email apparaîtra ici.</p>`;
+      vue.srcdoc = ""; return;
+    }
+    liste.innerHTML = emails.map(e => `<button type="button" data-id="${e.id}" style="display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #f1f5f9;background:#fff;padding:10px 14px;cursor:pointer;font:inherit">
+      <span style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#64748b"><span style="font-weight:600;color:${e.type === "annulation" ? "#b91c1c" : e.type === "praticien" ? "#b45309" : "#0f766e"}">${LIBELLES[e.type] || e.type}${e.etat !== "envoyé" ? ` · ${e.etat}` : ""}</span><span>${fmtCourt(e.etat === "programmé" ? e.programme : e.date)}</span></span>
+      <span style="display:block;font-weight:${e.lu ? 400 : 700};margin-top:2px">${escH(e.sujet)}</span>
+      <span style="display:block;font-size:12px;color:#64748b">À : ${escH(e.a)}</span></button>`).join("");
+    const montrer = id => {
+      const e = emails.find(x => x.id === id) || emails[0];
+      liste.querySelectorAll("button").forEach(b => b.style.background = b.dataset.id === e.id ? "#ecfdf5" : "#fff");
+      entete.innerHTML = `<strong>${escH(e.sujet)}</strong><br>À : ${escH(e.a)} · ${e.etat === "programmé" ? "envoi programmé le " + fmtCourt(e.programme) : e.etat === "annulé" ? "envoi annulé (rendez-vous modifié ou annulé)" : "envoyé le " + fmtCourt(e.date)}`;
+      vue.srcdoc = e.html;
+      vue.onload = () => { try { vue.contentDocument.addEventListener("click", ev => { const a = ev.target.closest("a"); if (a) { ev.preventDefault(); location.href = a.getAttribute("href"); } }); } catch {} };
+      if (!e.lu) { e.lu = true; const d = db.emails.find(x => x.id === e.id); if (d) d.lu = true; save(); }
+    };
+    liste.onclick = e => { const b = e.target.closest("button[data-id]"); if (b) montrer(b.dataset.id); };
+    montrer(idChoisi);
+  }
   window.RDV_DEMO = {
     reset() { store.del(KEY); store.del(SKEY); location.reload(); },
+    boite: ouvrirBoite,
+    annoncer(dest) {
+      majCompteur();
+      const t = document.createElement("div");
+      t.style.cssText = "position:fixed;left:50%;bottom:calc(70px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:#10231f;color:#e7f3ef;border-radius:10px;padding:10px 14px;font:14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:flex;gap:12px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100% - 32px)";
+      t.innerHTML = `<span>📧 Email envoyé à ${escH([...new Set(dest)].reverse().join(", "))} <span style="opacity:.7">(simulé)</span></span><button type="button" style="background:#7dd3c0;color:#10231f;border:0;border-radius:7px;padding:5px 10px;cursor:pointer;font-weight:600">Voir</button>`;
+      t.querySelector("button").onclick = () => { t.remove(); ouvrirBoite(); };
+      document.body.append(t);
+      setTimeout(() => t.remove(), 7000);
+    },
   };
   document.addEventListener("DOMContentLoaded", () => {
     const page = /praticien/.test(location.pathname) ? "praticien" : "patient";
@@ -346,10 +472,13 @@
     b.style.cssText = "background:#10231f;color:#e7f3ef;font:500 13px/1.35 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:8px max(16px,env(safe-area-inset-left,0px));display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center";
     const lien = (href, txt, on) => `<a href="${href}" style="color:${on ? "#10231f" : "#e7f3ef"};background:${on ? "#7dd3c0" : "transparent"};border:1px solid #7dd3c0;border-radius:99px;padding:3px 11px;text-decoration:none;white-space:nowrap">${txt}</a>`;
     b.innerHTML = `<strong style="letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:#7dd3c0">Démonstration</strong>
-      <span style="opacity:.85">Données fictives, aucun email envoyé</span>
+      <span style="opacity:.85">Données fictives, emails simulés</span>
+      <button type="button" id="demoMailBtn" style="background:none;border:1px solid #7dd3c0;color:#e7f3ef;border-radius:99px;padding:3px 11px;cursor:pointer;font:inherit;white-space:nowrap">📧 Boîte mail <span id="demoMailN" style="display:none;background:#f59e0b;color:#10231f;border-radius:99px;padding:0 6px;font-size:11px;font-weight:700;margin-left:2px"></span></button>
       <span style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">${lien("index.html", "Présentation", false)}${lien("patient.html", "Vue patient", page === "patient")}${lien("praticien.html", "Espace praticien", page === "praticien")}
       <button type="button" id="demoReset" style="background:none;border:0;color:#e7f3ef;text-decoration:underline;cursor:pointer;font:inherit;padding:3px 4px">Réinitialiser</button></span>`;
     document.body.prepend(b);
+    b.querySelector("#demoMailBtn").onclick = () => ouvrirBoite();
+    majCompteur();
     const r = b.querySelector("#demoReset");
     r.onclick = () => { if (r.dataset.ok) return window.RDV_DEMO.reset(); r.dataset.ok = 1; r.textContent = "Confirmer la réinitialisation"; };
     if (page === "praticien") {
