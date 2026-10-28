@@ -4,7 +4,7 @@
 //  (données fictives, partagées entre la vue patient et l'espace praticien).
 // =====================================================================
 (function () {
-  const KEY = "rdv-demo-v1", SKEY = "rdv-demo-session", TZ = "Europe/Paris";
+  const KEY = "rdv-demo-v2", SKEY = "rdv-demo-session", TZ = "Europe/Paris";
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch {} },
@@ -58,7 +58,7 @@
         { id: S2, cabinet_id: C, nom: "Bilan initial", description: "Première séance : bilan et définition du programme", duree_minutes: 45, prix: null, praticiens: null, reservable_en_ligne: true, actif: true, ordre: 2, created_at: now },
         { id: S3, cabinet_id: C, nom: "Kiné du sport", description: "Rééducation post-traumatique, reprise sportive", duree_minutes: 45, prix: 45, praticiens: [P2], reservable_en_ligne: true, actif: true, ordre: 3, created_at: now },
       ],
-      horaires: [], absences: [], rdv: [],
+      horaires: [], absences: [], rdv: [], patients: [],
     };
     for (let j = 1; j <= 5; j++) {
       db.horaires.push({ id: uid(), praticien_id: P1, jour: j, debut: "08:30", fin: "12:30" }, { id: uid(), praticien_id: P1, jour: j, debut: "14:00", fin: "19:00" },
@@ -74,6 +74,16 @@
     const noms = ["DUPONT Jean", "BERNARD Lucie", "MOREAU Paul", "LEFEBVRE Emma", "GUÉGAN Yann", "LE ROUX Sophie", "PETIT Hugo", "ROBIN Camille", "GAUTIER Louis", "MARCHAND Chloé",
       "FAUCHEUX Anne", "BOUVIER Marc", "LE GOFF Léa", "TANGUY Pierre", "RENAUD Inès", "COLIN Julien", "HAMON Nathalie", "PERRIN Théo", "CARRÉ Manon", "JOLY Bernard",
       "LECLERC Sarah", "MENARD Gilles", "BRIAND Zoé", "OLLIVIER Hervé", "PRIGENT Maëlle"];
+    const sansAccent = x => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
+    const notesDemo = ["Ordonnance : 10 séances genou droit", "Lombalgie chronique, préfère les créneaux du matin", "Suite entorse cheville, reprise du running prévue", "Rééducation épaule après chirurgie", "Diabétique, prévoir collation"];
+    for (const n of noms) {
+      const parts = n.split(" "), prenom = parts[parts.length - 1], nom = parts.slice(0, -1).join(" ");
+      const tel = `06 ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))}`;
+      const an = 1945 + Math.floor(rnd() * 60), mois = 1 + Math.floor(rnd() * 12), jour = 1 + Math.floor(rnd() * 28);
+      db.patients.push({ id: uid(), cabinet_id: C, nom, prenom, email: `${sansAccent(prenom)}.${sansAccent(nom)}@exemple.fr`, telephone: tel,
+        date_naissance: rnd() < 0.7 ? `${an}-${String(mois).padStart(2, "0")}-${String(jour).padStart(2, "0")}` : null,
+        notes: rnd() < 0.3 ? pick(notesDemo) : null, created_at: now, updated_at: now });
+    }
     const nowMs = Date.now();
     for (let k = -4; k <= 12; k++) {
       const ds = addDays(today, k), dow = isoDow(ds);
@@ -86,12 +96,11 @@
           if (t + dur * 60000 > fin) break;
           const absent = db.absences.some(a => a.praticien_id === h.praticien_id && Date.parse(a.debut) < t + dur * 60000 && Date.parse(a.fin) > t);
           if (!absent && rnd() < taux) {
-            const [nom, prenom] = (() => { const n = pick(noms).split(" "); return [n.slice(0, -1).join(" "), n[n.length - 1]]; })();
+            const pa = pick(db.patients);
             const passe = t < nowMs;
             const statut = passe ? (rnd() < 0.06 ? "absent" : "honore") : (rnd() < 0.05 ? "annule" : "confirme");
             db.rdv.push({ id: uid(), cabinet_id: C, praticien_id: h.praticien_id, prestation_id: presta, debut: iso(t), fin: iso(t + dur * 60000),
-              patient_nom: nom, patient_prenom: prenom, patient_email: `${prenom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}.${nom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "")}@exemple.fr`,
-              patient_tel: `06 ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))} ${String(10 + Math.floor(rnd() * 89))}`,
+              patient_id: pa.id, patient_nom: pa.nom, patient_prenom: pa.prenom, patient_email: pa.email, patient_tel: pa.telephone,
               note: rnd() < 0.12 ? pick(["Douleur genou droit", "Suite entorse cheville", "Lombalgie", "Rééducation épaule"]) : null,
               statut, source: futur && rnd() < 0.4 ? "en_ligne" : (rnd() < 0.25 ? "en_ligne" : "cabinet"), annule_par: statut === "annule" ? "patient" : null,
               token: uid(), rappel_envoye: passe, created_at: now, updated_at: now });
@@ -109,6 +118,23 @@
   sync();
 
   const actifs = r => r.statut !== "annule";
+  const chiffres = x => String(x || "").replace(/\D/g, "");
+  // Équivalent du déclencheur SQL : rattache un RDV à une fiche patient (existante ou créée)
+  function lierPatient(r) {
+    if (r.patient_id) return;
+    const lo = x => (x || "").toLowerCase();
+    let p = db.patients.find(x => x.cabinet_id === r.cabinet_id && x.nom.toUpperCase() === r.patient_nom.toUpperCase()
+      && (!x.prenom || !r.patient_prenom || lo(x.prenom) === lo(r.patient_prenom))
+      && ((r.patient_email && lo(x.email) === lo(r.patient_email)) || (r.patient_tel && chiffres(x.telephone) === chiffres(r.patient_tel))
+          || (!r.patient_email && !r.patient_tel && lo(x.prenom) === lo(r.patient_prenom))));
+    if (!p) {
+      const now = new Date().toISOString();
+      p = { id: uid(), cabinet_id: r.cabinet_id, nom: r.patient_nom, prenom: r.patient_prenom || null, email: r.patient_email || null,
+            telephone: r.patient_tel || null, date_naissance: null, notes: null, created_at: now, updated_at: now };
+      db.patients.push(p);
+    } else { p.email = p.email || r.patient_email || null; p.telephone = p.telephone || r.patient_tel || null; }
+    r.patient_id = p.id;
+  }
   const chevauche = (a0, a1, b0, b1) => Date.parse(a0) < Date.parse(b1) && Date.parse(a1) > Date.parse(b0);
   function conflitRdv(r, exclureId) {
     if (!actifs(r)) return false;
@@ -168,7 +194,7 @@
       const r = { id: uid(), cabinet_id: c.id, praticien_id: pid, prestation_id: pr.id, debut: iso(cible), fin: iso(cible + pr.duree_minutes * 60000),
         patient_nom: nom.toUpperCase(), patient_prenom: prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase(), patient_email: email, patient_tel: tel,
         note: (a.p_note || "").trim() || null, statut: "confirme", source: "en_ligne", annule_par: null, token: uid(), rappel_envoye: false, created_at: now, updated_at: now };
-      db.rdv.push(r); save();
+      lierPatient(r); db.rdv.push(r); save();
       return { token: r.token, debut: r.debut, fin: r.fin, praticien: db.praticiens.find(p => p.id === pid).nom, prestation: pr.nom };
     },
     consulter_rdv({ p_token }) {
@@ -214,7 +240,8 @@
     return true;
   };
   const DEFAUTS = {
-    rdv: () => ({ statut: "confirme", source: "en_ligne", annule_par: null, token: uid(), rappel_envoye: false, note: null, prestation_id: null, patient_prenom: null, patient_email: null, patient_tel: null }),
+    patients: () => ({ prenom: null, email: null, telephone: null, date_naissance: null, notes: null }),
+    rdv: () => ({ patient_id: null, statut: "confirme", source: "en_ligne", annule_par: null, token: uid(), rappel_envoye: false, note: null, prestation_id: null, patient_prenom: null, patient_email: null, patient_tel: null }),
     praticiens: () => ({ user_id: null, specialite: null, email: null, couleur: "#0f766e", est_admin: false, actif: true, ordre: 0 }),
     prestations: () => ({ description: null, prix: null, praticiens: null, reservable_en_ligne: true, actif: true, ordre: 0 }),
     horaires: () => ({}), absences: () => ({ motif: null }), cabinets: () => ({}),
@@ -254,7 +281,7 @@
         if (this.op === "insert") {
           const now = new Date().toISOString();
           const lignes = (Array.isArray(this.p) ? this.p : [this.p]).map(x => ({ id: uid(), created_at: now, updated_at: now, ...DEFAUTS[this.t](), ...clone(x) }));
-          if (this.t === "rdv") for (const r of lignes) if (conflitRdv(r)) return { data: null, error: E("Chevauchement de rendez-vous", "23P01") };
+          if (this.t === "rdv") { for (const r of lignes) if (conflitRdv(r)) return { data: null, error: E("Chevauchement de rendez-vous", "23P01") }; lignes.forEach(lierPatient); }
           table.push(...lignes); save();
           return { data: this.ret ? clone(this.one ? lignes[0] : lignes) : null, error: null };
         }
@@ -266,6 +293,7 @@
           return this.one ? (cibles.length === 1 ? { data: clone(cibles[0]), error: null } : { data: null, error: E("Aucune ligne trouvée") }) : { data: clone(cibles), error: null };
         }
         if (this.op === "delete") {
+          if (this.t === "patients") { const ids = table.filter(match).map(x => x.id); db.rdv.forEach(r => { if (ids.includes(r.patient_id)) r.patient_id = null; }); }
           if (this.t === "prestations") { const ids = table.filter(match).map(s => s.id); db.rdv.forEach(r => { if (ids.includes(r.prestation_id)) r.prestation_id = null; }); }
           db[this.t] = table.filter(r => !match(r)); save(); return { data: null, error: null };
         }

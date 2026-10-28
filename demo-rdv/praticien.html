@@ -77,7 +77,7 @@
   .plage input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 7px; }
   .x { border: 0; background: none; color: var(--err); cursor: pointer; font-size: 1.1rem; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
-  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } .top .moi { display: none; } .jourHor { grid-template-columns: 1fr; } .barre h2 { min-width: 0; width: 100%; order: -1; margin: 0; } }
+  @media (max-width: 640px) { .col-der { display: none; } .grid2 { grid-template-columns: 1fr; } .top .moi { display: none; } .jourHor { grid-template-columns: 1fr; } .barre h2 { min-width: 0; width: 100%; order: -1; margin: 0; } }
   /* Fenêtre modale */
   .voile { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: grid; place-items: center; z-index: 50; padding: 12px; }
   .modal { background: #fff; border-radius: 14px; width: min(560px, 100%); max-height: 92vh; overflow: auto; padding: 20px; }
@@ -236,10 +236,10 @@ const mesPraticiens = () => S.admin ? S.praticiens : S.praticiens.filter(p => p.
 
 // ---------------------------------------------------------------- onglets
 function rendreOnglets() {
-  const o = [["agenda", "Agenda"], ["liste", "Rendez-vous"], ["horaires", "Horaires"], ["absences", "Absences"]];
+  const o = [["agenda", "Agenda"], ["patients", "Patients"], ["liste", "Rendez-vous"], ["horaires", "Horaires"], ["absences", "Absences"]];
   if (S.admin) o.push(["prestations", "Prestations"], ["equipe", "Équipe"], ["cabinet", "Cabinet"]);
   $("#tabs").innerHTML = o.map(([k, l]) => `<button data-tab="${k}" class="${S.onglet === k ? "on" : ""}">${l}</button>`).join("");
-  ({ agenda: vueAgenda, liste: vueListe, horaires: vueHoraires, absences: vueAbsences, prestations: vuePrestations, equipe: vueEquipe, cabinet: vueCabinet })[S.onglet]();
+  ({ agenda: vueAgenda, patients: vuePatients, liste: vueListe, horaires: vueHoraires, absences: vueAbsences, prestations: vuePrestations, equipe: vueEquipe, cabinet: vueCabinet })[S.onglet]();
 }
 $("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) { S.onglet = b.dataset.tab; rendreOnglets(); } };
 
@@ -371,7 +371,8 @@ function ouvrirModal(html) {
 }
 
 function modalRdv(r, defaut = {}) {
-  const nouveau = !r;
+  const nouveau = !r, pat = defaut.patient || null;
+  let patientId = r ? r.patient_id : pat ? pat.id : null;
   const d = r ? new Date(r.debut) : defaut.debut || prochainCreneau();
   const pid = r ? r.praticien_id : defaut.praticien_id || (S.filtre.has(S.moi.id) ? S.moi.id : [...S.filtre][0]);
   const prestas = S.prestations.filter(s => s.actif || (r && s.id === r.prestation_id));
@@ -385,14 +386,15 @@ function modalRdv(r, defaut = {}) {
         <label>Date<input name="date" type="date" value="${dateInput(d)}" required></label>
         <div class="grid2" style="gap:0 8px"><label>Heure<input name="heure" type="time" step="${S.cab.pas_minutes * 60}" value="${heureInput(d)}" required></label>
         <label>Durée (min)<input name="duree" type="number" min="5" max="480" step="5" value="${dureeInit}" required></label></div>
-        <label>Nom<input name="patient_nom" value="${esc(r?.patient_nom)}" required autocomplete="off"></label>
-        <label>Prénom<input name="patient_prenom" value="${esc(r?.patient_prenom)}" autocomplete="off"></label>
+        <label>Nom<input name="patient_nom" value="${esc(r ? r.patient_nom : pat?.nom)}" required autocomplete="off"></label>
+        <label>Prénom<input name="patient_prenom" value="${esc(r ? r.patient_prenom : pat?.prenom)}" autocomplete="off"></label>
       </div>
       <div class="sugg" id="sugg"></div>
       <div class="grid2">
-        <label>Téléphone<input name="patient_tel" type="tel" value="${esc(r?.patient_tel)}"></label>
-        <label>Email <span style="font-weight:400;color:var(--mut)">(confirmation envoyée si rempli)</span><input name="patient_email" type="email" value="${esc(r?.patient_email)}"></label>
+        <label>Téléphone<input name="patient_tel" type="tel" value="${esc(r ? r.patient_tel : pat?.telephone)}"></label>
+        <label>Email <span style="font-weight:400;color:var(--mut)">(confirmation envoyée si rempli)</span><input name="patient_email" type="email" value="${esc(r ? r.patient_email : pat?.email)}"></label>
       </div>
+      <p id="lienFiche" style="margin:-4px 0 10px;font-size:.85rem"></p>
       <label>Note<textarea name="note" rows="2">${esc(r?.note)}</textarea></label>
       ${r ? `<label>Statut<select name="statut">${Object.entries(STATUTS).map(([k, l]) => `<option value="${k}" ${k === r.statut ? "selected" : ""}>${l}</option>`).join("")}</select></label>` : ""}
       <div id="rdvErr"></div>
@@ -404,23 +406,35 @@ function modalRdv(r, defaut = {}) {
   const f = v.querySelector("#fRdv");
   f.prestation_id.onchange = () => { f.duree.value = f.prestation_id.selectedOptions[0].dataset.duree; };
   v.querySelector("#rFermer").onclick = () => v.remove();
-  // Suggestions de patients déjà venus
+  // Lien vers la fiche patient
+  const majLien = () => {
+    const z = v.querySelector("#lienFiche");
+    z.innerHTML = patientId ? `<button type="button" class="lien" id="vFiche">Ouvrir la fiche patient</button>`
+      : nouveau ? `<span style="color:var(--mut)">Nouveau patient : sa fiche sera créée automatiquement.</span>` : "";
+    const b = z.querySelector("#vFiche");
+    if (b) b.onclick = async () => {
+      const { data } = await sb.from("patients").select("*").eq("id", patientId).single();
+      if (data) { v.remove(); fichePatient(data); }
+    };
+  };
+  majLien();
+  // Suggestions depuis le fichier patients
   let minuteur;
   f.patient_nom.oninput = () => {
+    if (nouveau && patientId) { patientId = null; majLien(); }
     clearTimeout(minuteur);
-    const q = f.patient_nom.value.trim();
+    const q = f.patient_nom.value.trim().replace(/[%_,()]/g, "");
     if (q.length < 2) return v.querySelector("#sugg").innerHTML = "";
     minuteur = setTimeout(async () => {
-      const { data } = await sb.from("rdv").select("patient_nom, patient_prenom, patient_tel, patient_email")
-        .eq("cabinet_id", S.cab.id).ilike("patient_nom", `${q.replace(/[%_]/g, "")}%`).order("debut", { ascending: false }).limit(30);
-      const vus = new Map();
-      (data || []).forEach(p => { const k = `${p.patient_nom}|${p.patient_prenom}`; if (!vus.has(k)) vus.set(k, p); });
-      const l = [...vus.values()].slice(0, 6);
-      v.querySelector("#sugg").innerHTML = l.map((p, i) => `<button type="button" data-i="${i}">${esc(p.patient_nom)} ${esc(p.patient_prenom || "")}${p.patient_tel ? " · " + esc(p.patient_tel) : ""}</button>`).join("");
+      const { data } = await sb.from("patients").select("*").eq("cabinet_id", S.cab.id)
+        .or(`nom.ilike.${q}%,prenom.ilike.${q}%`).order("nom").order("prenom").limit(6);
+      const l = data || [];
+      v.querySelector("#sugg").innerHTML = l.map((p, i) => `<button type="button" data-i="${i}">${esc(p.nom)} ${esc(p.prenom || "")}${p.telephone ? " · " + esc(p.telephone) : ""}</button>`).join("");
       v.querySelector("#sugg").onclick = e => {
         const b = e.target.closest("button"); if (!b) return; const p = l[b.dataset.i];
-        f.patient_nom.value = p.patient_nom; f.patient_prenom.value = p.patient_prenom || "";
-        f.patient_tel.value = p.patient_tel || ""; f.patient_email.value = p.patient_email || "";
+        f.patient_nom.value = p.nom; f.patient_prenom.value = p.prenom || "";
+        f.patient_tel.value = p.telephone || ""; f.patient_email.value = p.email || "";
+        patientId = p.id; majLien();
         v.querySelector("#sugg").innerHTML = "";
       };
     }, 250);
@@ -441,7 +455,7 @@ function modalRdv(r, defaut = {}) {
       debut: debut.toISOString(), fin: fin.toISOString(),
       patient_nom: f.patient_nom.value.trim().toUpperCase(), patient_prenom: f.patient_prenom.value.trim() || null,
       patient_tel: f.patient_tel.value.trim() || null, patient_email: f.patient_email.value.trim().toLowerCase() || null,
-      note: f.note.value.trim() || null,
+      note: f.note.value.trim() || null, patient_id: patientId,
     };
     if (!row.patient_nom) return;
     let res;
@@ -486,6 +500,120 @@ async function vueListe() {
   $("#lQ").oninput = () => { clearTimeout(t); t = setTimeout(charger, 300); };
   $("#lPer").onchange = charger;
   charger();
+}
+
+// ---------------------------------------------------------------- PATIENTS
+const fmtDate = d => d ? fmt(d, { day: "numeric", month: "short", year: "numeric" }) : "–";
+function motifTel(t) { return /^[\d\s.+-]+$/.test(t) ? "%" + t.replace(/\D/g, "").split("").join("%") + "%" : `%${t}%`; }
+
+async function vuePatients() {
+  const c = $("#contenu");
+  c.innerHTML = `<div class="page etroit">
+    <div class="barre"><input id="pQ" type="search" placeholder="Nom, téléphone ou email…" autocomplete="off" style="flex:1;min-width:200px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px">
+    <button class="btn" id="pN">+ Patient</button></div>
+    <div id="pRes"><div class="vide">Chargement…</div></div></div>`;
+  $("#pN").onclick = () => fichePatient(null);
+  let t;
+  const charger = async () => {
+    const txt = $("#pQ").value.trim().replace(/[%_,()]/g, "");
+    let q = sb.from("patients").select("*").eq("cabinet_id", S.cab.id);
+    if (txt) q = q.or([`nom.ilike.%${txt}%`, `prenom.ilike.%${txt}%`, `email.ilike.%${txt}%`, `telephone.ilike.${motifTel(txt)}`].join(","));
+    const { data, error } = await q.order("nom").order("prenom").limit(300);
+    if (error) return $("#pRes").innerHTML = `<div class="err">${esc(erreur(error))}</div>`;
+    if (!data.length) return $("#pRes").innerHTML = `<div class="vide">${txt ? "Aucun patient trouvé." : "Aucun patient pour l'instant. Les fiches sont créées automatiquement à chaque rendez-vous, ou avec le bouton « + Patient »."}</div>`;
+    const stats = {};
+    const ids = data.map(p => p.id);
+    const { data: rdvs } = await sb.from("rdv").select("patient_id, debut, statut").eq("cabinet_id", S.cab.id).in("patient_id", ids);
+    const now = Date.now();
+    for (const r of rdvs || []) {
+      const s = stats[r.patient_id] ||= { n: 0, der: null, pro: null };
+      if (r.statut === "annule") continue;
+      s.n++;
+      const t0 = Date.parse(r.debut);
+      if (t0 < now && (!s.der || t0 > s.der)) s.der = t0;
+      if (t0 >= now && r.statut === "confirme" && (!s.pro || t0 < s.pro)) s.pro = t0;
+    }
+    $("#pRes").innerHTML = `<p style="color:var(--mut);font-size:.85rem;margin:0 0 8px">${data.length} patient${data.length > 1 ? "s" : ""}${data.length === 300 ? " (affinez la recherche pour voir les autres)" : ""}</p>
+      <div style="overflow-x:auto"><table class="liste"><tr><th>Patient</th><th>Contact</th><th class="col-der">Dernière séance</th><th>Prochain RDV</th></tr>${data.map(p => {
+        const s = stats[p.id] || { n: 0 };
+        return `<tr data-id="${p.id}" style="cursor:pointer"><td><strong>${esc(p.nom)} ${esc(p.prenom || "")}</strong><br><span style="color:var(--mut);font-size:.82rem">${s.n} RDV${p.date_naissance ? " · né(e) le " + fmtDate(p.date_naissance + "T12:00:00") : ""}</span></td>
+          <td style="font-size:.85rem">${esc(p.telephone || "")}<br><span style="color:var(--mut)">${esc(p.email || "")}</span></td>
+          <td class="col-der" style="font-size:.85rem">${s.der ? fmtDate(s.der) : "–"}</td>
+          <td style="font-size:.85rem">${s.pro ? `<strong>${fmt(s.pro, { weekday: "short", day: "numeric", month: "short" })} ${heureInput(new Date(s.pro))}</strong>` : "–"}</td></tr>`;
+      }).join("")}</table></div>`;
+    $("#pRes").onclick = e => { const tr = e.target.closest("tr[data-id]"); if (tr) fichePatient(data.find(p => p.id === tr.dataset.id)); };
+  };
+  $("#pQ").oninput = () => { clearTimeout(t); t = setTimeout(charger, 300); };
+  $("#pQ").focus();
+  charger();
+}
+
+async function fichePatient(p) {
+  const nouveau = !p;
+  const v = ouvrirModal(`<h3>${nouveau ? "Nouveau patient" : esc(`${p.nom} ${p.prenom || ""}`)}</h3>
+    <form id="fPat">
+      <div class="grid2">
+        <label>Nom<input name="nom" value="${esc(p?.nom)}" required autocomplete="off"></label>
+        <label>Prénom<input name="prenom" value="${esc(p?.prenom)}" autocomplete="off"></label>
+        <label>Téléphone<input name="telephone" type="tel" value="${esc(p?.telephone)}"></label>
+        <label>Email<input name="email" type="email" value="${esc(p?.email)}"></label>
+        <label>Date de naissance<input name="date_naissance" type="date" value="${esc(p?.date_naissance)}"></label>
+      </div>
+      <label>Notes internes <span style="font-weight:400;color:var(--mut)">(jamais visibles par le patient)</span><textarea name="notes" rows="3">${esc(p?.notes)}</textarea></label>
+      <div id="patErr"></div>
+      <div class="pied">
+        ${!nouveau && S.admin ? `<button type="button" class="btn danger" id="patDel">Supprimer</button>` : ""}
+        <span class="droite"><button type="button" class="btn sec" id="patF">Fermer</button>
+        ${!nouveau ? `<button type="button" class="btn sec" id="patRdv">+ Rendez-vous</button>` : ""}
+        <button class="btn">${nouveau ? "Créer la fiche" : "Enregistrer"}</button></span>
+      </div>
+    </form>
+    ${nouveau ? "" : `<h4 style="margin:20px 0 8px">Historique des rendez-vous</h4><div id="patHist" class="vide">Chargement…</div>`}`);
+  const f = v.querySelector("#fPat");
+  v.querySelector("#patF").onclick = () => v.remove();
+  const apres = () => { if (S.onglet === "patients") vuePatients(); };
+  if (!nouveau) {
+    v.querySelector("#patRdv").onclick = () => { v.remove(); modalRdv(null, { patient: p }); };
+    const del = v.querySelector("#patDel");
+    if (del) del.onclick = async () => {
+      if (!del.dataset.ok) { del.dataset.ok = 1; del.textContent = "Confirmer la suppression"; return; }
+      const { error } = await sb.from("patients").delete().eq("id", p.id);
+      if (error) return v.querySelector("#patErr").innerHTML = `<div class="err">${esc(erreur(error))}</div>`;
+      v.remove(); toast("Fiche supprimée (les rendez-vous sont conservés)"); apres();
+    };
+    const { data } = await sb.from("rdv").select("*").eq("patient_id", p.id).order("debut", { ascending: false }).limit(100);
+    const z = v.querySelector("#patHist");
+    if (!data || !data.length) z.innerHTML = "Aucun rendez-vous.";
+    else {
+      const n = k => data.filter(r => r.statut === k).length;
+      z.className = "";
+      z.innerHTML = `<p style="color:var(--mut);font-size:.85rem;margin:0 0 8px">${n("honore")} séance(s) honorée(s) · ${n("confirme")} à venir · ${n("absent")} absence(s) · ${n("annule")} annulation(s)</p>
+        <div style="overflow-x:auto"><table class="liste">${data.map(r => `<tr data-id="${r.id}" style="cursor:pointer">
+          <td style="white-space:nowrap">${fmt(r.debut, { weekday: "short", day: "numeric", month: "short", year: "2-digit" })} ${heureInput(new Date(r.debut))}</td>
+          <td>${esc(presta(r.prestation_id)?.nom || "")}<br><span style="color:var(--mut);font-size:.82rem"><span class="pastille" style="background:${esc(prat(r.praticien_id).couleur)}"></span>${esc(prat(r.praticien_id).nom)}</span></td>
+          <td>${STATUTS[r.statut]}</td></tr>`).join("")}</table></div>`;
+      z.onclick = e => { const tr = e.target.closest("tr[data-id]"); if (tr) { v.remove(); modalRdv(data.find(r => r.id === tr.dataset.id)); } };
+    }
+  }
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const row = { nom: f.nom.value.trim().toUpperCase(), prenom: f.prenom.value.trim() || null,
+      telephone: f.telephone.value.trim() || null, email: f.email.value.trim().toLowerCase() || null,
+      date_naissance: f.date_naissance.value || null, notes: f.notes.value.trim() || null };
+    if (!row.nom) return;
+    if (row.prenom) row.prenom = row.prenom.charAt(0).toUpperCase() + row.prenom.slice(1);
+    const err = x => v.querySelector("#patErr").innerHTML = `<div class="err">${esc(erreur(x))}</div>`;
+    if (nouveau) {
+      const { data, error } = await sb.from("patients").insert({ ...row, cabinet_id: S.cab.id }).select().single();
+      if (error) return err(error);
+      v.remove(); toast("Fiche patient créée"); apres(); fichePatient(data); return;
+    }
+    const { error } = await sb.from("patients").update(row).eq("id", p.id);
+    if (error) return err(error);
+    // Les coordonnées affichées dans l'agenda suivent la fiche
+    await sb.from("rdv").update({ patient_nom: row.nom, patient_prenom: row.prenom, patient_tel: row.telephone, patient_email: row.email }).eq("patient_id", p.id);
+    v.remove(); toast("Fiche enregistrée"); apres();
+  };
 }
 
 // ---------------------------------------------------------------- HORAIRES
