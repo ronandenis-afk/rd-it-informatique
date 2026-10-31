@@ -43,7 +43,6 @@
 (() => {
   const fin = new Date("2026-11-04T00:00:00+01:00");
   if (Date.now() >= fin.getTime() || /[?&]nohalloween/.test(location.search)) return;
-  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = window.matchMedia("(max-width:700px)").matches;
   const css = `
 :root{--lime:#ff8a1f;--mint:#a855f7}
@@ -86,11 +85,11 @@
 @keyframes hw-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes hw-glow{from{filter:drop-shadow(0 0 2px #ff8a1f)}to{filter:drop-shadow(0 0 12px #ff8a1f)}}
 @media (max-width:700px){.hw-badge{bottom:84px;max-width:calc(100vw - 32px)}.hw-web{width:80px}.hw-bat{width:32px}.hw-spider{right:22%}.hw-ghost{font-size:32px}.hw-crawl{width:30px;height:30px}}
-@media (prefers-reduced-motion:reduce){.hw-bat,.hw-spider,.hw-badge .hw-pk{animation:none}.hw-layer{display:none}}`;
+html.hw-off .hw-layer,html.hw-off .hw-spider{display:none}`;
   const st = document.createElement("style"); st.id = "hw-style"; st.textContent = css; document.head.appendChild(st);
   const el = (cls, html, parent) => { const d = document.createElement("div"); d.className = cls; if (html) d.innerHTML = html; (parent || document.body).appendChild(d); return d; };
 
-  if (!calme) {
+  {
     const layer = el("hw-layer"); layer.setAttribute("aria-hidden", "true");
     // Chauves-souris
     const batSvg = '<svg viewBox="0 0 64 32"><path fill="currentColor" d="M32 10c-2 0-3-3-3-3l-1 4c-4-1-6 1-6 1s-2-6-10-8c3 4 1 8 1 8s-6-3-13 0c5 1 7 6 7 6s5-2 9 1c3 2 6 6 10 7 2 1 4 2 6 2s4-1 6-2c4-1 7-5 10-7 4-3 9-1 9-1s2-5 7-6c-7-3-13 0-13 0s-2-4 1-8c-8 2-10 8-10 8s-2-2-6-1l-1-4s-1 3-3 3z"/></svg>';
@@ -136,9 +135,10 @@
   if (!mobile) el("hw-web r", webSvg).setAttribute("aria-hidden", "true");
 
   let ferme = false; try { ferme = sessionStorage.getItem("hw-ferme") === "1"; } catch (e) {}
+  if (ferme) document.documentElement.classList.add("hw-off");
   if (!ferme) {
-    const badge = el("hw-badge", '<span class="hw-pk" aria-hidden="true">🎃</span><span><b>Joyeux Halloween !</b>Un ordinateur hanté ? RD IT Informatique chasse les bugs et les virus 👻</span><button type="button" aria-label="Fermer le message Halloween">×</button>');
+    const badge = el("hw-badge", '<span class="hw-pk" aria-hidden="true">🎃</span><span><b>Joyeux Halloween !</b>Un ordinateur hanté ? RD IT Informatique chasse les bugs et les virus 👻</span><button type="button" aria-label="Fermer le message et arrêter les animations Halloween" title="Fermer et arrêter les animations">×</button>');
     badge.setAttribute("role", "note");
-    badge.querySelector("button").addEventListener("click", () => { badge.remove(); try { sessionStorage.setItem("hw-ferme", "1"); } catch (e) {} });
+    badge.querySelector("button").addEventListener("click", () => { badge.remove(); document.documentElement.classList.add("hw-off"); try { sessionStorage.setItem("hw-ferme", "1"); } catch (e) {} });
   }
 })();
