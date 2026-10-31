@@ -47,44 +47,41 @@
   const css = `
 :root{--lime:#ff8a1f;--mint:#a855f7}
 .hw-layer{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden;perspective:900px}
-.hw-bat{position:absolute;left:-80px;width:46px;opacity:.7;color:#ff8a1f;filter:drop-shadow(0 0 6px rgba(168,85,247,.7));animation:hw-fly linear infinite}
-.hw-bat svg{width:100%;height:auto;animation:hw-flap .25s ease-in-out infinite alternate;transform-origin:center}
-@keyframes hw-fly{0%{transform:translate3d(0,0,-300px) rotateY(20deg)}25%{transform:translate3d(28vw,-40px,80px) rotateY(-15deg)}50%{transform:translate3d(55vw,30px,-200px) rotateY(25deg)}75%{transform:translate3d(82vw,-25px,120px) rotateY(-20deg)}100%{transform:translate3d(calc(100vw + 160px),10px,0)}}
-@keyframes hw-flap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
+.hw-bat{position:absolute;left:-80px;width:34px;opacity:.38;color:#ff8a1f;filter:drop-shadow(0 0 6px rgba(168,85,247,.7));animation:hw-fly linear infinite}
+.hw-bat svg{width:100%;height:auto;animation:hw-flap 1.1s ease-in-out infinite alternate;transform-origin:center}
+@keyframes hw-fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-18px)}50%{transform:translate(55vw,12px)}75%{transform:translate(82vw,-10px)}100%{transform:translate(calc(100vw + 160px),0)}}
+@keyframes hw-flap{from{transform:scaleY(1)}to{transform:scaleY(.82)}}
 /* Citrouilles 3D */
-.hw-pump{position:absolute;width:var(--s,90px);height:var(--s,90px);transform-style:preserve-3d;animation:hw-float 6s ease-in-out infinite alternate}
-.hw-pump-in{position:absolute;inset:0;transform-style:preserve-3d;animation:hw-spin 9s linear infinite}
+.hw-pump{position:absolute;width:var(--s,90px);height:var(--s,90px);transform-style:preserve-3d;opacity:.9;animation:hw-float 7s ease-in-out infinite alternate}
+.hw-pump-in{position:absolute;inset:0;transform-style:preserve-3d;animation:hw-spin 12s ease-in-out infinite alternate}
 .hw-pump i{position:absolute;inset:14% 8%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffb04d,#ff7a00 55%,#b84a00);box-shadow:inset -4px -6px 10px rgba(80,20,0,.45);backface-visibility:visible}
 .hw-pump b{position:absolute;left:46%;top:2%;width:8%;height:20%;background:linear-gradient(#5b8a2b,#2f5214);border-radius:40% 40% 20% 20%;transform:rotate(8deg) translateZ(1px)}
 .hw-pump .hw-face{position:absolute;inset:0;transform:translateZ(calc(var(--s,90px) * .29));display:flex;align-items:center;justify-content:center}
 .hw-pump .hw-face svg{width:56%;filter:drop-shadow(0 0 6px #ffdd55)}
-@keyframes hw-spin{from{transform:rotateY(0) rotateX(-8deg)}to{transform:rotateY(360deg) rotateX(-8deg)}}
-@keyframes hw-float{from{transform:translateY(0) rotateZ(-6deg)}to{transform:translateY(-26px) rotateZ(6deg)}}
-/* Fantômes en profondeur */
-.hw-ghost{position:absolute;font-size:46px;opacity:0;animation:hw-boo 11s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(255,255,255,.5))}
-@keyframes hw-boo{0%{opacity:0;transform:translate3d(0,40px,-700px) rotateY(0)}20%{opacity:.85}60%{opacity:.85;transform:translate3d(-60px,-30px,0) rotateY(180deg)}85%{opacity:0;transform:translate3d(-140px,-90px,350px) rotateY(360deg)}100%{opacity:0}}
+@keyframes hw-spin{from{transform:rotateY(-15deg) rotateX(-6deg)}to{transform:rotateY(15deg) rotateX(-6deg)}}
+@keyframes hw-float{from{transform:translateY(0)}to{transform:translateY(-6px)}}
 /* Araignées qui défilent */
-.hw-crawl{position:absolute;left:0;top:0;width:40px;height:40px;offset-rotate:auto 90deg;animation:hw-path linear infinite}
-.hw-crawl svg{width:100%;height:100%;filter:drop-shadow(0 0 4px rgba(255,138,31,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.5))}
-.hw-crawl .lg{animation:hw-legs .18s ease-in-out infinite alternate;transform-box:fill-box}
+.hw-crawl{position:absolute;left:0;top:0;will-change:offset-distance;width:28px;height:28px;opacity:.75;offset-rotate:auto 90deg;animation:hw-path linear infinite}
+.hw-crawl svg{width:100%;height:100%;filter:drop-shadow(0 0 3px rgba(255,255,255,.35))}
+.hw-crawl .lg{transform-box:fill-box}
 .hw-crawl .lg.r{transform-origin:left center}.hw-crawl .lg.l{transform-origin:right center}
 .hw-crawl .lg:nth-of-type(2n){animation-direction:alternate-reverse}
-@keyframes hw-legs{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+@keyframes hw-legs{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
 @keyframes hw-path{from{offset-distance:0%}to{offset-distance:100%}}
-.hw-spider{position:fixed;top:0;right:8%;z-index:41;pointer-events:none;display:flex;flex-direction:column;align-items:center;animation:hw-drop 5s ease-in-out infinite alternate}
+.hw-spider{position:fixed;top:0;right:8%;z-index:41;pointer-events:none;display:flex;flex-direction:column;align-items:center;animation:hw-drop 9s ease-in-out infinite alternate}
 .hw-spider::before{content:"";width:1px;height:90px;background:rgba(200,200,210,.7)}
 .hw-spider span{font-size:26px;line-height:1}
-@keyframes hw-drop{from{transform:translateY(0)}to{transform:translateY(70px)}}
-.hw-web{position:fixed;top:0;left:0;width:130px;z-index:39;pointer-events:none;opacity:.35}
+@keyframes hw-drop{from{transform:translateY(0)}to{transform:translateY(40px)}}
+.hw-web{position:fixed;top:0;left:0;width:120px;z-index:39;pointer-events:none;opacity:.22}
 .hw-web.r{left:auto;right:0;transform:scaleX(-1);top:auto;bottom:0;transform:scale(-1,-1)}
 .hw-badge{position:fixed;left:16px;bottom:16px;z-index:60;max-width:min(330px,calc(100vw - 120px));display:flex;gap:.7rem;align-items:center;padding:.8rem 2.2rem .8rem .9rem;border-radius:16px;background:linear-gradient(135deg,#1b1026,#3a1846);color:#fff;font:500 .88rem/1.35 var(--font-body,system-ui);box-shadow:0 12px 34px rgba(0,0,0,.35),0 0 0 1px rgba(255,138,31,.5);animation:hw-in .6s ease-out both}
 .hw-badge b{color:#ff8a1f;display:block;font-family:var(--font-title,inherit)}
-.hw-badge .hw-pk{font-size:2rem;animation:hw-glow 1.6s ease-in-out infinite alternate}
+.hw-badge .hw-pk{font-size:2rem;animation:hw-glow 4s ease-in-out infinite alternate}
 .hw-badge button{position:absolute;top:6px;right:8px;border:0;background:none;color:#fff;opacity:.7;font-size:1.1rem;cursor:pointer;padding:2px 6px}
 .hw-badge button:hover{opacity:1}
 @keyframes hw-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-@keyframes hw-glow{from{filter:drop-shadow(0 0 2px #ff8a1f)}to{filter:drop-shadow(0 0 12px #ff8a1f)}}
-@media (max-width:700px){.hw-badge{bottom:84px;max-width:calc(100vw - 32px)}.hw-web{width:80px}.hw-bat{width:32px}.hw-spider{right:22%}.hw-ghost{font-size:32px}.hw-crawl{width:30px;height:30px}}
+@keyframes hw-glow{from{filter:drop-shadow(0 0 2px #ff8a1f)}to{filter:drop-shadow(0 0 7px #ff8a1f)}}
+@media (max-width:700px){.hw-badge{bottom:84px;max-width:calc(100vw - 32px)}.hw-web{width:80px}.hw-bat{width:26px}.hw-spider{right:22%}.hw-crawl{width:22px;height:22px}}
 html.hw-off .hw-layer,html.hw-off .hw-spider{display:none}`;
   const st = document.createElement("style"); st.id = "hw-style"; st.textContent = css; document.head.appendChild(st);
   const el = (cls, html, parent) => { const d = document.createElement("div"); d.className = cls; if (html) d.innerHTML = html; (parent || document.body).appendChild(d); return d; };
@@ -93,22 +90,18 @@ html.hw-off .hw-layer,html.hw-off .hw-spider{display:none}`;
     const layer = el("hw-layer"); layer.setAttribute("aria-hidden", "true");
     // Chauves-souris
     const batSvg = '<svg viewBox="0 0 64 32"><path fill="currentColor" d="M32 10c-2 0-3-3-3-3l-1 4c-4-1-6 1-6 1s-2-6-10-8c3 4 1 8 1 8s-6-3-13 0c5 1 7 6 7 6s5-2 9 1c3 2 6 6 10 7 2 1 4 2 6 2s4-1 6-2c4-1 7-5 10-7 4-3 9-1 9-1s2-5 7-6c-7-3-13 0-13 0s-2-4 1-8c-8 2-10 8-10 8s-2-2-6-1l-1-4s-1 3-3 3z"/></svg>';
-    [[8, 14, 0], [22, 19, 6], [12, 23, 11], [30, 17, 3]].forEach(([top, dur, delay]) => {
+    (mobile ? [[12, 40, 4]] : [[10, 38, 2], [24, 46, 20]]).forEach(([top, dur, delay]) => {
       const b = el("hw-bat", batSvg, layer); b.style.cssText = `top:${top}%;animation-duration:${dur}s;animation-delay:${delay}s`;
     });
     // Citrouilles 3D qui tournent
     const face = '<svg viewBox="0 0 40 30"><path fill="#ffe066" d="M6 6l7 3-7 4zM34 6l-7 3 7 4zM17 14h6l-3 4zM4 19c5 2 9 3 16 3s11-1 16-3c-2 6-8 9-16 9S6 25 4 19z"/><path fill="#ff7a00" d="M12 22h3v3h-3zM25 22h3v3h-3z"/></svg>';
-    const pumps = mobile ? [["right:4%;bottom:26%", 60, 0]] : [["right:3%;top:58%", 100, 0], ["left:2%;top:40%", 70, -3], ["right:30%;bottom:6%", 56, -5]];
+    const pumps = mobile ? [] : [["right:2.5%;bottom:5%", 78, 0], ["left:1.5%;bottom:22%", 56, -4]];
     pumps.forEach(([pos, s, d]) => {
       const p = el("hw-pump", "", layer); p.style.cssText = pos + `;--s:${s}px;animation-delay:${d}s`;
       const inner = el("hw-pump-in", "", p); inner.style.animationDelay = d + "s";
       for (let i = 0; i < 8; i++) { const sl = document.createElement("i"); sl.style.transform = `rotateY(${i * 22.5}deg)`; inner.appendChild(sl); }
       inner.appendChild(document.createElement("b"));
       el("hw-face", face, inner);
-    });
-    // Fantômes qui arrivent du fond
-    (mobile ? [[60, 30, 2]] : [[70, 30, 1], [25, 60, 6], [85, 15, 9]]).forEach(([x, y, d]) => {
-      const g = el("hw-ghost", "👻", layer); g.style.cssText = `left:${x}%;top:${y}%;animation-delay:${d}s`;
     });
     // Araignées qui défilent sur l'écran
     const W = innerWidth, H = innerHeight;
@@ -124,9 +117,9 @@ html.hw-off .hw-layer,html.hw-off .hw-spider{display:none}`;
       [`M${W * .15} -50 C ${W * .4} ${H * .3}, ${W * .05} ${H * .6}, ${W * .3} ${H + 60}`, 28, 15],
       [`M${W * .9} ${H + 50} C ${W * .6} ${H * .7}, ${W * .95} ${H * .35}, ${W * .7} -60`, 30, 4]
     ];
-    (mobile ? routes.slice(0, 2) : routes).forEach(([path, dur, d]) => {
+    (mobile ? [routes[0]] : [routes[0], routes[3]]).forEach(([path, dur, d]) => {
       const c = el("hw-crawl", spiderSvg, layer);
-      c.style.offsetPath = `path("${path}")`; c.style.animationDuration = dur + "s"; c.style.animationDelay = -d + "s";
+      c.style.offsetPath = `path("${path}")`; c.style.animationDuration = dur * 2.6 + "s"; c.style.animationDelay = -d + "s";
     });
     const sp = el("hw-spider", "<span>🕷️</span>"); sp.setAttribute("aria-hidden", "true");
   }
