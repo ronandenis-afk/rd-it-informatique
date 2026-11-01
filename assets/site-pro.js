@@ -130,7 +130,7 @@ html.hw-off .hw-layer,html.hw-off .hw-spider{display:none}`;
   let ferme = false; try { ferme = sessionStorage.getItem("hw-ferme") === "1"; } catch (e) {}
   if (ferme) document.documentElement.classList.add("hw-off");
   if (!ferme) {
-    const badge = el("hw-badge", '<span class="hw-pk" aria-hidden="true">🎃</span><span><b>Joyeux Halloween !</b>Un ordinateur hanté ? RD IT Informatique chasse les bugs et les virus 👻</span><button type="button" aria-label="Fermer le message et arrêter les animations Halloween" title="Fermer et arrêter les animations">×</button>');
+    const badge = el("hw-badge", '<span class="hw-pk" aria-hidden="true">🎃</span><span><b>Joyeux Halloween !</b>RD IT Informatique vous souhaite une belle fête 👻</span><button type="button" aria-label="Fermer le message et arrêter les animations Halloween" title="Fermer et arrêter les animations">×</button>');
     badge.setAttribute("role", "note");
     badge.querySelector("button").addEventListener("click", () => { badge.remove(); document.documentElement.classList.add("hw-off"); try { sessionStorage.setItem("hw-ferme", "1"); } catch (e) {} });
   }
