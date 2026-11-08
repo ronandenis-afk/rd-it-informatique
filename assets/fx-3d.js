@@ -85,11 +85,10 @@
     const surEcran = (u, v) => charniere([-u * W * .9, .06 + v * (HE - .12), .002]);
     const surSocle = (u, v) => [-u * W * .86, by + .001, -D * .78 + v * D * 1.25];
 
-    let t = 0, mx = 0, my = 0, cx = 0, cy = 0, visible = true, tourne = false;
+    let t = 0, tb = 0, mx = 0, my = 0, cx = 0, cy = 0, visible = true, tourne = false;
     if (souris) {
       window.addEventListener("pointermove", (e) => {
         mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5;
-        if (calme) suit();
       }, { passive: true });
     }
 
@@ -128,6 +127,11 @@
         const prof = 1 - (p[2] + 1.2) / 2.4;
         ctx.fillStyle = i % 6 ? "rgba(0,229,255," + (.25 + prof * .7).toFixed(2) + ")" : "rgba(61,139,255," + (.35 + prof * .6).toFixed(2) + ")";
         ctx.beginPath(); ctx.arc(p[0], p[1], .7 + prof * 1.9 * p[3], 0, 6.283); ctx.fill();
+        // Lumières bleues qui clignotent sur certains nœuds
+        if (i % 3 === 0) {
+          const sc = Math.pow(Math.max(0, Math.sin(tb * 1.7 + i * 2.17)), 12) * (.45 + prof * .55);
+          if (sc > .03) etoile(p, (5 + prof * 7) * (.6 + sc * .6), i % 2 ? "61,139,255" : "0,229,255", sc);
+        }
       });
 
       // Anneau orbital avec un point lumineux
@@ -137,7 +141,22 @@
         k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]);
       }
       ctx.stroke();
-      const ao = t * .9, sat = proj([Math.cos(ao) * 1.42, Math.sin(ao) * .18 - .1, Math.sin(ao) * 1.42]);
+      // Second anneau incliné, en pointillés
+      const al = .95, r2 = 1.3;
+      ctx.strokeStyle = "rgba(0,229,255,.22)"; ctx.setLineDash([3, 6]); ctx.beginPath();
+      for (let k = 0; k <= 72; k++) {
+        const a = k / 72 * 6.283, q = proj([Math.cos(a) * r2, Math.sin(a) * r2 * Math.sin(al), Math.sin(a) * r2 * Math.cos(al)]);
+        k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+      // Satellites lumineux qui pulsent
+      const sats = [0, 2.1, 4.2].map((ph, k) => {
+        const a = t * (k === 1 ? -.7 : .9) + ph;
+        const pos = k === 1
+          ? [Math.cos(a) * r2, Math.sin(a) * r2 * Math.sin(al), Math.sin(a) * r2 * Math.cos(al)]
+          : [Math.cos(a) * 1.42, Math.sin(a) * .18 - .1, Math.sin(a) * 1.42];
+        return { p: proj(pos), puls: .55 + .45 * Math.pow(Math.sin(tb * 2.4 + ph * 1.3) * .5 + .5, 2), coul: k === 1 ? "61,139,255" : "0,229,255" };
+      });
 
       // Ordinateur : faces triées de la plus lointaine à la plus proche
       const faces = [];
@@ -150,8 +169,7 @@
         });
       };
       ajoute(socle, "socle"); ajoute(ecran, "ecran");
-      const avantSat = sat[2] < 0;
-      if (!avantSat) etoile(sat);
+      sats.filter((o) => o.p[2] >= 0).forEach((o) => etoile(o.p, 11 * o.puls, o.coul, 1));
       faces.sort((a, b) => b.z - a.z).forEach((f) => {
         if (!f.face) return;
         ctx.beginPath(); f.q.forEach((v, n) => n ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1])); ctx.closePath();
@@ -169,7 +187,13 @@
         if (dalle) contenuEcran();
         if (dessus) clavier();
       });
-      if (avantSat) etoile(sat);
+      sats.filter((o) => o.p[2] < 0).forEach((o) => etoile(o.p, 11 * o.puls, o.coul, 1));
+      // Voyants bleus d'activité à l'avant du socle
+      [[.62, 9, 13.7], [.72, 6.3, 11.1]].forEach(([u, f1, f2], k) => {
+        const on = Math.sin(tb * f1 + k) + Math.sin(tb * f2) > .2;
+        const q = proj([-u * W, by - bh / 2, D + .004]);
+        if (q[2] < .3) etoile(q, on ? 7 : 3, "0,229,255", on ? 1 : .35);
+      });
 
       function ligne(a, b, couleur, ep) {
         const p = proj(a), q = proj(b);
@@ -178,13 +202,14 @@
       function contenuEcran() {
         ctx.lineCap = "round";
         ligne(surEcran(-.85, .88), surEcran(-.2, .88), "rgba(0,229,255,.95)", 2.2);      // titre « RD IT »
-        ligne(surEcran(.62, .88), surEcran(.68, .88), "rgba(34,197,94,.95)", 3);         // voyant vert
+        ligne(surEcran(.62, .88), surEcran(.68, .88), Math.floor(tb * 1.6) % 2 ? "rgba(34,197,94,.95)" : "rgba(34,197,94,.25)", 3); // voyant vert qui clignote
+        ligne(surEcran(.76, .88), surEcran(.82, .88), Math.sin(tb * 7) > 0 ? "rgba(61,139,255,1)" : "rgba(61,139,255,.25)", 3); // voyant bleu
         for (let k = 0; k < 3; k++) {
-          const v = .62 - k * .22, l = .35 + .3 * (Math.sin(t * 1.3 + k * 1.7) * .5 + .5);
+          const v = .62 - k * .22, l = .35 + .3 * (Math.sin(tb * 1.3 + k * 1.7) * .5 + .5);
           ligne(surEcran(-.85, v), surEcran(.85, v), "rgba(0,229,255,.14)", 6);
           ligne(surEcran(-.85, v), surEcran(-.85 + 1.7 * l, v), "rgba(0,229,255,.85)", 2.4);
         }
-        const bal = ((t * .35) % 1) * 1.1 - .05; // balayage lumineux
+        const bal = ((tb * .35) % 1) * 1.1 - .05; // balayage lumineux
         if (bal > 0 && bal < 1) ligne(surEcran(-.88, 1 - bal), surEcran(.88, 1 - bal), "rgba(0,229,255,.25)", 3);
         ctx.lineCap = "butt";
       }
@@ -196,39 +221,29 @@
         ctx.strokeStyle = "rgba(0,229,255,.3)"; ctx.lineWidth = 1; ctx.beginPath();
         P.forEach((v, n) => n ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1])); ctx.closePath(); ctx.stroke();
       }
-      function etoile(p) {
-        const rg = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 10 * p[3]);
-        rg.addColorStop(0, "rgba(255,255,255,1)"); rg.addColorStop(.3, "rgba(0,229,255,.9)"); rg.addColorStop(1, "rgba(0,229,255,0)");
-        ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(p[0], p[1], 10 * p[3], 0, 6.283); ctx.fill();
+      function etoile(p, taille = 10, coul = "0,229,255", force = 1) {
+        const rr = taille * p[3];
+        const rg = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], rr);
+        rg.addColorStop(0, "rgba(255,255,255," + force + ")"); rg.addColorStop(.3, "rgba(" + coul + "," + (.9 * force) + ")"); rg.addColorStop(1, "rgba(" + coul + ",0)");
+        ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.283); ctx.fill();
       }
     };
 
-    // « Réduire les animations » activé : image fixe (pas de rotation automatique),
-    // qui s'oriente seulement quand le visiteur bouge la souris.
-    let suivi = false;
-    function suit() {
-      if (suivi) return; suivi = true;
-      const pas = () => {
-        dessine();
-        if (Math.abs(mx - cx) + Math.abs(my - cy) > .002 && visible) requestAnimationFrame(pas); else suivi = false;
-      };
-      requestAnimationFrame(pas);
-    }
-    if (calme) {
-      t = .8; redessine = dessine; dessine();
-      new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) dessine(); }).observe(art);
-    }
-    else {
-      let avant = performance.now();
-      const boucle = (now) => {
-        if (!visible || document.hidden) { tourne = false; return; }
-        t += Math.min(now - avant, 50) / 1000; avant = now;
-        dessine(); requestAnimationFrame(boucle);
-      };
-      const lance = () => { if (!tourne && visible && !document.hidden) { tourne = true; avant = performance.now(); requestAnimationFrame(boucle); } };
-      new IntersectionObserver(([en]) => { visible = en.isIntersecting; lance(); }).observe(art);
-      document.addEventListener("visibilitychange", lance);
-    }
+    // Une seule boucle. Si « réduire les animations » est activé, l'ordinateur ne tourne pas tout seul
+    // (il suit seulement la souris) mais les voyants et lumières continuent de clignoter doucement.
+    if (calme) t = .8;
+    redessine = dessine;
+    let avant = performance.now();
+    const boucle = (now) => {
+      if (!visible || document.hidden) { tourne = false; return; }
+      const dt = Math.min(now - avant, 50) / 1000; avant = now;
+      tb += dt; if (!calme) t += dt;
+      dessine(); requestAnimationFrame(boucle);
+    };
+    const lance = () => { if (!tourne && visible && !document.hidden) { tourne = true; avant = performance.now(); requestAnimationFrame(boucle); } };
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; lance(); }).observe(art);
+    document.addEventListener("visibilitychange", lance);
+    dessine();
   }
 
   /* ---------- 3. Profondeur au défilement (parallaxe) ---------- */
