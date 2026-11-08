@@ -33,7 +33,7 @@
 
   /* 2. Cadre HUD autour de l'ordinateur 3D */
   const art = hero.querySelector(".hero-art");
-  if (art) art.appendChild(el("div", "fx-hud", "<i></i><i></i><i></i><i></i><b></b><em>SYS.SCAN // RD-IT</em><em>STATUT : <span class=\"ok\">EN LIGNE</span></em>"));
+  if (art) art.appendChild(el("div", "fx-hud", "<b></b><em>SYS.SCAN // RD-IT</em><em>STATUT : <span class=\"ok\">EN LIGNE</span></em>"));
 
   /* 3. Apparition en cascade */
   if (!calme) {

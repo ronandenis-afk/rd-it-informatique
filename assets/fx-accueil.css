@@ -56,12 +56,6 @@
 
 /* ---------- Cadre HUD autour de l'ordinateur 3D ---------- */
 .hero-art .fx-hud { position: absolute; inset: -6%; z-index: 1; pointer-events: none; }
-.hero-art .fx-hud i { position: absolute; width: 34px; height: 34px; border: 2px solid rgba(0, 229, 255, .75); filter: drop-shadow(0 0 6px rgba(0, 229, 255, .7)); animation: fx-hud-breathe 3.6s ease-in-out infinite; }
-.hero-art .fx-hud i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-.hero-art .fx-hud i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
-.hero-art .fx-hud i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
-.hero-art .fx-hud i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
-@keyframes fx-hud-breathe { 50% { opacity: .45; transform: scale(.96); } }
 .hero-art .fx-hud b { /* anneau gradué qui tourne */
   position: absolute; inset: 9%; border-radius: 50%;
   background: repeating-conic-gradient(rgba(0, 229, 255, .55) 0 1deg, transparent 1deg 6deg);
@@ -72,8 +66,8 @@
 .hero-art .fx-hud em { /* étiquettes techniques */
   position: absolute; font: 500 .62rem/1 var(--font-mono, monospace); letter-spacing: .12em; color: rgba(0, 229, 255, .75); font-style: normal; white-space: nowrap;
 }
-.hero-art .fx-hud em:nth-of-type(1) { top: -1.1rem; left: 42px; }
-.hero-art .fx-hud em:nth-of-type(2) { bottom: -1.1rem; right: 42px; }
+.hero-art .fx-hud em:nth-of-type(1) { top: -1.1rem; left: 10px; }
+.hero-art .fx-hud em:nth-of-type(2) { bottom: -1.1rem; right: 10px; }
 .hero-art .fx-hud em .ok { color: #22e58a; }
 
 /* ---------- Console HUD (texte tapé) ---------- */
@@ -134,7 +128,6 @@
 
 /* ---------- Respect de « réduire les animations » ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .hero .fx-grid::before, .hero .fx-scanline::after, .hero-art .fx-hud i, .hero-art .fx-hud b,
   .hero-actions .button:not(.hero-call)::before, .hero .fx-term .dot, .hero .fx-term .caret { animation: none !important; }
   .hero .fx-beam, .hero .fx-spot { display: none; }
   .fx-intro .hero-content > :nth-child(n+3), .fx-intro .hero-art { animation: none !important; opacity: 1; transform: none; filter: none; }
