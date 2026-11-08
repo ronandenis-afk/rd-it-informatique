@@ -47,12 +47,13 @@
     art.classList.add("has-3d");
     const ctx = cv.getContext("2d");
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let S = 0;
+    let S = 0, redessine = () => {};
     const taille = () => {
       const r = cv.getBoundingClientRect();
       S = Math.max(160, Math.round(Math.min(r.width, r.height)));
       cv.width = S * dpr; cv.height = S * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      redessine(); // changer la taille efface le canevas : on redessine aussitôt
     };
     taille();
     let attente; window.addEventListener("resize", () => { clearTimeout(attente); attente = setTimeout(taille, 150); });
@@ -88,6 +89,7 @@
     if (souris) {
       window.addEventListener("pointermove", (e) => {
         mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5;
+        if (calme) suit();
       }, { passive: true });
     }
 
@@ -201,7 +203,21 @@
       }
     };
 
-    if (calme) { t = .8; dessine(); }
+    // « Réduire les animations » activé : image fixe (pas de rotation automatique),
+    // qui s'oriente seulement quand le visiteur bouge la souris.
+    let suivi = false;
+    function suit() {
+      if (suivi) return; suivi = true;
+      const pas = () => {
+        dessine();
+        if (Math.abs(mx - cx) + Math.abs(my - cy) > .002 && visible) requestAnimationFrame(pas); else suivi = false;
+      };
+      requestAnimationFrame(pas);
+    }
+    if (calme) {
+      t = .8; redessine = dessine; dessine();
+      new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) dessine(); }).observe(art);
+    }
     else {
       let avant = performance.now();
       const boucle = (now) => {
