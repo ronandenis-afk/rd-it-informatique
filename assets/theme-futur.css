@@ -339,3 +339,12 @@ html .hero-art.has-3d .floating-chip { z-index: 2; }
   html .fx-tilt.is-tilting { transform: none !important; }
   html .flip-inner { transition: none; }
 }
+
+/* ---------- Confort sur smartphone ---------- */
+html .call-fab { transition: opacity .25s ease, transform .25s ease; }
+html .call-fab.is-hidden { opacity: 0; transform: translateY(20px) scale(.9); pointer-events: none; }
+@media (max-width: 640px) {
+  html footer a { display: inline-block; padding: .45rem 0; }
+  html .crumbs a { display: inline-block; padding: .5rem 0; }
+  html .card h3 a { display: inline-block; padding: .3rem 0; }
+}
