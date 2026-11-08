@@ -1,0 +1,141 @@
+/* RD IT Informatique — effets futuristes de l'en-tête de l'accueil
+   Grille néon en perspective, faisceaux de données, balayage, console HUD, titre « décodé », bouton néon.
+   Uniquement décoratif ; tout est coupé si « réduire les animations » est activé. */
+
+/* ---------- Grille néon en perspective (sol rétro-futuriste) ---------- */
+.hero .fx-grid {
+  position: absolute; left: -25%; right: -25%; bottom: 0; height: 40%; z-index: 0; pointer-events: none;
+  perspective: 420px; perspective-origin: 50% 0%; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 45%, #000 100%);
+}
+.hero .fx-grid::before {
+  content: ""; position: absolute; inset: 0 0 -60% 0; transform-origin: 50% 0%; transform: rotateX(68deg);
+  background-image:
+    linear-gradient(rgba(0, 229, 255, .34) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 139, 255, .26) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: fx-grid-run 3.2s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(0, 229, 255, .6));
+}
+.hero .fx-grid::after { /* horizon lumineux */
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, .9) 30%, rgba(255, 61, 200, .8) 50%, rgba(0, 229, 255, .9) 70%, transparent);
+  box-shadow: 0 0 18px 4px rgba(0, 229, 255, .35); opacity: .55;
+}
+@keyframes fx-grid-run { to { background-position: 0 64px, 0 0; } }
+
+/* ---------- Ligne de balayage + texture d'écran ---------- */
+.hero .fx-scanline {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .018) 0 1px, transparent 1px 3px);
+}
+.hero .fx-scanline::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 140px; top: -140px;
+  background: linear-gradient(180deg, transparent, rgba(0, 229, 255, .07) 70%, rgba(0, 229, 255, .22) 98%, transparent);
+  animation: fx-sweep 7s cubic-bezier(.55, 0, .45, 1) infinite;
+}
+@keyframes fx-sweep { 0% { top: -140px; } 60%, 100% { top: 110%; } }
+
+/* ---------- Faisceaux de données horizontaux ---------- */
+.hero .fx-beam {
+  position: absolute; z-index: 1; height: 1px; width: 220px; left: -240px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--c, #00e5ff));
+  box-shadow: 0 0 10px 1px var(--c, #00e5ff); border-radius: 2px; opacity: 0;
+  animation: fx-beam var(--d, 5s) linear var(--delay, 0s) infinite;
+}
+.hero .fx-beam::after { content: ""; position: absolute; right: -2px; top: -2px; width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px var(--c, #00e5ff); }
+@keyframes fx-beam { 0% { transform: translateX(0); opacity: 0; } 5% { opacity: .9; } 70% { opacity: .9; } 100% { transform: translateX(calc(100vw + 480px)); opacity: 0; } }
+
+/* ---------- Halo qui suit la souris ---------- */
+.hero .fx-spot {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .4s;
+  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 50%), rgba(0, 229, 255, .09), rgba(61, 139, 255, .04) 40%, transparent 70%);
+}
+.hero:hover .fx-spot { opacity: 1; }
+
+/* ---------- Cadre HUD autour de l'ordinateur 3D ---------- */
+.hero-art .fx-hud { position: absolute; inset: -6%; z-index: 1; pointer-events: none; }
+.hero-art .fx-hud i { position: absolute; width: 34px; height: 34px; border: 2px solid rgba(0, 229, 255, .75); filter: drop-shadow(0 0 6px rgba(0, 229, 255, .7)); animation: fx-hud-breathe 3.6s ease-in-out infinite; }
+.hero-art .fx-hud i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.hero-art .fx-hud i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.hero-art .fx-hud i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.hero-art .fx-hud i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+@keyframes fx-hud-breathe { 50% { opacity: .45; transform: scale(.96); } }
+.hero-art .fx-hud b { /* anneau gradué qui tourne */
+  position: absolute; inset: 9%; border-radius: 50%;
+  background: repeating-conic-gradient(rgba(0, 229, 255, .55) 0 1deg, transparent 1deg 6deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  animation: fx-spin 60s linear infinite; opacity: .5;
+}
+.hero-art .fx-hud em { /* étiquettes techniques */
+  position: absolute; font: 500 .62rem/1 var(--font-mono, monospace); letter-spacing: .12em; color: rgba(0, 229, 255, .75); font-style: normal; white-space: nowrap;
+}
+.hero-art .fx-hud em:nth-of-type(1) { top: -1.1rem; left: 42px; }
+.hero-art .fx-hud em:nth-of-type(2) { bottom: -1.1rem; right: 42px; }
+.hero-art .fx-hud em .ok { color: #22e58a; }
+
+/* ---------- Console HUD (texte tapé) ---------- */
+.hero .fx-term {
+  display: inline-flex; align-items: center; gap: .6rem; margin: 1.4rem 0 0; padding: .55rem .9rem;
+  font: 500 .78rem/1.2 var(--font-mono, monospace); color: #9fe9ff; letter-spacing: .02em;
+  border: 1px solid rgba(0, 229, 255, .25); border-radius: 10px;
+  background: linear-gradient(90deg, rgba(0, 229, 255, .08), rgba(6, 14, 28, .5));
+  box-shadow: inset 0 0 18px rgba(0, 229, 255, .06), 0 0 22px rgba(0, 229, 255, .08);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); min-height: 2.2rem; max-width: 100%;
+}
+.hero .fx-term .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #22e58a; box-shadow: 0 0 10px #22e58a; animation: fx-blink 1.4s steps(1) infinite; }
+.hero .fx-term .prompt { color: var(--fx-blue, #3d8bff); }
+.hero .fx-term .txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hero .fx-term .txt .ok { color: #22e58a; }
+.hero .fx-term .caret { display: inline-block; width: .55em; height: 1em; margin-left: 1px; background: #9fe9ff; vertical-align: -2px; animation: fx-blink 1s steps(1) infinite; }
+
+/* ---------- Titre : décodage + glitch ponctuel ---------- */
+.hero h1 .fx-glitch { position: relative; display: inline; }
+.hero h1.is-glitching span { animation: fx-glitch .38s steps(2) 1; }
+@keyframes fx-glitch {
+  0% { text-shadow: 3px 0 #ff3dc8, -3px 0 #00e5ff; transform: translateX(0); }
+  25% { text-shadow: -4px 0 #ff3dc8, 4px 0 #00e5ff; transform: translateX(-2px) skewX(-6deg); clip-path: inset(10% 0 45% 0); }
+  50% { text-shadow: 2px 0 #ff3dc8, -2px 0 #00e5ff; transform: translateX(2px); clip-path: inset(55% 0 5% 0); }
+  100% { text-shadow: none; transform: none; clip-path: none; }
+}
+.hero h1 .scr { color: #9fe9ff; -webkit-text-fill-color: #9fe9ff; opacity: .85; }
+
+/* ---------- Apparition en cascade du contenu ---------- */
+.fx-intro .hero-content > :nth-child(n+3) { opacity: 0; transform: translateY(22px); filter: blur(6px); animation: fx-rise .9s cubic-bezier(.2, .8, .2, 1) forwards; }
+.fx-intro .hero-content > :nth-child(3) { animation-delay: .34s; }
+.fx-intro .hero-content > :nth-child(4) { animation-delay: .48s; }
+.fx-intro .hero-content > :nth-child(5) { animation-delay: .6s; }
+.fx-intro .hero-content > :nth-child(6) { animation-delay: .72s; }
+.fx-intro .hero-art { animation: fx-art-in 1.3s cubic-bezier(.2, .8, .2, 1) .25s both; }
+@keyframes fx-rise { to { opacity: 1; transform: none; filter: none; } }
+@keyframes fx-art-in { from { opacity: 0; filter: blur(10px) brightness(2); } to { opacity: 1; filter: none; } }
+
+/* ---------- Bouton principal : bordure néon tournante ---------- */
+@property --fx-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.hero-actions .button:not(.hero-call) { position: relative; isolation: isolate; }
+.hero-actions .button:not(.hero-call)::before {
+  content: ""; position: absolute; inset: -2px; z-index: -1; border-radius: inherit; padding: 2px;
+  background: conic-gradient(from var(--fx-a), transparent 0 55%, #fff 70%, #ff3dc8 80%, #00e5ff 90%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: fx-orbit-border 3s linear infinite; filter: drop-shadow(0 0 6px #00e5ff);
+}
+@keyframes fx-orbit-border { to { --fx-a: 360deg; } }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .hero .fx-grid { height: 34%; }
+  .hero .fx-term { font-size: .7rem; }
+  .hero-art .fx-hud em { display: none; }
+  .hero .fx-beam:nth-of-type(n+3) { display: none; }
+}
+
+/* ---------- Respect de « réduire les animations » ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hero .fx-grid::before, .hero .fx-scanline::after, .hero-art .fx-hud i, .hero-art .fx-hud b,
+  .hero-actions .button:not(.hero-call)::before, .hero .fx-term .dot, .hero .fx-term .caret { animation: none !important; }
+  .hero .fx-beam, .hero .fx-spot { display: none; }
+  .fx-intro .hero-content > :nth-child(n+3), .fx-intro .hero-art { animation: none !important; opacity: 1; transform: none; filter: none; }
+}
