@@ -112,6 +112,9 @@
       const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, R * 1.25);
       g.addColorStop(0, "rgba(0,229,255,.16)"); g.addColorStop(1, "rgba(0,229,255,0)");
       ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+      const gm = ctx.createRadialGradient(ox + R * .55, oy + R * .45, 0, ox + R * .55, oy + R * .45, R * .9);
+      gm.addColorStop(0, "rgba(255,61,200," + (.11 + .05 * Math.sin(tb * .8)).toFixed(3) + ")"); gm.addColorStop(1, "rgba(255,61,200,0)");
+      ctx.fillStyle = gm; ctx.fillRect(0, 0, S, S);
 
       // Sphère réseau (tourne lentement sur elle-même)
       const spin = t * .18;
@@ -130,7 +133,7 @@
         // Lumières bleues qui clignotent sur certains nœuds
         if (i % 3 === 0) {
           const sc = Math.pow(Math.max(0, Math.sin(tb * 1.7 + i * 2.17)), 12) * (.45 + prof * .55);
-          if (sc > .03) etoile(p, (5 + prof * 7) * (.6 + sc * .6), i % 2 ? "61,139,255" : "0,229,255", sc);
+          if (sc > .03) etoile(p, (5 + prof * 7) * (.6 + sc * .6), ["0,229,255", "61,139,255", "255,61,200"][i % 9 / 3 | 0], sc);
         }
       });
 
@@ -143,7 +146,7 @@
       ctx.stroke();
       // Second anneau incliné, en pointillés
       const al = .95, r2 = 1.3;
-      ctx.strokeStyle = "rgba(0,229,255,.22)"; ctx.setLineDash([3, 6]); ctx.beginPath();
+      ctx.strokeStyle = "rgba(255,61,200,.45)"; ctx.setLineDash([3, 6]); ctx.beginPath();
       for (let k = 0; k <= 72; k++) {
         const a = k / 72 * 6.283, q = proj([Math.cos(a) * r2, Math.sin(a) * r2 * Math.sin(al), Math.sin(a) * r2 * Math.cos(al)]);
         k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]);
@@ -155,7 +158,7 @@
         const pos = k === 1
           ? [Math.cos(a) * r2, Math.sin(a) * r2 * Math.sin(al), Math.sin(a) * r2 * Math.cos(al)]
           : [Math.cos(a) * 1.42, Math.sin(a) * .18 - .1, Math.sin(a) * 1.42];
-        return { p: proj(pos), puls: .55 + .45 * Math.pow(Math.sin(tb * 2.4 + ph * 1.3) * .5 + .5, 2), coul: k === 1 ? "61,139,255" : "0,229,255" };
+        return { p: proj(pos), puls: .55 + .45 * Math.pow(Math.sin(tb * 2.4 + ph * 1.3) * .5 + .5, 2), coul: k === 1 ? "255,61,200" : k === 2 ? "61,139,255" : "0,229,255" };
       });
 
       // Ordinateur : faces triées de la plus lointaine à la plus proche
@@ -189,10 +192,10 @@
       });
       sats.filter((o) => o.p[2] < 0).forEach((o) => etoile(o.p, 11 * o.puls, o.coul, 1));
       // Voyants bleus d'activité à l'avant du socle
-      [[.62, 9, 13.7], [.72, 6.3, 11.1]].forEach(([u, f1, f2], k) => {
+      [[.62, 9, 13.7, "0,229,255"], [.72, 6.3, 11.1, "255,61,200"]].forEach(([u, f1, f2, coul], k) => {
         const on = Math.sin(tb * f1 + k) + Math.sin(tb * f2) > .2;
         const q = proj([-u * W, by - bh / 2, D + .004]);
-        if (q[2] < .3) etoile(q, on ? 7 : 3, "0,229,255", on ? 1 : .35);
+        if (q[2] < .3) etoile(q, on ? 7 : 3, coul, on ? 1 : .35);
       });
 
       function ligne(a, b, couleur, ep) {
@@ -207,7 +210,7 @@
         for (let k = 0; k < 3; k++) {
           const v = .62 - k * .22, l = .35 + .3 * (Math.sin(tb * 1.3 + k * 1.7) * .5 + .5);
           ligne(surEcran(-.85, v), surEcran(.85, v), "rgba(0,229,255,.14)", 6);
-          ligne(surEcran(-.85, v), surEcran(-.85 + 1.7 * l, v), "rgba(0,229,255,.85)", 2.4);
+          ligne(surEcran(-.85, v), surEcran(-.85 + 1.7 * l, v), k === 1 ? "rgba(255,61,200,.9)" : "rgba(0,229,255,.85)", 2.4);
         }
         const bal = ((tb * .35) % 1) * 1.1 - .05; // balayage lumineux
         if (bal > 0 && bal < 1) ligne(surEcran(-.88, 1 - bal), surEcran(.88, 1 - bal), "rgba(0,229,255,.25)", 3);
