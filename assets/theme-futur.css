@@ -308,3 +308,34 @@ html .footer-note a:hover { color: var(--fx-cyan); }
 
 /* Les faces des cartes qui se retournent restent superposées */
 html .flip-face { position: absolute; }
+
+/* ---------- Effets 3D (assets/fx-3d.js) ---------- */
+/* Cartes inclinables */
+html .fx-tilt { --rx: 0deg; --ry: 0deg; transform-style: preserve-3d; will-change: transform; }
+html .fx-tilt.is-tilting {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateZ(6px) !important;
+  transition: transform .12s ease-out, box-shadow .3s ease !important;
+  box-shadow: calc(var(--ry) * -1.6) calc(var(--rx) * 1.6 + 18px) 40px rgba(0, 0, 0, .45), 0 0 26px rgba(0, 229, 255, .18);
+}
+html .fx-tilt:not(.is-tilting) { transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .4s ease, opacity .8s ease; }
+html .service-card.flip.fx-tilt.is-tilting { box-shadow: none; }
+html .service-card.flip.fx-tilt.is-tilting .flip-face { box-shadow: calc(var(--ry) * -1.6) calc(var(--rx) * 1.6 + 18px) 40px rgba(0, 0, 0, .45), 0 0 26px rgba(0, 229, 255, .18); }
+html .fx-tilt.fx-glare.is-tilting::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, .10), transparent 55%);
+}
+html .card.fx-tilt, html .review-card.fx-tilt, html .related a.fx-tilt, html .zone-inner.fx-tilt, html .hero-photo.fx-tilt { position: relative; }
+
+/* Cartes qui se retournent : rotation plus vivante, avec élan */
+html .flip-inner { transition: transform .9s cubic-bezier(.3, 1.45, .45, 1); }
+html .service-card.flip:hover .flip-front .service-icon { transform: scale(1.12) rotate(-8deg) translateZ(20px); }
+
+/* Ordinateur 3D de l'accueil */
+html .hero-art.has-3d .orbit, html .hero-art.has-3d .server-card { display: none; }
+html .fx-3d-canvas { position: absolute; inset: -14%; width: 128%; height: 128%; z-index: 0; pointer-events: none; }
+html .hero-art.has-3d .floating-chip { z-index: 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  html .fx-tilt.is-tilting { transform: none !important; }
+  html .flip-inner { transition: none; }
+}
