@@ -48,7 +48,6 @@
     copie.after(term);
     const zone = term.querySelector(".txt");
     const lignes = [
-      ["suppression des virus", "100 %"],
       ["sauvegarde de vos données", "OK"],
       ["optimisation du démarrage", "x2"],
       ["mise à jour Windows 11", "OK"],
