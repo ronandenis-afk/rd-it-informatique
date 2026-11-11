@@ -33,7 +33,7 @@
 
   /* 2. Cadre HUD autour de l'ordinateur 3D */
   const art = hero.querySelector(".hero-art");
-  if (art) art.appendChild(el("div", "fx-hud", "<b></b><em>SYS.SCAN // RD-IT</em><em>STATUT : <span class=\"ok\">EN LIGNE</span></em>"));
+  if (art) art.appendChild(el("div", "fx-hud", "<b></b>"));
 
   /* 3. Apparition en cascade */
   if (!calme) {
@@ -48,7 +48,6 @@
     copie.after(term);
     const zone = term.querySelector(".txt");
     const lignes = [
-      ["diagnostic du système", "OK"],
       ["suppression des virus", "100 %"],
       ["sauvegarde de vos données", "OK"],
       ["optimisation du démarrage", "x2"],
