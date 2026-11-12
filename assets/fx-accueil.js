@@ -1,5 +1,5 @@
 // RD IT Informatique — effets futuristes de l'en-tête de l'accueil.
-// Grille néon, faisceaux, halo souris, cadre HUD, console tapée, titre décodé + glitch.
+// Grille néon, faisceaux, halo souris, cadre HUD, titre décodé + glitch.
 // Sans bibliothèque. Décoratif uniquement (aria-hidden) ; respecte « réduire les animations ».
 (() => {
   const hero = document.querySelector(".hero");
@@ -39,42 +39,6 @@
   if (!calme) {
     document.documentElement.classList.add("fx-intro");
     setTimeout(() => document.documentElement.classList.remove("fx-intro"), 2600);
-  }
-
-  /* 4. Console HUD tapée sous le texte d'accroche */
-  const copie = hero.querySelector(".hero-copy");
-  if (copie) {
-    const term = el("div", "fx-term", '<span class="dot"></span><span class="prompt">rd-it&gt;</span><span class="txt"></span><span class="caret"></span>');
-    copie.after(term);
-    const zone = term.querySelector(".txt");
-    const lignes = [
-      ["optimisation du démarrage", "x2"],
-      ["mise à jour Windows 11", "OK"],
-      ["technicien disponible", "06 95 95 40 56"]
-    ];
-    if (calme) {
-      zone.innerHTML = lignes[0][0] + ' … <span class="ok">' + lignes[0][1] + "</span>";
-    } else {
-      let i = 0;
-      const tape = () => {
-        const [txt, res] = lignes[i % lignes.length];
-        let n = 0;
-        const pas = () => {
-          zone.textContent = txt.slice(0, ++n);
-          if (n < txt.length) return setTimeout(pas, 32 + Math.random() * 40);
-          let pts = 0;
-          const points = () => {
-            zone.textContent = txt + " " + ".".repeat(++pts);
-            if (pts < 4) return setTimeout(points, 180);
-            zone.innerHTML = txt + ' .... <span class="ok">' + res + "</span>";
-            i++; setTimeout(tape, 2100);
-          };
-          setTimeout(points, 200);
-        };
-        pas();
-      };
-      setTimeout(tape, 900);
-    }
   }
 
   /* 5. Titre : la partie colorée se « décode », puis glitch de temps en temps */
