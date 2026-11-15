@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#122a52">
+<title>RD IT Diagnostic Mobile</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="/assets/logo-rd-it.webp">
+<link rel="apple-touch-icon" href="/assets/logo-rd-it.webp">
+<style>
+:root{--navy:#122a52;--navy2:#1c3e76;--blue:#2670d6;--bg:#eef2f7;--card:#fff;--txt:#1d2433;--mut:#6b7690;--ok:#2fa35a;--warn:#f0a020;--fail:#d93636;--line:#e3e8f0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:16px}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:10px 14px}
+header img{width:44px;height:44px;border-radius:50%;background:#fff}
+header h1{font-size:18px;margin:0;line-height:1.1}header small{opacity:.75;font-size:12px}
+main{padding:14px 14px 96px;max-width:640px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button.on{color:var(--blue);font-weight:600}nav svg{width:24px;height:24px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(18,42,82,.08)}
+h2{font-size:17px;margin:0 0 10px;color:var(--navy)}h3{margin:0 0 6px;font-size:16px}
+p{margin:6px 0;line-height:1.45}.mut{color:var(--mut);font-size:14px}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid #cfd7e4;border-radius:10px;font:inherit;background:#fbfcfe}
+textarea{min-height:70px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:600;background:var(--blue);color:#fff;width:100%;margin-top:10px;cursor:pointer}
+.btn.sec{background:#e8eef8;color:var(--navy)}.btn.ok{background:var(--ok)}.btn.fail{background:var(--fail)}.btn.ghost{background:none;color:var(--mut);font-weight:500}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+.list .it{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.list .it:last-child{border-bottom:0}.list .ico{width:36px;height:36px;border-radius:10px;background:#e8eef8;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.list .nm{flex:1}.list .nm small{display:block;color:var(--mut);font-size:12px}
+.st{font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.st.ok{background:#e6f7ec;color:#17733a}.st.fail{background:#fde8e8;color:#b02323}.st.warn{background:#fff4e0;color:#9a5b00}.st.skip,.st.todo{background:#eef1f5;color:#7a849a}.st.info{background:#e8eef8;color:#1c3e76}
+.prog{height:8px;background:#e3e8f0;border-radius:8px;overflow:hidden;margin:8px 0 2px}.prog i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}.kv:last-child{border:0}.kv b{text-align:right}
+.big{font-size:34px;font-weight:700;color:var(--navy);text-align:center;margin:8px 0}
+.meter{height:22px;background:#e3e8f0;border-radius:11px;overflow:hidden}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2fa35a,#f0a020,#d93636)}
+video,canvas.cam{width:100%;border-radius:12px;background:#000;max-height:52vh;object-fit:cover}
+.level{position:relative;width:200px;height:200px;margin:10px auto;border-radius:50%;background:radial-gradient(circle,#fff 0 30%,#e8eef8 31%);border:2px solid #cfd7e4}
+.level i{position:absolute;width:34px;height:34px;border-radius:50%;background:var(--blue);left:83px;top:83px;transition:transform .08s}
+.chk{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}.chk span{flex:1;font-size:15px}
+.chk button{border:1px solid #cfd7e4;background:#fff;border-radius:9px;padding:8px 10px;font:inherit;font-size:13px;min-width:46px}
+.chk button.sel.ok{background:var(--ok);color:#fff;border-color:var(--ok)}.chk button.sel.fail{background:var(--fail);color:#fff;border-color:var(--fail)}.chk button.sel.na{background:#7a849a;color:#fff;border-color:#7a849a}
+.ov{position:fixed;inset:0;z-index:50;touch-action:none;user-select:none}
+.grid{display:grid;width:100%;height:100%}.grid div{border:1px solid rgba(0,0,0,.12);background:#fff}.grid div.hit{background:#2fa35a}
+.ovbar{position:fixed;top:10px;right:10px;z-index:60;display:flex;gap:8px}.ovbar button{border:0;border-radius:20px;padding:9px 14px;background:rgba(0,0,0,.65);color:#fff;font:inherit;font-size:14px}
+.hint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:55;background:rgba(0,0,0,.6);color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;pointer-events:none;text-align:center}
+.dots{position:fixed;inset:0;z-index:51;pointer-events:none}.dots i{position:absolute;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;border:4px solid var(--blue);background:rgba(38,112,214,.2)}
+.app{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}.app:last-child{border:0}
+.app b{display:block;font-size:15px}.app small{color:var(--mut);font-size:12.5px}.app .go{margin-left:auto;color:var(--blue);font-weight:600;font-size:13px;white-space:nowrap}
+.code{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.code:last-child{border:0}.code a{font-family:monospace;font-size:15px;color:var(--blue);text-decoration:none;font-weight:700}
+.verdict{border-radius:12px;padding:14px;font-weight:700;font-size:18px;text-align:center}
+.verdict.ok{background:#e6f7ec;color:#17733a}.verdict.warn{background:#fff4e0;color:#9a5b00}.verdict.fail{background:#fde8e8;color:#b02323}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;opacity:0;transition:opacity .3s;pointer-events:none}.toast.on{opacity:.95}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header><img src="/assets/logo-rd-it.webp" alt=""><div><h1>RD IT Diagnostic</h1><small>Test complet du téléphone · RD IT INFORMATIQUE</small></div></header>
+<main id="view"></main>
+<nav>
+ <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tests</button>
+ <button data-tab="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>Rapport</button>
+ <button data-tab="apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Applis &amp; codes</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+let LOGO = 'https://rd-it-informatique.com/assets/logo-rd-it.webp';
+fetch('/assets/logo-rd-it.webp').then(r => r.ok ? r.blob() : null).then(b => { if (!b) return; const fr = new FileReader(); fr.onload = () => { LOGO = fr.result; }; fr.readAsDataURL(b); }).catch(() => {});
+const COMPANY = 'RD IT INFORMATIQUE';
+const COMPANY_INFO = '1 La Conuais, 35580 Goven · 06.95.95.40.56 · rd-it-informatique.com';
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
+
+// ------------------------------------------------------------------ État
+const store = {
+  load(){try{return JSON.parse(localStorage.getItem('rdit-mobile')||'null')}catch(e){return null}},
+  save(){try{localStorage.setItem('rdit-mobile',JSON.stringify(S))}catch(e){}}
+};
+function fresh(){return {fiche:{client:'',tech:'Ronan Denis',modele:'',imei:'',notes:''},res:{},info:{},start:null}}
+let S = store.load() || fresh();
+let cleanup = null;           // fonction d'arrêt du test en cours
+let current = null;           // id du test affiché
+
+function setRes(id, status, detail){ S.res[id] = {status, detail: detail||''}; store.save(); }
+
+// ------------------------------------------------------------------ Liste des tests
+const TESTS = [
+ {id:'infos',  ico:'📱', name:'Infos de l\'appareil', sub:'Modèle, Android, mémoire, stockage'},
+ {id:'batt',   ico:'🔋', name:'Batterie & charge', sub:'Niveau, prise de charge'},
+ {id:'ecran',  ico:'🎨', name:'Écran (pixels morts)', sub:'Couleurs en plein écran'},
+ {id:'tactile',ico:'👆', name:'Tactile', sub:'Toute la surface de l\'écran'},
+ {id:'multi',  ico:'✌️', name:'Multi-touch', sub:'Plusieurs doigts en même temps'},
+ {id:'hp',     ico:'🔊', name:'Haut-parleur', sub:'Son gauche / droite'},
+ {id:'micro',  ico:'🎤', name:'Micro', sub:'Niveau + enregistrement'},
+ {id:'vib',    ico:'📳', name:'Vibreur', sub:'Moteur de vibration'},
+ {id:'camAr',  ico:'📷', name:'Caméra arrière & flash', sub:'Image, mise au point, lampe'},
+ {id:'camAv',  ico:'🤳', name:'Caméra avant', sub:'Selfie'},
+ {id:'capt',   ico:'🧭', name:'Capteurs de mouvement', sub:'Accéléromètre, gyroscope'},
+ {id:'gps',    ico:'📍', name:'GPS', sub:'Position et précision'},
+ {id:'net',    ico:'📶', name:'Réseau & Internet', sub:'Connexion, débit'},
+ {id:'perf',   ico:'⚡', name:'Performances', sub:'Processeur multi-cœur'},
+ {id:'manuel', ico:'✅', name:'Contrôles manuels', sub:'Boutons, appel, Wi-Fi, Bluetooth, NFC, état'},
+];
+const LABEL = {ok:'OK', fail:'Défaut', warn:'À surveiller', skip:'Passé', info:'Info', todo:'À faire'};
+
+// ------------------------------------------------------------------ Navigation
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.tab));
+function stopCurrent(){ if (cleanup) { try{cleanup()}catch(e){} cleanup = null; } document.querySelectorAll('.ov,.ovbar,.hint,.dots').forEach(e=>e.remove()); if (document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }
+function go(tab){
+  stopCurrent(); current = null;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  ({home:viewHome, report:viewReport, apps:viewApps}[tab])();
+  window.scrollTo(0,0);
+}
+
+// ------------------------------------------------------------------ Accueil
+function viewHome(){
+  const f = S.fiche;
+  const done = TESTS.filter(t => S.res[t.id]).length;
+  $('#view').innerHTML = `
+  <div class="card">
+    <h2>Fiche d'intervention</h2>
+    <label>Client</label><input id="f-client" value="${esc(f.client)}" placeholder="Nom du client">
+    <div class="row"><div style="flex:1"><label>Modèle</label><input id="f-modele" value="${esc(f.modele)}" placeholder="Détection…"></div>
+    <div style="flex:1"><label>IMEI (*#06#)</label><input id="f-imei" value="${esc(f.imei)}" inputmode="numeric" placeholder="Facultatif"></div></div>
+    <label>Technicien</label><input id="f-tech" value="${esc(f.tech)}">
+  </div>
+  <div class="card">
+    <h2>Tests <span class="mut" style="font-weight:400">· ${done}/${TESTS.length}</span></h2>
+    <div class="prog"><i style="width:${done/TESTS.length*100}%"></i></div>
+    <button class="btn" id="b-start">${done ? (done < TESTS.length ? 'Continuer le diagnostic' : 'Voir le rapport') : 'Démarrer le diagnostic'}</button>
+    <div class="list" style="margin-top:8px">${TESTS.map(t => {
+      const r = S.res[t.id]; const st = r ? r.status : 'todo';
+      return `<div class="it" data-id="${t.id}"><div class="ico">${t.ico}</div><div class="nm">${t.name}<small>${r && r.detail ? esc(r.detail) : t.sub}</small></div><span class="st ${st}">${LABEL[st]}</span></div>`}).join('')}
+    </div>
+    <button class="btn ghost" id="b-reset">Nouveau téléphone (tout effacer)</button>
+  </div>`;
+  ['client','modele','imei','tech'].forEach(k => $('#f-'+k).oninput = e => { S.fiche[k] = e.target.value; store.save(); });
+  document.querySelectorAll('.list .it').forEach(e => e.onclick = () => openTest(e.dataset.id));
+  $('#b-start').onclick = () => { if (!S.start) { S.start = Date.now(); store.save(); } const n = TESTS.find(t => !S.res[t.id]); n ? openTest(n.id) : go('report'); };
+  $('#b-reset').onclick = () => confirmBox('Effacer tous les résultats et la fiche pour tester un nouveau téléphone ?', () => { S = fresh(); store.save(); autoModel(); viewHome(); });
+  if (!f.modele) autoModel();
+}
+async function autoModel(){
+  try {
+    const uad = navigator.userAgentData;
+    let model = '', ver = '';
+    if (uad && uad.getHighEntropyValues) { const h = await uad.getHighEntropyValues(['model','platformVersion']); model = h.model || ''; ver = h.platformVersion || ''; }
+    if (!model) { const m = navigator.userAgent.match(/Android [\d.]+; ([^;)]+)/); if (m && m[1] !== 'K') model = m[1].replace(/ Build.*/,''); }
+    S.info.model = model; S.info.android = ver ? ver.split('.')[0] : ((navigator.userAgent.match(/Android ([\d.]+)/)||[])[1]||'');
+    if (model && !S.fiche.modele) { S.fiche.modele = model; store.save(); const i = $('#f-modele'); if (i) i.value = model; }
+  } catch(e) {}
+}
+
+function confirmBox(msg, onYes){
+  const o = document.createElement('div'); o.className = 'ov'; o.style.cssText = 'background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;touch-action:auto';
+  o.innerHTML = `<div class="card" style="max-width:420px;width:100%"><p>${esc(msg)}</p><div class="row"><button class="btn sec" data-a="n">Annuler</button><button class="btn fail" data-a="y">Confirmer</button></div></div>`;
+  o.onclick = e => { const a = e.target.dataset.a; if (!a) return; o.remove(); if (a === 'y') onYes(); };
+  document.body.appendChild(o);
+}
+
+// ------------------------------------------------------------------ Écran d'un test
+function openTest(id){
+  stopCurrent(); current = id;
+  if (!S.start) { S.start = Date.now(); store.save(); }
+  const t = TESTS.find(x => x.id === id); const idx = TESTS.indexOf(t);
+  $('#view').innerHTML = `
+   <div class="card">
+     <div class="mut" style="font-size:13px">Test ${idx+1} / ${TESTS.length}</div>
+     <h2 style="margin-top:4px">${t.ico} ${t.name}</h2>
+     <div id="tbody"></div>
+     <div id="verdict" class="row hide"><button class="btn fail" id="v-fail">Défaut</button><button class="btn ok" id="v-ok">Fonctionne</button></div>
+     <div id="result" class="mut" style="margin-top:8px"></div>
+   </div>
+   <div class="row"><button class="btn sec" id="t-back">Liste</button><button class="btn sec" id="t-skip">Passer</button><button class="btn" id="t-next">Suivant →</button></div>`;
+  $('#t-back').onclick = () => go('home');
+  $('#t-skip').onclick = () => { if (!S.res[id]) setRes(id, 'skip', 'Non testé'); next(); };
+  $('#t-next').onclick = next;
+  function next(){ stopCurrent(); const n = TESTS[idx+1]; n ? openTest(n.id) : go('report'); }
+  showRes(id);
+  T[id]($('#tbody'), id);
+  window.scrollTo(0,0);
+}
+function showRes(id){ const r = S.res[id]; const e = $('#result'); if (!e) return; e.innerHTML = r ? `Résultat : <span class="st ${r.status}">${LABEL[r.status]}</span> ${esc(r.detail)}` : ''; }
+function askVerdict(id, okText, failText, extra){
+  const v = $('#verdict'); if (!v) return; v.classList.remove('hide');
+  $('#v-ok').onclick = () => { setRes(id, 'ok', okText + (extra ? extra() : '')); showRes(id); toast('Enregistré : OK'); };
+  $('#v-fail').onclick = () => { setRes(id, 'fail', failText + (extra ? extra() : '')); showRes(id); toast('Enregistré : défaut'); };
+}
+function auto(id, status, detail){ if (current !== id) return; setRes(id, status, detail); showRes(id); }
+
+function overlay(){ const o = document.createElement('div'); o.className = 'ov'; document.body.appendChild(o); const fs = document.documentElement.requestFullscreen; if (fs) document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{}); return o; }
+function ovBar(buttons){ const b = document.createElement('div'); b.className = 'ovbar'; buttons.forEach(([t, fn]) => { const x = document.createElement('button'); x.textContent = t; x.onclick = e => { e.stopPropagation(); fn(); }; b.appendChild(x); }); document.body.appendChild(b); return b; }
+function closeOverlay(){ document.querySelectorAll('.ov,.ovbar,.hint,.dots').forEach(e=>e.remove()); if (document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }
+function kv(rows){ return rows.filter(r => r[1] !== '' && r[1] != null).map(([k,v]) => `<div class="kv"><span>${k}</span><b>${esc(v)}</b></div>`).join(''); }
+
+// ================================================================== TESTS
+const T = {};
+
+T.infos = async (el, id) => {
+  el.innerHTML = '<p class="mut">Lecture des informations…</p>';
+  await autoModel();
+  const i = S.info;
+  const mem = navigator.deviceMemory; const cores = navigator.hardwareConcurrency;
+  let freeTxt = '', st = 'info', freeGB = null;
+  try { const e = await navigator.storage.estimate(); if (e.quota) { freeGB = e.quota / 0.6 / 1e9; freeTxt = '≈ ' + freeGB.toFixed(1) + ' Go'; } } catch(e){}
+  const scr = `${Math.round(screen.width*devicePixelRatio)} × ${Math.round(screen.height*devicePixelRatio)} px`;
+  i.cores = cores; i.mem = mem; i.screen = scr; i.free = freeTxt; i.touch = navigator.maxTouchPoints;
+  store.save();
+  el.innerHTML = kv([
+    ['Modèle', i.model || 'Non détecté (saisir dans la fiche)'],
+    ['Version Android', i.android ? 'Android ' + i.android : ''],
+    ['Processeur', cores ? cores + ' cœurs' : ''],
+    ['Mémoire RAM', mem ? (mem >= 8 ? '8 Go ou plus' : mem + ' Go') : ''],
+    ['Espace libre (estimé)', freeTxt],
+    ['Résolution écran', scr],
+    ['Points tactiles max', navigator.maxTouchPoints || ''],
+    ['Navigateur', (navigator.userAgent.match(/Chrome\/([\d]+)/) || [])[1] ? 'Chrome ' + navigator.userAgent.match(/Chrome\/([\d]+)/)[1] : ''],
+  ]) + '<p class="mut">L\'espace libre est une estimation calculée par le navigateur.</p>';
+  if (freeGB !== null && freeGB < 2) st = 'warn';
+  const parts = [i.model, i.android && 'Android ' + i.android, mem && ((mem >= 8 ? '8+' : mem) + ' Go RAM'), freeTxt && 'libre ' + freeTxt].filter(Boolean);
+  auto(id, st, parts.join(' · ') + (st === 'warn' ? ' (stockage presque plein)' : ''));
+};
+
+T.batt = async (el, id) => {
+  if (!navigator.getBattery) { el.innerHTML = '<p>Informations batterie non disponibles dans ce navigateur. Utilisez Chrome.</p>'; askVerdict(id, 'Charge vérifiée manuellement', 'Problème de charge'); return; }
+  const b = await navigator.getBattery();
+  let plugged = false;
+  const draw = () => {
+    el.innerHTML = `<div class="big">${Math.round(b.level*100)} %</div>` + kv([
+      ['État', b.charging ? '⚡ En charge' : 'Sur batterie'],
+      ['Temps restant', b.charging ? (isFinite(b.chargingTime) && b.chargingTime > 0 ? Math.round(b.chargingTime/60) + ' min jusqu\'à 100 %' : 'calcul…') : (isFinite(b.dischargingTime) ? Math.round(b.dischargingTime/60) + ' min' : '')],
+    ]) + `<p class="mut">${b.charging ? 'Débranchez puis rebranchez le chargeur pour tester la prise.' : 'Branchez le chargeur : le test de la prise de charge se valide automatiquement.'}</p>
+    <p class="mut">La santé (usure) et la température de la batterie ne sont pas accessibles depuis le navigateur : utilisez AccuBattery ou le menu de test du fabricant (onglet Applis &amp; codes).</p>`;
+  };
+  const onChg = () => { draw(); if (b.charging) { plugged = true; auto(id, 'ok', `Prise de charge OK · niveau ${Math.round(b.level*100)} %`); toast('Charge détectée ✓'); } };
+  b.addEventListener('chargingchange', onChg); b.addEventListener('levelchange', draw);
+  cleanup = () => { b.removeEventListener('chargingchange', onChg); b.removeEventListener('levelchange', draw); };
+  draw();
+  if (!S.res[id]) setRes(id, 'info', `Niveau ${Math.round(b.level*100)} % · prise de charge non testée`), showRes(id);
+  askVerdict(id, 'Charge vérifiée', 'Problème de charge', () => ` · niveau ${Math.round(b.level*100)} %`);
+};
+
+T.ecran = (el, id) => {
+  el.innerHTML = `<p>L'écran va s'afficher en plein écran dans plusieurs couleurs. <b>Touchez l'écran</b> pour passer à la couleur suivante et cherchez : pixels morts, taches, lignes, zones jaunies ou marquage (images fantômes).</p><button class="btn" id="go">Lancer le test des couleurs</button>`;
+  $('#go').onclick = () => {
+    const cols = ['#ff0000','#00ff00','#0000ff','#ffffff','#000000','#808080','linear-gradient(90deg,#000,#fff)'];
+    let k = 0; const o = overlay(); o.style.background = cols[0];
+    const h = document.createElement('div'); h.className = 'hint'; h.textContent = 'Touchez pour changer de couleur'; document.body.appendChild(h); setTimeout(() => h.remove(), 1600);
+    o.onclick = () => { k++; if (k >= cols.length) { closeOverlay(); askVerdict(id, 'Aucun pixel mort ni tache', 'Défaut d\'affichage constaté'); toast('Le test est terminé : indiquez le résultat'); return; } o.style.background = cols[k]; };
+    ovBar([['Quitter', () => { closeOverlay(); askVerdict(id, 'Aucun pixel mort ni tache', 'Défaut d\'affichage constaté'); }]]);
+  };
+  askVerdict(id, 'Aucun pixel mort ni tache', 'Défaut d\'affichage constaté');
+};
+
+T.tactile = (el, id) => {
+  el.innerHTML = `<p>Une grille va couvrir l'écran. <b>Glissez le doigt sur toutes les cases</b> jusqu'à ce qu'elles deviennent vertes, y compris les bords et les coins. Une case qui ne réagit pas indique une zone tactile défectueuse.</p><button class="btn" id="go">Lancer le test tactile</button>`;
+  $('#go').onclick = () => {
+    const cols = 7, rows = 13; const o = overlay(); o.style.background = '#fff';
+    o.innerHTML = `<div class="grid" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr)">${'<div></div>'.repeat(cols*rows)}</div>`;
+    const cells = [...o.querySelectorAll('.grid div')]; let left = cells.length;
+    const finish = (ok) => { closeOverlay(); const pct = Math.round((cells.length-left)/cells.length*100);
+      if (ok) auto(id, 'ok', 'Toute la surface répond'); else auto(id, left > 0 ? 'fail' : 'ok', `${pct} % de la surface validée`);
+      askVerdict(id, 'Toute la surface répond', 'Zone tactile défectueuse'); };
+    const hit = (x, y) => { const e = document.elementFromPoint(x, y); if (e && e.parentNode && e.parentNode.classList && e.parentNode.classList.contains('grid') && !e.classList.contains('hit')) { e.classList.add('hit'); left--; if (left === 0) { if (navigator.vibrate) navigator.vibrate(80); setTimeout(() => finish(true), 250); } } };
+    const tm = ev => { ev.preventDefault(); for (const t of ev.touches) hit(t.clientX, t.clientY); };
+    o.addEventListener('touchstart', tm, {passive:false}); o.addEventListener('touchmove', tm, {passive:false});
+    o.addEventListener('mousemove', ev => { if (ev.buttons) hit(ev.clientX, ev.clientY); });
+    ovBar([['Arrêter', () => finish(false)]]);
+  };
+  askVerdict(id, 'Toute la surface répond', 'Zone tactile défectueuse');
+};
+
+T.multi = (el, id) => {
+  el.innerHTML = `<p>Posez <b>plusieurs doigts</b> en même temps sur l'écran (jusqu'à 5). Un cercle apparaît sous chaque doigt.</p><button class="btn" id="go">Lancer le test multi-touch</button>`;
+  $('#go').onclick = () => {
+    let max = 0; const o = overlay(); o.style.background = '#f4f7fb';
+    const d = document.createElement('div'); d.className = 'dots'; document.body.appendChild(d);
+    const h = document.createElement('div'); h.className = 'hint'; h.style.top = '30%'; h.textContent = 'Doigts détectés : 0 (max 0)'; document.body.appendChild(h);
+    const upd = ev => { ev.preventDefault(); d.innerHTML = [...ev.touches].map(t => `<i style="left:${t.clientX}px;top:${t.clientY}px"></i>`).join(''); max = Math.max(max, ev.touches.length); h.textContent = `Doigts détectés : ${ev.touches.length} (max ${max})`; };
+    ['touchstart','touchmove','touchend','touchcancel'].forEach(n => o.addEventListener(n, upd, {passive:false}));
+    ovBar([['Terminer', () => { closeOverlay(); auto(id, max >= 2 ? 'ok' : 'fail', `${max} doigt(s) détecté(s) simultanément`); }]]);
+  };
+};
+
+let AC = null; function ac(){ if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(freq, dur, pan = 0, type = 'sine', vol = 0.6){ const c = ac(); const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(0, c.currentTime); g.gain.linearRampToValueAtTime(vol, c.currentTime + .03); g.gain.setValueAtTime(vol, c.currentTime + dur - .05); g.gain.linearRampToValueAtTime(0, c.currentTime + dur);
+  let node = g; if (c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = pan; g.connect(p); node = p; } o.connect(g); node.connect(c.destination); o.start(); o.stop(c.currentTime + dur); }
+
+T.hp = (el, id) => {
+  el.innerHTML = `<p>Montez le volume média, puis écoutez chaque son. Un son grésillant, faible ou absent indique un haut-parleur abîmé.</p>
+  <div class="row"><button class="btn sec" id="l">◀ Gauche</button><button class="btn sec" id="r">Droite ▶</button></div>
+  <button class="btn" id="both">▶ Mélodie (les deux)</button><button class="btn sec" id="sweep">Balayage grave → aigu</button>
+  <p class="mut">Sur la plupart des téléphones, le son « gauche/droite » sort par le haut-parleur du bas et l'écouteur du haut (si stéréo).</p>`;
+  $('#l').onclick = () => tone(660, .8, -1); $('#r').onclick = () => tone(660, .8, 1);
+  $('#both').onclick = async () => { for (const f of [523, 659, 784, 1047]) { tone(f, .28, 0, 'triangle'); await sleep(300); } };
+  $('#sweep').onclick = () => { const c = ac(); const o = c.createOscillator(), g = c.createGain(); g.gain.value = .5; o.frequency.setValueAtTime(80, c.currentTime); o.frequency.exponentialRampToValueAtTime(12000, c.currentTime + 4); o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + 4); };
+  askVerdict(id, 'Son clair', 'Son faible, grésillant ou absent');
+};
+
+T.micro = (el, id) => {
+  el.innerHTML = `<p>Autorisez le micro, puis <b>parlez</b> : la barre doit bouger. Ensuite enregistrez quelques secondes et réécoutez pour vérifier la qualité.</p>
+  <button class="btn" id="go">Activer le micro</button>
+  <div id="mz" class="hide"><div class="meter" style="margin:14px 0 6px"><i id="mv"></i></div><div class="mut" id="mt">Parlez…</div>
+  <button class="btn sec" id="rec">● Enregistrer 4 secondes</button><audio id="pb" controls class="hide" style="width:100%;margin-top:10px"></audio></div>`;
+  let stream = null, raf = 0, peakSeen = false;
+  cleanup = () => { cancelAnimationFrame(raf); if (stream) stream.getTracks().forEach(t => t.stop()); };
+  $('#go').onclick = async () => {
+    try { stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
+    catch(e) { $('#mt') && ($('#mz').classList.remove('hide')); el.insertAdjacentHTML('beforeend', `<p style="color:var(--fail)">Accès au micro refusé ou indisponible (${esc(e.name)}).</p>`); auto(id, 'fail', 'Micro inaccessible'); return; }
+    $('#go').classList.add('hide'); $('#mz').classList.remove('hide');
+    const c = ac(); const src = c.createMediaStreamSource(stream); const an = c.createAnalyser(); an.fftSize = 1024; src.connect(an);
+    const buf = new Uint8Array(an.fftSize);
+    const loop = () => { an.getByteTimeDomainData(buf); let m = 0; for (const v of buf) m = Math.max(m, Math.abs(v - 128)); const pct = Math.min(100, m / 128 * 160); const mv = $('#mv'); if (!mv) return; mv.style.width = pct + '%';
+      if (pct > 35 && !peakSeen) { peakSeen = true; $('#mt').textContent = 'Son capté ✓'; if (!S.res[id] || S.res[id].status !== 'ok') auto(id, 'ok', 'Le micro capte le son'); }
+      raf = requestAnimationFrame(loop); };
+    loop();
+    $('#rec').onclick = () => {
+      if (!window.MediaRecorder) { toast('Enregistrement non pris en charge'); return; }
+      const r = new MediaRecorder(stream); const chunks = []; r.ondataavailable = e => chunks.push(e.data);
+      r.onstop = () => { const a = $('#pb'); if (!a) return; a.src = URL.createObjectURL(new Blob(chunks, {type: r.mimeType})); a.classList.remove('hide'); a.play().catch(()=>{}); $('#rec').disabled = false; $('#rec').textContent = '● Enregistrer à nouveau'; };
+      r.start(); $('#rec').disabled = true; let s = 4; $('#rec').textContent = `Enregistrement… ${s}`;
+      const it = setInterval(() => { s--; const b = $('#rec'); if (b) b.textContent = `Enregistrement… ${s}`; if (s <= 0) { clearInterval(it); r.stop(); } }, 1000);
+    };
+    askVerdict(id, 'Micro OK, enregistrement clair', 'Micro faible ou son déformé');
+  };
+};
+
+T.vib = (el, id) => {
+  if (!navigator.vibrate) { el.innerHTML = '<p>La vibration n\'est pas pilotable depuis ce navigateur : vérifiez-la en recevant un appel ou une notification.</p>'; askVerdict(id, 'Vibreur OK', 'Vibreur ne fonctionne pas'); return; }
+  el.innerHTML = `<p>Le téléphone doit vibrer. Vérifiez aussi qu'il n'est pas en mode silencieux « sans vibration ».</p><button class="btn" id="go">Faire vibrer</button>`;
+  $('#go').onclick = () => navigator.vibrate([400, 150, 400, 150, 800]);
+  askVerdict(id, 'Vibreur OK', 'Pas de vibration');
+};
+
+async function camTest(el, id, facing){
+  el.innerHTML = `<video id="cv" playsinline autoplay muted></video>
+   <div class="row"><button class="btn sec" id="snap">📸 Photo</button><button class="btn sec hide" id="torch">🔦 Flash</button><button class="btn sec hide" id="flip">🔄 Objectif suivant</button></div>
+   <canvas class="cam hide" id="cc" style="margin-top:10px"></canvas>
+   <p class="mut" id="cinfo">Autorisez la caméra. Vérifiez la netteté (mise au point en touchant un objet proche puis lointain), les taches, la poussière ou les fissures sur l'objectif.</p>`;
+  let stream = null, torchOn = false, devs = [], devIdx = 0;
+  const stop = () => { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; };
+  cleanup = stop;
+  const start = async (deviceId) => {
+    stop();
+    const v = deviceId ? {deviceId:{exact:deviceId}} : {facingMode:{ideal:facing}};
+    v.width = {ideal:1920}; v.height = {ideal:1080};
+    stream = await navigator.mediaDevices.getUserMedia({video:v, audio:false});
+    const cv = $('#cv'); if (!cv) { stop(); return; } cv.srcObject = stream;
+    const tr = stream.getVideoTracks()[0]; const caps = tr.getCapabilities ? tr.getCapabilities() : {}; const set = tr.getSettings ? tr.getSettings() : {};
+    $('#torch').classList.toggle('hide', !(facing === 'environment' && caps.torch));
+    if (facing === 'environment') S.info.torch = !!caps.torch;
+    $('#cinfo').textContent = `${tr.label || 'Caméra'} · ${set.width || '?'}×${set.height || '?'}`;
+  };
+  try {
+    await start();
+    try { devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput'); S.info.cams = devs.length; store.save(); } catch(e){}
+    if (devs.length > 2) $('#flip').classList.remove('hide');
+    auto(id, 'info', `Image reçue · ${devs.length || '?'} caméra(s) au total`);
+  } catch(e) {
+    $('#cinfo').innerHTML = `<span style="color:var(--fail)">Caméra inaccessible (${esc(e.name)}). Vérifiez l'autorisation ou si une autre appli l'utilise.</span>`;
+    auto(id, 'fail', 'Caméra inaccessible'); return;
+  }
+  $('#snap').onclick = () => { const v = $('#cv'), c = $('#cc'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v, 0, 0); c.classList.remove('hide'); };
+  $('#torch').onclick = async () => { try { torchOn = !torchOn; await stream.getVideoTracks()[0].applyConstraints({advanced:[{torch:torchOn}]}); $('#torch').textContent = torchOn ? '🔦 Éteindre' : '🔦 Flash'; S.info.torchTested = true; store.save(); } catch(e) { toast('Flash non pilotable'); } };
+  $('#flip').onclick = async () => { devIdx = (devIdx + 1) % devs.length; try { await start(devs[devIdx].deviceId); } catch(e) { toast('Objectif non accessible'); } };
+  askVerdict(id, 'Image nette', 'Image floue, tachée ou absente', () => (facing === 'environment' && S.info.torchTested ? ' · flash testé' : ''));
+}
+T.camAr = (el, id) => camTest(el, id, 'environment');
+T.camAv = (el, id) => camTest(el, id, 'user');
+
+T.capt = (el, id) => {
+  el.innerHTML = `<p>Inclinez le téléphone dans tous les sens : la bille doit suivre. Tournez-le sur lui-même pour le gyroscope.</p>
+   <div class="level"><i id="ball"></i></div><div id="cv2"></div>`;
+  let acc = false, gyro = false, ori = false, last = null, moved = 0;
+  const upd = () => { const e = $('#cv2'); if (e) e.innerHTML = kv([['Accéléromètre', acc ? '✓ fonctionne' : 'en attente…'], ['Gyroscope', gyro ? '✓ fonctionne' : 'tournez le téléphone…'], ['Orientation / boussole', ori ? '✓ fonctionne' : 'en attente…']]);
+    if (acc && gyro) auto(id, 'ok', 'Accéléromètre et gyroscope OK' + (ori ? ', orientation OK' : '')); };
+  const onMotion = e => {
+    const a = e.accelerationIncludingGravity; if (a && a.x != null) {
+      if (last && (Math.abs(a.x - last.x) + Math.abs(a.y - last.y)) > 0.3) moved++; last = {x:a.x, y:a.y};
+      if (moved > 5 && !acc) { acc = true; upd(); }
+      const b = $('#ball'); if (b) b.style.transform = `translate(${Math.max(-80, Math.min(80, -a.x * 8))}px,${Math.max(-80, Math.min(80, a.y * 8))}px)`;
+    }
+    const r = e.rotationRate; if (r && r.alpha != null && (Math.abs(r.alpha) + Math.abs(r.beta) + Math.abs(r.gamma)) > 40 && !gyro) { gyro = true; upd(); }
+  };
+  const onOri = e => { if (e.alpha != null && !ori) { ori = true; upd(); } };
+  window.addEventListener('devicemotion', onMotion); window.addEventListener('deviceorientation', onOri);
+  cleanup = () => { window.removeEventListener('devicemotion', onMotion); window.removeEventListener('deviceorientation', onOri); };
+  upd();
+  setTimeout(() => { if (current === id && !acc && !last) { const e = $('#cv2'); if (e) e.insertAdjacentHTML('beforeend', '<p class="mut">Aucune donnée reçue : capteurs absents, défectueux, ou bloqués par le navigateur (Chrome > Paramètres des sites > Capteurs de mouvement).</p>'); } }, 5000);
+  askVerdict(id, 'Capteurs OK', 'Capteur défectueux', () => (gyro ? '' : ' (gyroscope non confirmé)'));
+};
+
+T.gps = (el, id) => {
+  el.innerHTML = `<p>Activez la localisation, de préférence près d'une fenêtre ou dehors. Le premier positionnement peut prendre jusqu'à une minute.</p><button class="btn" id="go">Lancer la localisation</button><div id="gz"></div>`;
+  let w = null; cleanup = () => { if (w != null) navigator.geolocation.clearWatch(w); };
+  $('#go').onclick = () => {
+    if (!navigator.geolocation) { auto(id, 'fail', 'Géolocalisation indisponible'); return; }
+    $('#go').disabled = true; $('#gz').innerHTML = '<p class="mut">Recherche des satellites…</p>'; const t0 = Date.now(); let best = 1e9;
+    w = navigator.geolocation.watchPosition(p => {
+      const acc = Math.round(p.coords.accuracy); best = Math.min(best, acc); const s = Math.round((Date.now() - t0) / 1000);
+      $('#gz').innerHTML = kv([['Précision', acc + ' m'], ['Meilleure précision', best + ' m'], ['Temps', s + ' s'], ['Satellites / altitude', p.coords.altitude != null ? 'altitude ' + Math.round(p.coords.altitude) + ' m (GPS actif)' : 'position réseau / Wi-Fi']]);
+      auto(id, best <= 30 ? 'ok' : 'warn', `Précision ${best} m en ${s} s` + (best > 30 ? ' (faible : tester à l\'extérieur)' : ''));
+    }, e => { $('#gz').innerHTML = `<p style="color:var(--fail)">Erreur : ${esc(e.message)}</p>`; auto(id, 'fail', 'Localisation impossible : ' + e.message); $('#go').disabled = false; }, {enableHighAccuracy:true, maximumAge:0, timeout:90000});
+  };
+};
+
+T.net = async (el, id) => {
+  const c = navigator.connection || {};
+  el.innerHTML = kv([['Connexion', navigator.onLine ? 'En ligne' : 'Hors ligne'], ['Type', c.type ? ({wifi:'Wi-Fi', cellular:'Données mobiles', ethernet:'Ethernet', none:'Aucune'}[c.type] || c.type) : ''], ['Qualité estimée', c.effectiveType ? c.effectiveType.toUpperCase() : '']]) + `<button class="btn" id="go">Tester le débit</button><div id="nz"></div>`;
+  if (!navigator.onLine) { auto(id, 'fail', 'Pas de connexion Internet'); }
+  $('#go').onclick = async () => {
+    $('#go').disabled = true; const z = $('#nz'); z.innerHTML = '<p class="mut">Mesure du temps de réponse…</p>';
+    try {
+      const pings = [];
+      for (let k = 0; k < 4; k++) { const t = performance.now(); await fetch('https://speed.cloudflare.com/__down?bytes=0&r=' + Math.random(), {cache:'no-store'}); pings.push(performance.now() - t); }
+      const ping = Math.round(Math.min(...pings));
+      z.innerHTML = '<p class="mut">Téléchargement en cours…</p>';
+      const bytes = 15e6; const t = performance.now();
+      const r = await fetch('https://speed.cloudflare.com/__down?bytes=' + bytes + '&r=' + Math.random(), {cache:'no-store'});
+      const b = await r.arrayBuffer(); const sec = (performance.now() - t) / 1000; const mbps = (b.byteLength * 8 / 1e6 / sec);
+      z.innerHTML = `<div class="big">${mbps.toFixed(1)} Mbit/s</div>` + kv([['Temps de réponse', ping + ' ms']]);
+      auto(id, mbps >= 5 ? 'ok' : 'warn', `Débit ${mbps.toFixed(1)} Mbit/s · ping ${ping} ms` + (c.type ? ' · ' + ({wifi:'Wi-Fi', cellular:'4G/5G'}[c.type] || c.type) : ''));
+    } catch(e) { z.innerHTML = '<p style="color:var(--fail)">Test de débit impossible (pas d\'Internet ou serveur inaccessible).</p>'; auto(id, 'fail', 'Pas d\'accès Internet'); }
+    $('#go').disabled = false;
+  };
+};
+
+T.perf = (el, id) => {
+  el.innerHTML = `<p>Fait travailler tous les cœurs du processeur pendant 10 secondes. Le téléphone ne doit ni redémarrer ni figer.</p><button class="btn" id="go">Lancer le test</button><div class="prog hide" id="pp"><i></i></div><div id="pz"></div>`;
+  let workers = [], it = 0;
+  cleanup = () => { workers.forEach(w => w.terminate()); clearInterval(it); };
+  $('#go').onclick = async () => {
+    $('#go').disabled = true; $('#pp').classList.remove('hide');
+    const code = `onmessage=e=>{const end=performance.now()+e.data;let n=0,x=1.0001;while(performance.now()<end){for(let j=1;j<20000;j++){x=Math.sqrt(x*x+j)*.5+1}n++}postMessage(n+(x<0?1:0))}`;
+    const url = URL.createObjectURL(new Blob([code], {type:'text/javascript'}));
+    const run = (n, ms) => Promise.all(Array.from({length:n}, () => new Promise(res => { const w = new Worker(url); workers.push(w); w.onmessage = e => { w.terminate(); res(e.data); }; w.postMessage(ms); })));
+    let t0 = Date.now(); const total = 13000; it = setInterval(() => { const i = $('#pp i'); if (i) i.style.width = Math.min(100, (Date.now() - t0) / total * 100) + '%'; }, 200);
+    $('#pz').innerHTML = '<p class="mut">Score mono-cœur…</p>';
+    const single = (await run(1, 3000))[0] / 3;
+    const n = navigator.hardwareConcurrency || 4;
+    $('#pz').innerHTML = `<p class="mut">Charge sur ${n} cœurs…</p>`;
+    const multi = (await run(n, 10000)).reduce((a, b) => a + b, 0) / 10;
+    clearInterval(it); const i = $('#pp i'); if (i) i.style.width = '100%';
+    const s1 = Math.round(single), sN = Math.round(multi);
+    $('#pz').innerHTML = kv([['Score mono-cœur', s1], ['Score multi-cœur', sN], ['Cœurs utilisés', n]]) + '<p class="mut">Les scores servent à comparer des téléphones entre eux avec ce même outil (plus c\'est haut, plus c\'est rapide).</p>';
+    auto(id, 'ok', `Stable · mono ${s1} · multi ${sN}`);
+    $('#go').disabled = false; $('#go').textContent = 'Relancer';
+  };
+};
+
+const MANUAL = [
+  ['vol', 'Boutons volume + et –'], ['pwr', 'Bouton marche / verrouillage'], ['bio', 'Empreinte digitale / reconnaissance faciale'],
+  ['call', 'Appel : écouteur et micro'], ['prox', 'Capteur de proximité (écran s\'éteint pendant l\'appel)'],
+  ['sim', 'Carte SIM / réseau mobile détecté'], ['wifi', 'Wi-Fi'], ['bt', 'Bluetooth'], ['nfc', 'NFC / paiement sans contact'],
+  ['jack', 'Prise casque / écouteurs'], ['glass', 'État de la vitre et de l\'écran'], ['body', 'État coque, châssis, objectifs'],
+];
+T.manuel = (el, id) => {
+  const m = S.res._manuel || (S.res._manuel = {});
+  const draw = () => {
+    el.innerHTML = '<p class="mut">Vérifiez à la main ce que le navigateur ne peut pas tester.</p>' + MANUAL.map(([k, l]) => `<div class="chk" data-k="${k}"><span>${l}</span>${[['ok','✓'],['fail','✗'],['na','N/A']].map(([v, t]) => `<button data-v="${v}" class="${m[k] === v ? 'sel ' + v : ''}">${t}</button>`).join('')}</div>`).join('');
+    el.querySelectorAll('.chk button').forEach(b => b.onclick = () => { const k = b.parentNode.dataset.k; m[k] = b.dataset.v; store.save(); draw(); summarize(); });
+  };
+  const summarize = () => {
+    const vals = MANUAL.map(([k]) => m[k]); const done = vals.filter(Boolean).length; const fails = MANUAL.filter(([k]) => m[k] === 'fail').map(([, l]) => l.split(' (')[0]);
+    if (!done) return;
+    setRes(id, fails.length ? 'fail' : (done < MANUAL.length ? 'info' : 'ok'), fails.length ? 'Défaut : ' + fails.join(', ') : `${done}/${MANUAL.length} points vérifiés`); showRes(id);
+  };
+  draw();
+};
+
+// ================================================================== RAPPORT
+function counts(){ const r = TESTS.map(t => S.res[t.id]).filter(Boolean); return {ok:r.filter(x => x.status === 'ok').length, fail:r.filter(x => x.status === 'fail').length, warn:r.filter(x => x.status === 'warn').length, done:r.length}; }
+function verdict(){ const c = counts(); return c.fail ? ['fail', 'Défaut(s) détecté(s)'] : c.warn ? ['warn', 'Points à surveiller'] : c.done ? ['ok', 'Aucun défaut détecté'] : ['warn', 'Diagnostic non commencé']; }
+
+function viewReport(){
+  const c = counts(); const [vc, vt] = verdict(); const f = S.fiche;
+  $('#view').innerHTML = `
+   <div class="card"><div class="verdict ${vc}">${vt}</div>
+   <p class="mut" style="text-align:center">${c.ok} OK · ${c.warn} à surveiller · ${c.fail} défaut(s) · ${c.done}/${TESTS.length} tests faits</p></div>
+   <div class="card"><h2>Résultats</h2><div class="list">${TESTS.map(t => { const r = S.res[t.id]; const st = r ? r.status : 'todo'; return `<div class="it" data-id="${t.id}"><div class="ico">${t.ico}</div><div class="nm">${t.name}<small>${esc(r ? r.detail : 'Non effectué')}</small></div><span class="st ${st}">${LABEL[st]}</span></div>`; }).join('')}</div></div>
+   <div class="card"><h2>Observations</h2><textarea id="notes" placeholder="Remarques pour le client (devis, pièce à changer…)">${esc(f.notes)}</textarea>
+   <button class="btn" id="share">📤 Envoyer / partager le rapport</button>
+   <button class="btn sec" id="pdf">🖨️ Imprimer ou enregistrer en PDF</button>
+   <button class="btn sec" id="dl">⬇️ Télécharger le rapport</button></div>`;
+  $('#notes').oninput = e => { S.fiche.notes = e.target.value; store.save(); };
+  document.querySelectorAll('.list .it').forEach(e => e.onclick = () => openTest(e.dataset.id));
+  const file = () => { const name = `Diagnostic_${(f.client || 'client').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_')}_${(f.modele || 'telephone').replace(/[^\w\-]+/g, '_')}_${new Date().toISOString().slice(0, 10)}.html`; return new File([reportHtml()], name, {type:'text/html'}); };
+  const download = () => { const fl = file(); const a = document.createElement('a'); a.href = URL.createObjectURL(fl); a.download = fl.name; document.body.appendChild(a); a.click(); a.remove(); toast('Rapport téléchargé'); };
+  $('#dl').onclick = download;
+  $('#share').onclick = async () => { const fl = file(); if (navigator.canShare && navigator.canShare({files:[fl]})) { try { await navigator.share({files:[fl], title:'Rapport de diagnostic', text:`Rapport de diagnostic ${f.modele || ''} - ${COMPANY}`}); } catch(e) {} } else download(); };
+  $('#pdf').onclick = () => { const w = window.open('', '_blank'); if (!w) { download(); return; } w.document.write(reportHtml(true)); w.document.close(); };
+}
+
+function reportHtml(autoPrint){
+  const f = S.fiche; const [vc, vt] = verdict(); const c = counts(); const d = new Date();
+  const ic = st => ({ok:'<span class="d ok">&#10004;</span>', fail:'<span class="d fail">&#10006;</span>', warn:'<span class="d warn">!</span>'}[st] || '<span class="d info">i</span>');
+  const rows = TESTS.map(t => { const r = S.res[t.id] || {status:'todo', detail:'Non effectué'}; return `<tr><td class="ic">${ic(r.status)}</td><td class="k">${esc(t.name)}</td><td>${esc(r.detail)}</td></tr>`; }).join('');
+  const m = S.res._manuel || {};
+  const manRows = MANUAL.filter(([k]) => m[k]).map(([k, l]) => `<tr><td class="ic">${m[k] === 'ok' ? ic('ok') : m[k] === 'fail' ? ic('fail') : ic('info')}</td><td class="k">${esc(l)}</td><td>${m[k] === 'ok' ? 'Fonctionne' : m[k] === 'fail' ? 'Défaut' : 'Non applicable'}</td></tr>`).join('');
+  const probs = TESTS.filter(t => S.res[t.id] && ['fail','warn'].includes(S.res[t.id].status)).map(t => `<li class="${S.res[t.id].status}"><b>${esc(t.name)}</b> : ${esc(S.res[t.id].detail)}</li>`).join('');
+  const i = S.info;
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diagnostic ${esc(f.modele)} - ${esc(f.client)}</title>
+<style>*{box-sizing:border-box}body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#eef2f7;margin:0;color:#1d2433}
+.wrap{max-width:860px;margin:16px auto;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(18,42,82,.12);overflow:hidden}
+header{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#122a52,#1c3e76);color:#fff;padding:18px 22px}
+header img{width:76px;height:76px;border-radius:50%;background:#fff}header h1{margin:0;font-size:22px}header p{margin:4px 0 0;opacity:.85;font-size:12px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#e3e8f0}.meta div{background:#f7f9fc;padding:10px 14px}
+.meta small{display:block;color:#6b7690;font-size:11px;text-transform:uppercase}.meta b{font-size:14px}
+.verdict{margin:18px 22px 6px;padding:14px 18px;border-radius:12px;font-size:19px;font-weight:600}.verdict span{display:block;font-size:13px;font-weight:400;color:#4a5568;margin-top:4px}
+.verdict.ok{background:#e6f7ec;color:#17733a}.verdict.warn{background:#fff4e0;color:#9a5b00}.verdict.fail{background:#fde8e8;color:#b02323}
+section{margin:14px 22px}h2{font-size:16px;color:#122a52;border-bottom:2px solid #e3e8f0;padding-bottom:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}td{padding:6px;border-bottom:1px solid #f0f2f6;vertical-align:top}td.k{width:40%;font-weight:600;color:#3b4660}td.ic{width:28px}
+.d{display:inline-block;width:20px;height:20px;border-radius:50%;text-align:center;line-height:20px;font-size:12px;color:#fff;font-weight:700}.d.ok{background:#2fa35a}.d.warn{background:#f0a020}.d.fail{background:#d93636}.d.info{background:#9aa6bd}
+ul{margin:0;padding-left:20px}li{margin:4px 0}li.fail{color:#b02323}li.warn{color:#8a5200}
+footer{margin-top:20px;background:#f7f9fc;border-top:1px solid #e3e8f0;padding:14px 22px;font-size:12px;color:#6b7690}
+@media print{body{background:#fff}.wrap{box-shadow:none;margin:0}section{break-inside:avoid}}</style></head><body><div class="wrap">
+<header><img src="${LOGO}" alt=""><div><h1>Rapport de diagnostic téléphone</h1><p>${COMPANY} · ${COMPANY_INFO}</p></div></header>
+<div class="meta"><div><small>Client</small><b>${esc(f.client) || '-'}</b></div><div><small>Appareil</small><b>${esc(f.modele) || '-'}${i.android ? ' · Android ' + esc(i.android) : ''}</b></div>
+<div><small>IMEI</small><b>${esc(f.imei) || '-'}</b></div><div><small>Date</small><b>${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}</b></div><div><small>Technicien</small><b>${esc(f.tech) || '-'}</b></div></div>
+<div class="verdict ${vc}">${vt}<span>${c.ok} OK · ${c.warn} à surveiller · ${c.fail} défaut(s) · ${c.done}/${TESTS.length} tests effectués</span></div>
+${probs ? `<section><h2>Points relevés</h2><ul>${probs}</ul></section>` : ''}
+${f.notes.trim() ? `<section><h2>Observations du technicien</h2><p>${esc(f.notes).replace(/\n/g, '<br>')}</p></section>` : ''}
+<section><h2>Tests</h2><table>${rows}</table></section>
+${manRows ? `<section><h2>Contrôles manuels</h2><table>${manRows}</table></section>` : ''}
+<footer>${COMPANY} · ${COMPANY_INFO}<br>Diagnostic réalisé avec RD IT Diagnostic Mobile.</footer></div>
+${autoPrint ? '<script>setTimeout(function(){window.print()},500)<\/script>' : ''}</body></html>`;
+}
+
+// ================================================================== APPLIS & CODES
+const APPS = [
+  ['Diagnostic', [['DevCheck', 'flar2.devcheck', 'Matériel complet, capteurs, batterie, températures'], ['CPU-Z', 'com.cpuid.cpu_z', 'Processeur, mémoire, capteurs'], ['AIDA64', 'com.finalwire.aida64', 'Rapport matériel détaillé'], ['Geekbench 6', 'com.primatelabs.geekbench6', 'Score de performances de référence']]],
+  ['Batterie', [['AccuBattery', 'com.digibites.accubattery', 'Usure réelle de la batterie (mAh)']]],
+  ['Réseau', [['Speedtest', 'org.zwanoo.android.speedtest', 'Débit Wi-Fi et 4G/5G']]],
+  ['Nettoyage & sécurité', [['Files de Google', 'com.google.android.apps.nbu.files', 'Libérer de l\'espace'], ['Malwarebytes', 'org.malwarebytes.antimalware', 'Recherche de malwares']]],
+  ['Assistance à distance', [['AnyDesk', 'com.anydesk.anydeskandroid', 'Prise en main à distance'], ['TeamViewer QuickSupport', 'com.teamviewer.quicksupport.market', 'Assistance à distance']]],
+];
+const CODES = [
+  ['*#06#', 'Afficher l\'IMEI (tous)'],
+  ['*#0*#', 'Menu de test matériel (Samsung)'],
+  ['*#*#4636#*#*', 'Infos téléphone, réseau, batterie (selon modèle)'],
+  ['*#*#6484#*#*', 'Menu de test (Xiaomi, Redmi, Poco)'],
+  ['*#*#64663#*#*', 'Menu de test (Xiaomi / Oppo / Realme, selon modèle)'],
+  ['*#0228#', 'État de la batterie (Samsung)'],
+];
+function viewApps(){
+  $('#view').innerHTML = APPS.map(([g, list]) => `<div class="card"><h2>${g}</h2>${list.map(([n, pkg, dsc]) => `<a class="app" href="https://play.google.com/store/apps/details?id=${pkg}" target="_blank" rel="noopener"><div><b>${n}</b><small>${dsc}</small></div><span class="go">Play Store ›</span></a>`).join('')}</div>`).join('') +
+  `<div class="card"><h2>Codes secrets utiles</h2><p class="mut">Touchez un code pour l'ouvrir dans le composeur. Les menus de test dépendent de la marque.</p>${CODES.map(([cd, l]) => `<div class="code"><span>${l}</span><a href="tel:${encodeURIComponent(cd)}">${cd}</a></div>`).join('')}</div>
+  <div class="card"><h2>Installer sur l'écran d'accueil</h2><p class="mut">Dans Chrome : menu ⋮ puis « Ajouter à l'écran d'accueil ». L'outil s'ouvrira alors comme une appli.</p></div>
+  <p class="mut" style="text-align:center">${COMPANY}<br>${COMPANY_INFO}</p>`;
+}
+
+go('home');
+</script>
+</body>
+</html>
