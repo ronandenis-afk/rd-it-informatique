@@ -1,0 +1,19 @@
+{
+ "name": "RD IT Diagnostic Mobile",
+ "short_name": "RD IT Diag",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#eef2f7",
+ "theme_color": "#122a52",
+ "lang": "fr",
+ "icons": [
+  {
+   "src": "/assets/logo-rd-it.webp",
+   "sizes": "480x480",
+   "type": "image/webp",
+   "purpose": "any"
+  }
+ ]
+}
