@@ -336,9 +336,17 @@ T.micro = (el, id) => {
 };
 
 T.vib = (el, id) => {
-  if (!navigator.vibrate) { el.innerHTML = '<p>La vibration n\'est pas pilotable depuis ce navigateur : vérifiez-la en recevant un appel ou une notification.</p>'; askVerdict(id, 'Vibreur OK', 'Vibreur ne fonctionne pas'); return; }
-  el.innerHTML = `<p>Le téléphone doit vibrer. Vérifiez aussi qu'il n'est pas en mode silencieux « sans vibration ».</p><button class="btn" id="go">Faire vibrer</button>`;
-  $('#go').onclick = () => navigator.vibrate([400, 150, 400, 150, 800]);
+  if (!navigator.vibrate) { el.innerHTML = '<p>Ce navigateur ne sait pas piloter le vibreur (iPhone, Firefox ou ancien Chrome). Vérifiez-le en recevant un appel ou avec le menu de test du fabricant (onglet Applis &amp; codes).</p>'; askVerdict(id, 'Vibreur OK', 'Vibreur ne fonctionne pas'); return; }
+  el.innerHTML = `<p>Appuyez sur un bouton : le téléphone doit vibrer.</p>
+   <div class="row"><button class="btn" id="go1">Vibration longue (2 s)</button><button class="btn sec" id="go2">Impulsions</button></div>
+   <p id="vst" class="mut"></p>
+   <div class="card" style="background:#f7f9fc;box-shadow:none;margin-top:10px;padding:12px">
+    <b style="font-size:14px">Rien ne vibre ? Vérifiez d'abord :</b>
+    <p class="mut" style="margin-top:6px">• Paramètres &gt; Sons et vibrations : intensité des vibrations / retour tactile pas à zéro<br>• Mode Ne pas déranger et économie d'énergie désactivés<br>• Si le téléphone vibre pour un appel mais pas ici, c'est un réglage, pas une panne<br>• Test direct du moteur : <b>*#0*#</b> (Samsung) ou <b>*#*#6484#*#*</b> (Xiaomi)</p>
+   </div>`;
+  const vib = (pat) => { let ok = false; try { navigator.vibrate(0); ok = navigator.vibrate(pat); } catch (e) {} $('#vst').innerHTML = ok ? 'Commande envoyée au vibreur. Le téléphone a-t-il vibré ?' : '<span style="color:var(--fail)">Le navigateur a refusé la vibration (réglages du téléphone, mode économie d\'énergie ou navigateur). Vérifiez les points ci-dessous.</span>'; };
+  $('#go1').onclick = () => vib(2000);
+  $('#go2').onclick = () => vib([300, 200, 300, 200, 300, 200, 800]);
   askVerdict(id, 'Vibreur OK', 'Pas de vibration');
 };
 
