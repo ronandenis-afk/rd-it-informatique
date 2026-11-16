@@ -1023,23 +1023,23 @@ $tabWin.Text = 'Outils Windows'; $tabWin.BackColor = $cBg
 $flow = New-Object Windows.Forms.FlowLayoutPanel
 $flow.Dock = 'Fill'; $flow.Padding = New-Object Windows.Forms.Padding(14); $flow.AutoScroll = $true
 $winTools = @(
-    @('Diagnostic mémoire Windows', 'Test complet de la RAM au redémarrage', { Start-Process mdsched.exe })
-    @('Réparer Windows (DISM + SFC)', 'Répare les fichiers système corrompus (15-30 min)', { Start-Process cmd.exe '/k title Reparation de Windows & DISM /Online /Cleanup-Image /RestoreHealth & sfc /scannow & echo. & echo Termine.' })
-    @('Vérifier le disque C: (CHKDSK)', 'Analyse du système de fichiers sans redémarrer', { Start-Process cmd.exe '/k title Verification du disque & chkdsk C: /scan & echo. & echo Termine.' })
-    @('Moniteur de fiabilité', 'Historique des plantages et erreurs', { Start-Process perfmon.exe '/rel' })
-    @('Gestionnaire de périphériques', 'Pilotes et périphériques', { Start-Process devmgmt.msc })
-    @('Gestion des disques', 'Partitions et volumes', { Start-Process diskmgmt.msc })
-    @('Observateur d''événements', 'Journaux Windows', { Start-Process eventvwr.msc })
-    @('Informations système', 'Résumé complet du matériel (msinfo32)', { Start-Process msinfo32.exe })
-    @('Rapport batterie', 'Rapport détaillé de la batterie (portable)', {
+    ,@('Diagnostic mémoire Windows', 'Test complet de la RAM au redémarrage', { Start-Process mdsched.exe })
+    ,@('Réparer Windows (DISM + SFC)', 'Répare les fichiers système corrompus (15-30 min)', { Start-Process cmd.exe '/k title Reparation de Windows & DISM /Online /Cleanup-Image /RestoreHealth & sfc /scannow & echo. & echo Termine.' })
+    ,@('Vérifier le disque C: (CHKDSK)', 'Analyse du système de fichiers sans redémarrer', { Start-Process cmd.exe '/k title Verification du disque & chkdsk C: /scan & echo. & echo Termine.' })
+    ,@('Moniteur de fiabilité', 'Historique des plantages et erreurs', { Start-Process perfmon.exe '/rel' })
+    ,@('Gestionnaire de périphériques', 'Pilotes et périphériques', { Start-Process devmgmt.msc })
+    ,@('Gestion des disques', 'Partitions et volumes', { Start-Process diskmgmt.msc })
+    ,@('Observateur d''événements', 'Journaux Windows', { Start-Process eventvwr.msc })
+    ,@('Informations système', 'Résumé complet du matériel (msinfo32)', { Start-Process msinfo32.exe })
+    ,@('Rapport batterie', 'Rapport détaillé de la batterie (portable)', {
         if (-not (Test-Path $script:ReportDir)) { New-Item -ItemType Directory -Path $script:ReportDir -Force | Out-Null }
         $f = Join-Path $script:ReportDir ("Batterie_{0}_{1:yyyy-MM-dd_HHmm}.html" -f $env:COMPUTERNAME, (Get-Date))
         $null = Invoke-Hidden 'powercfg.exe' "/batteryreport /output `"$f`"" 'Rapport batterie' 10
         if (Test-Path $f) { Start-Process $f } else { [System.Windows.Forms.MessageBox]::Show('Aucune batterie détectée.', 'RD IT Diagnostic') | Out-Null }
     })
-    @('Nettoyage de disque', 'Fichiers temporaires et anciennes mises à jour', { Start-Process cleanmgr.exe })
-    @('Programmes au démarrage', 'Gestionnaire des tâches > Démarrage', { Start-Process taskmgr.exe '/7 /startup' })
-    @('Windows Update', 'Rechercher les mises à jour', { Start-Process 'ms-settings:windowsupdate' })
+    ,@('Nettoyage de disque', 'Fichiers temporaires et anciennes mises à jour', { Start-Process cleanmgr.exe })
+    ,@('Programmes au démarrage', 'Gestionnaire des tâches > Démarrage', { Start-Process taskmgr.exe '/7 /startup' })
+    ,@('Windows Update', 'Rechercher les mises à jour', { Start-Process 'ms-settings:windowsupdate' })
 )
 foreach ($w in $winTools) {
     $b = New-Object Windows.Forms.Button
